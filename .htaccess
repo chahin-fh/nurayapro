@@ -1,0 +1,51 @@
+# Security & Friendly URL Rules for Nuraya E-Commerce
+# Apache mod_rewrite configuration
+
+# Enable mod_rewrite engine
+RewriteEngine On
+RewriteBase /nuraya_pro/
+
+# ============================================
+# SECURITY RULES
+# ============================================
+
+# Block access to sensitive directories
+RewriteRule ^(vendor|\.git|\.env) - [F,L]
+
+# Prevent directory listing
+Options -Indexes
+
+# ============================================
+# FRIENDLY URL ROUTING
+# ============================================
+
+# Public Pages (no file extension needed)
+RewriteRule ^/?$ index.php [L,QSA]
+RewriteRule ^home/?$ index.php [L,QSA]
+RewriteRule ^about/?$ about.php [L,QSA]
+RewriteRule ^contact/?$ contact_us.php [L,QSA]
+RewriteRule ^shop/?$ produits [L,QSA]
+
+# Form Actions (handle POST)
+RewriteRule ^send-message/?$ send.php [L,QSA]
+RewriteRule ^done/?$ produits/done.php [L,QSA]
+RewriteRule ^submit-order/?$ produits/order.php [L,QSA]
+RewriteRule ^checkout/?$ produits/main.php [L,QSA]
+
+
+# Product Management
+RewriteRule ^manage-categories/?$ manage/categories.php [L,QSA]
+RewriteRule ^manage-edit/?$ manage/edit.php [L,QSA]
+RewriteRule ^manage-orders/?$ manage/orderlist.php [L,QSA]
+
+# Account / Authentication
+RewriteRule ^register/?$ cree_compte/main.php [L,QSA]
+RewriteRule ^verify-code/?$ cree_compte/verify_code_handler.php [L,QSA]
+RewriteRule ^login/?$ cree_compte/login.php [L,QSA]
+RewriteRule ^admin-login/?$ "admin login page/index.html" [L,QSA]
+RewriteRule ^admin-auth/?$ "admin login page/main.php" [L,QSA]
+
+# File/Resource Access (allow direct access)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]

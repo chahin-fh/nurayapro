@@ -1,0 +1,397 @@
+:root {
+    --primary-color: #4267B2;
+    --hover-color: #365899;
+    --border-color: #dddfe2;
+    --bg-color: #f0f2f5;
+    --text-color: #1d2129;
+    --error-color: #dc3545;
+    --success-color: #28a745;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    line-height: 1.5;
+}
+
+.form-container {
+    background-color: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 28px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-color);
+}
+
+input[type="text"],
+input[type="number"],
+textarea{
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234267B2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+select:hover {
+    border-color: var(--primary-color);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(66, 103, 178, 0.1);
+}
+
+select option {
+    padding: 12px;
+    font-size: 15px;
+}
+
+select option:first-child {
+    color: #65676b;
+}
+
+select.error {
+    border-color: var(--error-color) !important;
+    background-color: #fff8f8;
+}
+
+select.error:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+select.success {
+    border-color: var(--success-color) !important;
+    background-color: #f8fff8;
+}
+
+input[type="text"]:focus, 
+input[type="number"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(66, 103, 178, 0.1);
+}
+
+input[type="text"]:hover, 
+input[type="number"]:hover,
+textarea:hover {
+    border-color: var(--primary-color);
+}
+
+textarea {
+    height: 120px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.photo-upload {
+    border: 2px dashed var(--border-color);
+    padding: 40px 20px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+}
+
+.photo-upload:hover {
+    border-color: var(--primary-color);
+    background-color: #f7f9fa;
+}
+
+.photo-upload p {
+    margin: 0;
+    color: #65676b;
+    font-size: 15px;
+}
+
+.photo-upload i {
+    font-size: 32px;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 103, 178, 0.2);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.price-container {
+    position: relative;
+}
+
+.price-container::before {
+    content: "$";
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    color: var(--text-color);
+    font-weight: 600;
+}
+#price {
+    padding-left: 36px;
+}
+.error-message {
+    color: var(--error-color);
+    font-size: 13px;
+    margin-top: 6px;
+    display: none;
+    padding-left: 4px;
+}
+
+input.error, 
+textarea.error {
+    border-color: var(--error-color) !important;
+    background-color: #fff8f8;
+}
+
+input.error:focus, 
+textarea.error:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Success state styling */
+input.success, 
+textarea.success {
+    border-color: var(--success-color) !important;
+    background-color: #f8fff8;
+}
+
+/* Required field indicator */
+.required {
+    color: var(--error-color);
+    margin-left: 4px;
+}
+
+/* Input hints */
+.input-hint {
+    font-size: 12px;
+    color: #65676b;
+    margin-top: 4px;
+    padding-left: 4px;
+}
+
+/* Upload hint */
+.upload-hint {
+    font-size: 12px;
+    color: #65676b;
+    margin-top: 8px;
+}
+
+/* Icons in labels */
+label i {
+    margin-right: 6px;
+    color: var(--primary-color);
+}
+
+/* Button icon */
+.btn i {
+    margin-right: 8px;
+}
+
+/* Hover effect for photo upload area */
+.photo-upload:hover i {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+/* Success state for photo upload */
+.photo-upload.success {
+    border-color: var(--success-color);
+    background-color: #f8fff8;
+}
+
+/* Loading state for button */
+.btn.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .form-container {
+        padding: 20px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+    }
+}
+
+.category-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.category-tag {
+    background-color: #e7f3ff;
+    color: var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.category-tag:hover {
+    background-color: #dbe7f2;
+}
+
+/* Drag and drop styles */
+.photo-upload.dragover {
+    border-color: var(--primary-color);
+    background-color: #e7f3ff;
+    transform: scale(1.02);
+}
+
+.photo-upload.dragover i {
+    transform: scale(1.2);
+}
+
+/* File input success state */
+.photo-upload.success {
+    border-color: var(--success-color);
+    background-color: #f8fff8;
+}
+
+.photo-upload.success i {
+    color: var(--success-color);
+}
+
+/* Error message for file input */
+#errimg {
+    margin-top: 8px;
+    font-size: 13px;
+    transition: color 0.3s ease;
+}
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #dddfe2;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background-color: #fff;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234267B2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        select:hover {
+            border-color: #4267B2;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #4267B2;
+            box-shadow: 0 0 0 3px rgba(66, 103, 178, 0.1);
+        }
+
+        select option {
+            padding: 12px;
+            font-size: 15px;
+        }
+
+        select option:first-child {
+            color: #65676b;
+        }
+        .form-container{
+            position: relative;
+            left:30px ;
+        }
+        
