@@ -138,7 +138,7 @@ CREATE TABLE `users` (
     `email` varchar(255) NOT NULL,
     `password_hash` varchar(255) DEFAULT NULL,
     `phone` varchar(20) DEFAULT NULL,
-    `birth_date` DATE NULL COMMENT 'Date de naissance de l\'utilisateur',
+    `birth_date` DATE NULL COMMENT 'Date de naissance de l\'utilisateur'',
     `verification_code` varchar(6) DEFAULT NULL,
     `is_verified` tinyint(1) DEFAULT 0,
     `is_active` tinyint(1) DEFAULT 1,
