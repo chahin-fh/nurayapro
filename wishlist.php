@@ -1,6 +1,5 @@
 <?php
-include 'cnx.php';
-include 'functions.php';
+require_once 'includes/autoload.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!is_logged_in()) {
@@ -243,7 +242,7 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
 </head>
 
 <body>
-    <?php include 'navbar_updated.php'; ?>
+    <?php include 'templates/navbar_updated.php'; ?>
 
     <div class="wishlist-container">
         <div class="page-header">
@@ -283,7 +282,7 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                 <h2>Votre liste de favoris est vide</h2>
                 <p>Ajoutez des produits à vos favoris pour les retrouver facilement</p>
                 <a href="produits/index.php" class="shop-now-btn">
-                    <i class="fas fa-shopping-bag"></i> Découvrir les produits
+                    Découvrir les produits
                 </a>
             </div>
         <?php endif; ?>
@@ -295,7 +294,7 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                 return;
             }
 
-            fetch('api/wishlist.php', {
+            fetch('src/Controllers/api/wishlist.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -319,7 +318,7 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
         function addToCart(event, productId) {
             event.preventDefault();
 
-            fetch('api/cart.php', {
+            fetch('src/Controllers/api/cart.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

@@ -437,6 +437,25 @@ ALTER TABLE `product_variants`
 ADD CONSTRAINT `product_variants_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `user_addresses` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL,
+    `title` varchar(50) DEFAULT 'Mon adresse',
+    `first_name` varchar(100) NOT NULL,
+    `last_name` varchar(100) NOT NULL,
+    `phone` varchar(20) NOT NULL,
+    `address_line1` varchar(255) NOT NULL,
+    `address_line2` varchar(255) DEFAULT NULL,
+    `city` varchar(100) NOT NULL,
+    `postal_code` varchar(20) NOT NULL,
+    `country` varchar(100) DEFAULT 'Tunisie',
+    `is_default` tinyint(1) DEFAULT 0,
+    `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `user_id` (`user_id`),
+    CONSTRAINT `fk_user_addresses_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Table structure for table `settings`

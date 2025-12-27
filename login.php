@@ -1,7 +1,14 @@
 <?php
+session_start();
+
 // Si l'utilisateur est déjà connecté, le rediriger
 if (isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    // Rediriger les admins vers le panneau d'administration
+    if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+        header('Location: admin/index.php');
+    } else {
+        header('Location: index.php');
+    }
     exit;
 }
 ?>
@@ -306,7 +313,12 @@ if (isset($_SESSION['user_id'])) {
                     if (data.success) {
                         showAlert('Connexion réussie ! Redirection...', 'success');
                         setTimeout(() => {
-                            window.location.href = 'index.php';
+                            // Rediriger les admins vers le panneau d'administration
+                            if (data.user && data.user.role === 'admin') {
+                                window.location.href = 'admin/index.php';
+                            } else {
+                                window.location.href = 'index.php';
+                            }
                         }, 1500);
                     } else {
                         showAlert(data.message, 'error');
