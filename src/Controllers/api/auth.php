@@ -1,0 +1,581 @@
+<?php
+// Désactiver l'affichage des erreurs HTML
+error_reporting(0);
+ini_set('display_errors', 0);
+
+session_start();
+header('Content-Type: application/json');
+
+// Importer PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Charger PHPMailer avec gestion d'erreur
+try {
+    require '../vendor/autoload.php';
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'PHPMailer non disponible']);
+    exit;
+}
+
+// Connexion à la base de données
+try {
+    include '../cnx.php';
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Erreur de connexion BDD']);
+    exit;
+}
+
+// Récupérer l'action demandée
+$action = $_POST['action'] ?? $_GET['action'] ?? '';
+
+switch ($action) {
+    case 'register':
+        register();
+        break;
+    case 'login':
+        login();
+        break;
+    case 'logout':
+        logout();
+        break;
+    case 'verify':
+        verifyEmail();
+        break;
+    case 'verify_email':
+        verifyEmailExists();
+        break;
+    case 'send_verification_code':
+        sendVerificationCode();
+        break;
+    case 'register_with_verification':
+        registerWithVerification();
+        break;
+    case 'forgot':
+        forgotPassword();
+        break;
+    case 'reset':
+        resetPassword();
+        break;
+    case 'check':
+        checkAuth();
+        break;
+    default:
+        echo json_encode(['success' => false, 'message' => 'Action non valide']);
+        break;
+}
+
+function register()
+{
+    global $cnx;
+
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name = trim($_POST['last_name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+
+    // Validation
+    if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
+        echo json_encode(['success' => false, 'message' => 'Tous les champs sont obligatoires']);
+        return;
+    }
+
+    if ($password !== $confirm_password) {
+        echo json_encode(['success' => false, 'message' => 'Les mots de passe ne correspondent pas']);
+        return;
+    }
+
+    if (strlen($password) < 8) {
+        echo json_encode(['success' => false, 'message' => 'Le mot de passe doit contenir au moins 8 caractères']);
+        return;
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['success' => false, 'message' => 'Email invalide']);
+        return;
+    }
+
+    // Vérifier si l'email existe déjà
+    $check_query = "SELECT id FROM users WHERE email = '$email'";
+    $check_result = mysqli_query($cnx, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo json_encode(['success' => false, 'message' => 'Cet email est déjà utilisé']);
+        return;
+    }
+
+    // Hasher le mot de passe
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+    // Générer un code de vérification
+    $verification_code = sprintf('%06d', mt_rand(0, 999999));
+    $code_expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+    // Insérer l'utilisateur
+    $insert_query = "INSERT INTO users (first_name, last_name, email, password_hash, verification_code, code_expires_at) 
+                    VALUES ('$first_name', '$last_name', '$email', '$password_hash', '$verification_code', '$code_expires')";
+
+    if (mysqli_query($cnx, $insert_query)) {
+        // TODO: Envoyer l'email de vérification
+        echo json_encode([
+            'success' => true,
+            'message' => 'Compte créé avec succès. Vérifiez votre email.',
+            'verification_code' => $verification_code // Pour le développement uniquement
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Erreur lors de la création du compte']);
+    }
+}
+
+function login()
+{
+    global $cnx;
+
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    if (empty($email) || empty($password)) {
+        echo json_encode(['success' => false, 'message' => 'Email et mot de passe requis']);
+        return;
+    }
+
+    // Récupérer l'utilisateur
+    $query = "SELECT id, first_name, last_name, email, password_hash, is_verified, is_active, role 
+               FROM users WHERE email = '$email'";
+    $result = mysqli_query($cnx, $query);
+
+    if (mysqli_num_rows($result) === 0) {
+        echo json_encode(['success' => false, 'message' => 'Email ou mot de passe incorrect']);
+        return;
+    }
+
+    $user = mysqli_fetch_assoc($result);
+
+    // Vérifier le mot de passe
+    if (!password_verify($password, $user['password_hash'])) {
+        echo json_encode(['success' => false, 'message' => 'Email ou mot de passe incorrect']);
+        return;
+    }
+
+    // Vérifier si le compte est actif
+    if (!$user['is_active']) {
+        echo json_encode(['success' => false, 'message' => 'Compte désactivé']);
+        return;
+    }
+
+    // Vérifier si l'email est vérifié
+    if (!$user['is_verified']) {
+        echo json_encode(['success' => false, 'message' => 'Veuillez vérifier votre email']);
+        return;
+    }
+
+    // Mettre à jour la date de dernière connexion
+    $update_query = "UPDATE users SET last_login = NOW() WHERE id = " . $user['id'];
+    mysqli_query($cnx, $update_query);
+
+    // Créer la session
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_email'] = $user['email'];
+    $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
+    $_SESSION['user_role'] = $user['role'];
+
+    echo json_encode([
+        'success' => true,
+        'message' => 'Connexion réussie',
+        'user' => [
+            'id' => $user['id'],
+            'name' => $_SESSION['user_name'],
+            'email' => $user['email'],
+            'role' => $user['role']
+        ]
+    ]);
+}
+
+function logout()
+{
+    // Détruire la session
+    session_destroy();
+
+    echo json_encode(['success' => true, 'message' => 'Déconnexion réussie']);
+}
+
+function verifyEmail()
+{
+    global $cnx;
+
+    $email = trim($_POST['email'] ?? '');
+    $code = trim($_POST['code'] ?? '');
+
+    if (empty($email) || empty($code)) {
+        echo json_encode(['success' => false, 'message' => 'Email et code requis']);
+        return;
+    }
+
+    // Vérifier le code de vérification
+    $query = "SELECT id, code_expires_at FROM users 
+              WHERE email = '$email' AND verification_code = '$code' AND is_verified = 0";
+    $result = mysqli_query($cnx, $query);
+
+    if (mysqli_num_rows($result) === 0) {
+        echo json_encode(['success' => false, 'message' => 'Code invalide ou déjà utilisé']);
+        return;
+    }
+
+    $user = mysqli_fetch_assoc($result);
+
+    // Vérifier si le code n'a pas expiré
+    if (strtotime($user['code_expires_at']) < time()) {
+        echo json_encode(['success' => false, 'message' => 'Code expiré']);
+        return;
+    }
+
+    // Marquer l'email comme vérifié
+    $update_query = "UPDATE users SET is_verified = 1, verified_at = NOW(), 
+                    verification_code = NULL, code_expires_at = NULL WHERE id = " . $user['id'];
+    mysqli_query($cnx, $update_query);
+
+    echo json_encode(['success' => true, 'message' => 'Email vérifié avec succès']);
+}
+
+function forgotPassword()
+{
+    global $cnx;
+
+    $email = trim($_POST['email'] ?? '');
+
+    if (empty($email)) {
+        echo json_encode(['success' => false, 'message' => 'Email requis']);
+        return;
+    }
+
+    // Vérifier si l'email existe
+    $query = "SELECT id FROM users WHERE email = '$email'";
+    $result = mysqli_query($cnx, $query);
+
+    if (mysqli_num_rows($result) === 0) {
+        echo json_encode(['success' => false, 'message' => 'Email non trouvé']);
+        return;
+    }
+
+    $user = mysqli_fetch_assoc($result);
+
+    // Générer un token de réinitialisation
+    $reset_token = bin2hex(random_bytes(32));
+    $token_expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+    // Mettre à jour l'utilisateur
+    $update_query = "UPDATE users SET reset_token = '$reset_token', reset_token_expires = '$token_expires' 
+                    WHERE id = " . $user['id'];
+    mysqli_query($cnx, $update_query);
+
+    // TODO: Envoyer l'email de réinitialisation
+    echo json_encode([
+        'success' => true,
+        'message' => 'Email de réinitialisation envoyé',
+        'reset_token' => $reset_token // Pour le développement uniquement
+    ]);
+}
+
+function resetPassword()
+{
+    global $cnx;
+
+    $token = trim($_POST['token'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+
+    if (empty($token) || empty($password)) {
+        echo json_encode(['success' => false, 'message' => 'Token et mot de passe requis']);
+        return;
+    }
+
+    if ($password !== $confirm_password) {
+        echo json_encode(['success' => false, 'message' => 'Les mots de passe ne correspondent pas']);
+        return;
+    }
+
+    if (strlen($password) < 8) {
+        echo json_encode(['success' => false, 'message' => 'Le mot de passe doit contenir au moins 8 caractères']);
+        return;
+    }
+
+    // Vérifier le token
+    $query = "SELECT id FROM users WHERE reset_token = '$token' AND reset_token_expires > NOW()";
+    $result = mysqli_query($cnx, $query);
+
+    if (mysqli_num_rows($result) === 0) {
+        echo json_encode(['success' => false, 'message' => 'Token invalide ou expiré']);
+        return;
+    }
+
+    $user = mysqli_fetch_assoc($result);
+
+    // Hasher le nouveau mot de passe
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+    // Mettre à jour le mot de passe
+    $update_query = "UPDATE users SET password_hash = '$password_hash', 
+                    reset_token = NULL, reset_token_expires = NULL WHERE id = " . $user['id'];
+    mysqli_query($cnx, $update_query);
+
+    echo json_encode(['success' => true, 'message' => 'Mot de passe réinitialisé avec succès']);
+}
+
+function checkAuth()
+{
+    if (isset($_SESSION['user_id'])) {
+        echo json_encode([
+            'success' => true,
+            'authenticated' => true,
+            'user' => [
+                'id' => $_SESSION['user_id'],
+                'name' => $_SESSION['user_name'],
+                'email' => $_SESSION['user_email'],
+                'role' => $_SESSION['user_role']
+            ]
+        ]);
+    } else {
+        echo json_encode([
+            'success' => true,
+            'authenticated' => false
+        ]);
+    }
+}
+
+// Nouvelles fonctions pour la vérification par email
+function verifyEmailExists()
+{
+    global $cnx;
+
+    $email = trim($_POST['email'] ?? '');
+
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['success' => false, 'message' => 'Email invalide']);
+        return;
+    }
+
+    // Vérifier si l'email existe déjà
+    $check_query = "SELECT id FROM users WHERE email = '$email'";
+    $check_result = mysqli_query($cnx, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo json_encode(['success' => false, 'message' => 'Cet email est déjà utilisé']);
+    } else {
+        echo json_encode(['success' => true, 'message' => 'Email disponible']);
+    }
+}
+
+function sendVerificationCode()
+{
+    global $cnx;
+
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name = trim($_POST['last_name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+
+    // Générer un code de vérification
+    $verification_code = sprintf('%06d', mt_rand(0, 999999));
+    $code_expires = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+
+    // Stocker le code en session (temporaire pour l'inscription)
+    $_SESSION['temp_verification_code'] = $verification_code;
+    $_SESSION['temp_verification_email'] = $email;
+    $_SESSION['temp_verification_expires'] = $code_expires;
+
+    // Envoyer l'email avec PHPMailer
+    $mail_sent = sendVerificationEmail($email, $verification_code);
+
+    if ($mail_sent) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Code de vérification envoyé par email'
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Erreur lors de l\'envoi de l\'email. Veuillez réessayer.'
+        ]);
+    }
+}
+
+// Fonction pour envoyer l'email de vérification
+function sendVerificationEmail($email, $verification_code)
+{
+    try {
+        $mail = new PHPMailer(true);
+
+        // Configuration du serveur SMTP
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';      // Serveur SMTP
+        $mail->SMTPAuth = true;
+        $mail->Username = 'malekhima1f@gmail.com'; // Votre email Gmail
+        $mail->Password = 'hvvj xmfl lvzu qbzb';  // Mot de passe d'application Gmail
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        // Configuration de l'email
+        $mail->setFrom('noreply@nuraya.com', 'Nuraya');
+        $mail->addAddress($email);
+        $mail->addReplyTo('support@nuraya.com', 'Support Nuraya');
+
+        // Contenu de l'email
+        $mail->isHTML(true);
+        $mail->Subject = 'Code de vérification - Nuraya';
+
+        $email_body = "
+        <html>
+        <head>
+            <style>
+                body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #1C1C1C; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #C8B6A6 0%, #d4c4b0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .header h1 { color: #FAF7F2; margin: 0; font-size: 28px; font-weight: 700; }
+                .content { background: #FAF7F2; padding: 30px; border-radius: 0 0 10px 10px; }
+                .code-box { background: #F5EFE6; border: 2px solid #C8B6A6; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0; }
+                .code { font-size: 32px; font-weight: 700; color: #C8B6A6; letter-spacing: 8px; font-family: monospace; }
+                .info { background: #E6B7C8; color: #1C1C1C; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; }
+                .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #7A7A7A; }
+                .btn { display: inline-block; background: #C8B6A6; color: #FAF7F2; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>🔐 Vérification Nuraya</h1>
+                </div>
+                <div class='content'>
+                    <p>Bonjour,</p>
+                    <p>Merci de vous être inscrit sur Nuraya ! Pour finaliser votre inscription, veuillez utiliser le code de vérification ci-dessous :</p>
+                    
+                    <div class='code-box'>
+                        <div class='code'>$verification_code</div>
+                    </div>
+                    
+                    <div class='info'>
+                        ⏰ <strong>Important :</strong> Ce code expire dans 5 minutes.
+                    </div>
+                    
+                    <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.</p>
+                    
+                    <div style='text-align: center;'>
+                        <a href='https://votre-site.com/verify-code.php' class='btn'>
+                            Vérifier mon compte
+                        </a>
+                    </div>
+                </div>
+                <div class='footer'>
+                    <p>Cet email a été envoyé automatiquement. Merci de ne pas répondre.</p>
+                    <p>© 2025 Nuraya. Tous droits réservés.</p>
+                </div>
+            </div>
+        </body>
+        </html>";
+
+        $mail->Body = $email_body;
+        $mail->AltBody = "Votre code de vérification Nuraya est : $verification_code\n\nCe code expire dans 5 minutes.";
+
+        return $mail->send();
+
+    } catch (Exception $e) {
+        error_log("Erreur PHPMailer: " . $e->getMessage());
+        return false;
+    }
+}
+
+function registerWithVerification()
+{
+    global $cnx;
+
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name = trim($_POST['last_name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+    $verification_code = trim($_POST['verification_code'] ?? '');
+
+    // Validation
+    if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
+        echo json_encode(['success' => false, 'message' => 'Tous les champs sont obligatoires']);
+        return;
+    }
+
+    if ($password !== $confirm_password) {
+        echo json_encode(['success' => false, 'message' => 'Les mots de passe ne correspondent pas']);
+        return;
+    }
+
+    if (strlen($password) < 8) {
+        echo json_encode(['success' => false, 'message' => 'Le mot de passe doit contenir au moins 8 caractères']);
+        return;
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['success' => false, 'message' => 'Email invalide']);
+        return;
+    }
+
+    // Vérifier le code de vérification
+    if (empty($verification_code)) {
+        echo json_encode(['success' => false, 'message' => 'Code de vérification requis']);
+        return;
+    }
+
+    if (
+        !isset($_SESSION['temp_verification_code']) ||
+        !isset($_SESSION['temp_verification_email']) ||
+        !isset($_SESSION['temp_verification_expires'])
+    ) {
+        echo json_encode(['success' => false, 'message' => 'Aucun code de vérification en attente']);
+        return;
+    }
+
+    if ($_SESSION['temp_verification_email'] !== $email) {
+        echo json_encode(['success' => false, 'message' => 'Email ne correspond pas']);
+        return;
+    }
+
+    if ($_SESSION['temp_verification_code'] !== $verification_code) {
+        echo json_encode(['success' => false, 'message' => 'Code de vérification invalide']);
+        return;
+    }
+
+    if (strtotime($_SESSION['temp_verification_expires']) < time()) {
+        echo json_encode(['success' => false, 'message' => 'Code de vérification expiré']);
+        return;
+    }
+
+    // Vérifier si l'email existe déjà
+    $check_query = "SELECT id FROM users WHERE email = '$email'";
+    $check_result = mysqli_query($cnx, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo json_encode(['success' => false, 'message' => 'Cet email est déjà utilisé']);
+        return;
+    }
+
+    // Hasher le mot de passe
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insérer l'utilisateur avec email vérifié
+    $insert_query = "INSERT INTO users (first_name, last_name, email, password_hash, is_verified, verified_at, created_at) 
+                    VALUES ('$first_name', '$last_name', '$email', '$password_hash', 1, NOW(), NOW())";
+
+    if (mysqli_query($cnx, $insert_query)) {
+        // Nettoyer la session temporaire
+        unset($_SESSION['temp_verification_code']);
+        unset($_SESSION['temp_verification_email']);
+        unset($_SESSION['temp_verification_expires']);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Inscription réussie ! Vous pouvez maintenant vous connecter.'
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Erreur lors de la création du compte']);
+    }
+}
+
+mysqli_close($cnx);
+?>
