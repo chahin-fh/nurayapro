@@ -555,7 +555,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/database.php';
                         <i class="fas fa-shopping-bag"></i>
                         Mes Commandes
                     </a>
-                    <a href="/nurayapro/api/auth.php?action=logout">
+                    <a href="/nurayapro/src/Controllers/api/auth.php?action=logout">
                         <i class="fas fa-sign-out-alt"></i>
                         Déconnexion
                     </a>
@@ -631,7 +631,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/database.php';
                 <i class="fas fa-shopping-bag"></i>
                 Mes Commandes
             </a>
-            <a href="/nurayapro/api/auth.php?action=logout">
+            <a href="/nurayapro/src/Controllers/api/auth.php?action=logout">
                 <i class="fas fa-sign-out-alt"></i>
                 Déconnexion
             </a>
@@ -747,7 +747,7 @@ function handleSearchInput() {
 }
 
 function fetchSearchResults(searchTerm) {
-    fetch(`/nurayapro/api/search.php?q=${encodeURIComponent(searchTerm)}`)
+    fetch(`/nurayapro/src/Controllers/api/search.php?q=${encodeURIComponent(searchTerm)}`)
         .then(response => response.json())
         .then(data => {
             displaySearchResults(data);
@@ -784,29 +784,38 @@ function displaySearchResults(data) {
 }
 
 // Mobile Search
-document.getElementById('mobileSearchInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        const searchTerm = this.value.trim();
-        if (searchTerm) {
-            window.location.href =
-                `/nurayapro/src/Controllers/produits/index.php?search=${encodeURIComponent(searchTerm)}`;
+const mobileSearchInput = document.getElementById('mobileSearchInput');
+if (mobileSearchInput) {
+    mobileSearchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const searchTerm = this.value.trim();
+            if (searchTerm) {
+                window.location.href =
+                    `/nurayapro/src/Controllers/produits/index.php?search=${encodeURIComponent(searchTerm)}`;
+            }
         }
-    }
-});
+    });
+}
 
 // Event Listeners
-document.getElementById('searchInput').addEventListener('input', handleSearchInput);
-document.getElementById('searchInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        performSearch();
-    }
-});
+const searchInput = document.getElementById('searchInput');
+if (searchInput) {
+    searchInput.addEventListener('input', handleSearchInput);
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+}
 
-document.querySelector('.hamburger-menu').addEventListener('click', toggleMobileMenu);
+const hamburgerMenu = document.querySelector('.hamburger-menu');
+if (hamburgerMenu) {
+    hamburgerMenu.addEventListener('click', toggleMobileMenu);
+}
 
 // Load cart count on page load
 function loadCartCount() {
-    fetch('/nurayapro/api/cart.php?action=get')
+    fetch('/nurayapro/src/Controllers/api/cart.php?action=get')
         .then(response => response.json())
         .then(data => {
             if (data.success) {

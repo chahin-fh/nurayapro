@@ -13,18 +13,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mail = new PHPMailer(true);
 
     try {
-        // Configuration SMTP Gmail
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'malekfhima1@gmail.com';
-        $mail->Password = 'hvvj xmfl lvzu qbzb';
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
+    // Charger la configuration email
+    $emailConfig = require 'config/email.php';
+
+    $mail->isSMTP();
+        $mail->Host = $emailConfig['host'];
+        $mail->SMTPAuth = $emailConfig['smtp_auth'];
+        $mail->Username = $emailConfig['username'];
+        $mail->Password = $emailConfig['password'];
+        $mail->SMTPSecure = $emailConfig['smtp_secure'];
+        $mail->Port = $emailConfig['port'];
+
+        if (isset($emailConfig['smtp_options'])) {
+            $mail->SMTPOptions = $emailConfig['smtp_options'];
+        }
 
         // Expéditeur et destinataire
-        $mail->setFrom($email, $name);
-        $mail->addAddress('malali3b@gmail.com'); // Change recipient to malali3b@gmail.com
+        $mail->setFrom($emailConfig['from_email'], $name);
+        $mail->addAddress('malali3b@gmail.com');
+        $mail->addReplyTo($email, $name);
 
         // Contenu HTML
         $mail->isHTML(true);

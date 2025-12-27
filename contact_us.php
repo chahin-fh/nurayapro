@@ -265,7 +265,7 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Envoi en cours...';
 
-            fetch('api/contact.php', {
+            fetch('src/Controllers/api/contact.php', {
                 method: 'POST',
                 body: formData
             })
@@ -289,6 +289,8 @@
                 });
         });
     </script>
+
+    <?php include 'templates/footer.php'; ?>
 </body>
 
 </html>

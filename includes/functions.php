@@ -1,10 +1,13 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 /**
  * Fonctions utilitaires pour le site Nuraya
  */
 
 // Démarrer la session au début des fonctions
-if (session_status() === PHP_SESSION_NONE) {
+if (!isset($_SESSION)) {
     session_start();
 }
 
@@ -258,18 +261,6 @@ function get_navigation_categories($cnx)
 }
 
 /**
- * Nettoyer les anciennes sessions expirées
- * @param mysqli $cnx Connexion BDD
- * @param int $days Nombre de jours avant expiration
- */
-function cleanup_expired_sessions($cnx, $days = 30)
-{
-    $expiry_date = date('Y-m-d H:i:s', strtotime("-{$days} days"));
-    $query = "DELETE FROM cart WHERE created_at < '$expiry_date'";
-    mysqli_query($cnx, $query);
-}
-
-/**
  * Obtenir les statistiques du site
  * @param mysqli $cnx Connexion BDD
  * @return array Statistiques
@@ -295,5 +286,159 @@ function get_site_stats($cnx)
     $stats['revenue'] = mysqli_fetch_assoc($result)['total'] ?? 0;
 
     return $stats;
+}
+
+/**
+ * Envoyer un email d'anniversaire à un utilisateur
+ * @param string $userEmail Email de l'utilisateur
+ * @param string $userName Nom de l'utilisateur
+ * @return bool Succès de l'envoi
+ */
+function sendBirthdayEmail($userEmail, $userName)
+{
+    $subject = "Joyeux Anniversaire de la part de Nuraya ! 🎂";
+    
+    $message = "
+    <html>
+    <head>
+        <title>Joyeux Anniversaire - Nuraya</title>
+    </head>
+    <body style='font-family: Montserrat, sans-serif; background-color: #F5EFE6; margin: 0; padding: 20px;'>
+        <div style='max-width: 600px; margin: 0 auto; background-color: #FAF7F2; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(200, 182, 166, 0.15);'>
+            <!-- Header -->
+            <div style='background: linear-gradient(135deg, #1C1C1C 0%, #2a2a2a 100%); color: #FAF7F2; text-align: center; padding: 30px 20px;'>
+                <h1 style='margin: 0; font-size: 32px; font-weight: 800; letter-spacing: 3px;'>NURAYA</h1>
+                <p style='margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;'>Joyeux Anniversaire !</p>
+            </div>
+            
+            <!-- Content -->
+            <div style='padding: 40px 30px; text-align: center;'>
+                <div style='font-size: 48px; margin-bottom: 20px;'>🎂</div>
+                <h2 style='color: #1C1C1C; font-size: 24px; margin-bottom: 16px;'>Cher(ère) $userName</h2>
+                <p style='color: #7A7A7A; font-size: 16px; line-height: 1.6; margin-bottom: 30px;'>
+                    Toute l'équipe de Nuraya vous souhaite un très joyeux anniversaire !<br>
+                    Pour célébrer cette journée spéciale, nous vous offrons une réduction de <strong>15%</strong> sur votre prochaine commande.
+                </p>
+                
+                <!-- Gift Code -->
+                <div style='background: #C8B6A6; color: #FAF7F2; padding: 20px; border-radius: 12px; margin: 30px 0;'>
+                    <p style='margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;'>Votre code cadeau</p>
+                    <p style='margin: 10px 0 0 0; font-size: 28px; font-weight: 700; letter-spacing: 2px;'>ANNIV2024</p>
+                </div>
+                
+                <!-- CTA Button -->
+                <div style='margin: 30px 0;'>
+                    <a href='http://localhost/nurayapro/src/Controllers/produits/index.php' 
+                       style='display: inline-block; background: #1C1C1C; color: #FAF7F2; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; transition: all 0.3s ease;'>
+                        Profiter de mon cadeau
+                    </a>
+                </div>
+                
+                <p style='color: #7A7A7A; font-size: 14px; margin-top: 30px;'>
+                    Ce code est valable 7 jours.<br>
+                    Merci de faire partie de la famille Nuraya ! 💕
+                </p>
+            </div>
+            
+            <!-- Footer -->
+            <div style='background: rgba(0, 0, 0, 0.1); padding: 20px; text-align: center; border-top: 1px solid rgba(200, 182, 166, 0.1);'>
+                <p style='margin: 0; color: #7A7A7A; font-size: 12px;'>
+                    &copy; " . date('Y') . " NURAYA. Tous droits réservés.<br>
+                    123 Avenue Habib Bourguiba, Tunis | contact@nuraya.tn
+                </p>
+            </div>
+        </div>
+    </body>
+    </html>
+    ";
+    
+    // Configuration PHPMailer
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/vendor/autoload.php';
+    $emailConfig = require $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/email.php';
+
+    try {
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host = $emailConfig['host'];
+        $mail->SMTPAuth = $emailConfig['smtp_auth'];
+        $mail->Username = $emailConfig['username'];
+        $mail->Password = $emailConfig['password'];
+        $mail->SMTPSecure = $emailConfig['smtp_secure'];
+        $mail->Port = $emailConfig['port'];
+
+        if (isset($emailConfig['smtp_options'])) {
+            $mail->SMTPOptions = $emailConfig['smtp_options'];
+        }
+
+        $mail->setFrom($emailConfig['from_email'], 'Nuraya');
+        $mail->addAddress($userEmail, $userName);
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $message;
+
+        return $mail->send();
+    } catch (Exception $e) {
+        error_log("Birthday email error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Vérifier et envoyer les emails d'anniversaire du jour
+ * @return array Résultats des envois
+ */
+function sendDailyBirthdayEmails()
+{
+    global $cnx;
+    
+    $today = date('m-d'); // Format mois-jour pour ignorer l'année
+    
+    $query = "SELECT id, first_name, email, birth_date 
+              FROM users 
+              WHERE DATE_FORMAT(birth_date, '%m-%d') = '$today' 
+              AND birthday_email_sent = 0 
+              AND is_active = 1";
+    
+    $result = mysqli_query($cnx, $query);
+    $sentEmails = [];
+    $failedEmails = [];
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        while ($user = mysqli_fetch_assoc($result)) {
+            $userName = $user['first_name'];
+            $userEmail = $user['email'];
+            $userId = $user['id'];
+            
+            if (sendBirthdayEmail($userEmail, $userName)) {
+                // Marquer l'email comme envoyé
+                $updateQuery = "UPDATE users SET birthday_email_sent = 1 WHERE id = $userId";
+                mysqli_query($cnx, $updateQuery);
+                $sentEmails[] = $userEmail;
+            } else {
+                $failedEmails[] = $userEmail;
+            }
+        }
+    }
+    
+    return [
+        'sent' => $sentEmails,
+        'failed' => $failedEmails,
+        'total' => count($sentEmails) + count($failedEmails)
+    ];
+}
+
+/**
+ * Réinitialiser les flags d'envoi d'email d'anniversaire (à exécuter quotidiennement)
+ */
+function resetBirthdayEmailFlags()
+{
+    global $cnx;
+    
+    // Réinitialiser pour les utilisateurs dont ce n'est plus leur anniversaire aujourd'hui
+    $query = "UPDATE users 
+              SET birthday_email_sent = 0 
+              WHERE DATE_FORMAT(birth_date, '%m-%d') != DATE_FORMAT(NOW(), '%m-%d')";
+    
+    return mysqli_query($cnx, $query);
 }
 ?>

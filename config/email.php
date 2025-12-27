@@ -5,11 +5,18 @@ return [
     'port' => 587,
     'smtp_secure' => 'tls',
     'smtp_auth' => true,
-    'username' => 'votre-email@gmail.com',  // À configurer
-    'password' => 'votre-mot-de-passe-app',  // Mot de passe d'application Gmail
+    'username' => 'malekfhima1@gmail.com',
+    'password' => 'ormpvmdnkoyjaswa', // Spaces removed
     'from_email' => 'noreply@nuraya.com',
     'from_name' => 'Nuraya',
     'reply_to' => 'support@nuraya.com',
-    'reply_to_name' => 'Support Nuraya'
+    'reply_to_name' => 'Support Nuraya',
+    'smtp_options' => [
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        ]
+    ]
 ];
 ?>

@@ -13,7 +13,7 @@ use PHPMailer\PHPMailer\Exception;
 
 // Charger PHPMailer avec gestion d'erreur
 try {
-    require '../vendor/autoload.php';
+    require $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/vendor/autoload.php';
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'PHPMailer non disponible']);
     exit;
@@ -21,11 +21,14 @@ try {
 
 // Connexion à la base de données
 try {
-    include '../cnx.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/src/Controllers/cnx.php';
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Erreur de connexion BDD']);
     exit;
 }
+
+// Charger la configuration email
+$emailConfig = require $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/email.php';
 
 // Récupérer l'action demandée
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
@@ -73,6 +76,8 @@ function register()
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
     $email = trim($_POST['email'] ?? '');
+    $birth_date = trim($_POST['birth_date'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
@@ -98,7 +103,8 @@ function register()
     }
 
     // Vérifier si l'email existe déjà
-    $check_query = "SELECT id FROM users WHERE email = '$email'";
+    $email_esc = mysqli_real_escape_string($cnx, $email);
+    $check_query = "SELECT id FROM users WHERE email = '$email_esc'";
     $check_result = mysqli_query($cnx, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {
@@ -114,18 +120,24 @@ function register()
     $code_expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
     // Insérer l'utilisateur
-    $insert_query = "INSERT INTO users (first_name, last_name, email, password_hash, verification_code, code_expires_at) 
-                    VALUES ('$first_name', '$last_name', '$email', '$password_hash', '$verification_code', '$code_expires')";
+    $first_name_esc = mysqli_real_escape_string($cnx, $first_name);
+    $last_name_esc = mysqli_real_escape_string($cnx, $last_name);
+    $birth_date_val = !empty($birth_date) ? "'" . mysqli_real_escape_string($cnx, $birth_date) . "'" : 'NULL';
+    $phone_val = !empty($phone) ? "'" . mysqli_real_escape_string($cnx, $phone) . "'" : 'NULL';
+
+    $insert_query = "INSERT INTO users (first_name, last_name, email, password_hash, birth_date, phone, verification_code, code_expires_at) 
+                    VALUES ('$first_name_esc', '$last_name_esc', '$email_esc', '$password_hash', $birth_date_val, $phone_val, '$verification_code', '$code_expires')";
 
     if (mysqli_query($cnx, $insert_query)) {
-        // TODO: Envoyer l'email de vérification
+        // Envoi de l'email de vérification
+        $mail_sent = sendVerificationEmail($email, $verification_code);
         echo json_encode([
             'success' => true,
-            'message' => 'Compte créé avec succès. Vérifiez votre email.',
-            'verification_code' => $verification_code // Pour le développement uniquement
+            'message' => $mail_sent ? 'Compte créé avec succès. Vérifiez votre email.' : 'Compte créé mais erreur d\'envoi d\'email. Code: ' . $verification_code,
+            'verification_code' => $verification_code // Pour le développement
         ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Erreur lors de la création du compte']);
+        echo json_encode(['success' => false, 'message' => 'Erreur lors de la création du compte: ' . mysqli_error($cnx)]);
     }
 }
 
@@ -385,17 +397,18 @@ function sendVerificationCode()
     $_SESSION['temp_verification_expires'] = $code_expires;
 
     // Envoyer l'email avec PHPMailer
-    $mail_sent = sendVerificationEmail($email, $verification_code);
+    $mail_result = sendVerificationEmail($email, $verification_code);
 
-    if ($mail_sent) {
+    if ($mail_result === true) {
         echo json_encode([
             'success' => true,
             'message' => 'Code de vérification envoyé par email'
         ]);
     } else {
+        // $mail_result contains the error message
         echo json_encode([
             'success' => false,
-            'message' => 'Erreur lors de l\'envoi de l\'email. Veuillez réessayer.'
+            'message' => 'Erreur email: ' . $mail_result
         ]);
     }
 }
@@ -403,22 +416,27 @@ function sendVerificationCode()
 // Fonction pour envoyer l'email de vérification
 function sendVerificationEmail($email, $verification_code)
 {
+    global $emailConfig;
     try {
         $mail = new PHPMailer(true);
 
         // Configuration du serveur SMTP
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';      // Serveur SMTP
-        $mail->SMTPAuth = true;
-        $mail->Username = 'malekhima1f@gmail.com'; // Votre email Gmail
-        $mail->Password = 'hvvj xmfl lvzu qbzb';  // Mot de passe d'application Gmail
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
+        $mail->Host = $emailConfig['host'];
+        $mail->SMTPAuth = $emailConfig['smtp_auth'];
+        $mail->Username = $emailConfig['username'];
+        $mail->Password = $emailConfig['password'];
+        $mail->SMTPSecure = $emailConfig['smtp_secure'];
+        $mail->Port = $emailConfig['port'];
+        
+        if (isset($emailConfig['smtp_options'])) {
+            $mail->SMTPOptions = $emailConfig['smtp_options'];
+        }
 
         // Configuration de l'email
-        $mail->setFrom('noreply@nuraya.com', 'Nuraya');
+        $mail->setFrom($emailConfig['from_email'], $emailConfig['from_name']);
         $mail->addAddress($email);
-        $mail->addReplyTo('support@nuraya.com', 'Support Nuraya');
+        $mail->addReplyTo($emailConfig['reply_to'], $emailConfig['reply_to_name']);
 
         // Contenu de l'email
         $mail->isHTML(true);
@@ -458,16 +476,10 @@ function sendVerificationEmail($email, $verification_code)
                     </div>
                     
                     <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.</p>
-                    
-                    <div style='text-align: center;'>
-                        <a href='https://votre-site.com/verify-code.php' class='btn'>
-                            Vérifier mon compte
-                        </a>
-                    </div>
                 </div>
                 <div class='footer'>
                     <p>Cet email a été envoyé automatiquement. Merci de ne pas répondre.</p>
-                    <p>© 2025 Nuraya. Tous droits réservés.</p>
+                    <p>© " . date('Y') . " Nuraya. Tous droits réservés.</p>
                 </div>
             </div>
         </body>
@@ -479,8 +491,9 @@ function sendVerificationEmail($email, $verification_code)
         return $mail->send();
 
     } catch (Exception $e) {
-        error_log("Erreur PHPMailer: " . $e->getMessage());
-        return false;
+        $errorMessage = "Erreur PHPMailer: " . $e->getMessage();
+        error_log($errorMessage);
+        return $errorMessage; // Return error message string
     }
 }
 
@@ -491,6 +504,8 @@ function registerWithVerification()
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
     $email = trim($_POST['email'] ?? '');
+    $birth_date = trim($_POST['birth_date'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     $verification_code = trim($_POST['verification_code'] ?? '');
@@ -547,7 +562,8 @@ function registerWithVerification()
     }
 
     // Vérifier si l'email existe déjà
-    $check_query = "SELECT id FROM users WHERE email = '$email'";
+    $email_esc = mysqli_real_escape_string($cnx, $email);
+    $check_query = "SELECT id FROM users WHERE email = '$email_esc'";
     $check_result = mysqli_query($cnx, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {
@@ -558,9 +574,15 @@ function registerWithVerification()
     // Hasher le mot de passe
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
+    // Échapper les autres champs
+    $first_name_esc = mysqli_real_escape_string($cnx, $first_name);
+    $last_name_esc = mysqli_real_escape_string($cnx, $last_name);
+    $birth_date_val = !empty($birth_date) ? "'" . mysqli_real_escape_string($cnx, $birth_date) . "'" : 'NULL';
+    $phone_val = !empty($phone) ? "'" . mysqli_real_escape_string($cnx, $phone) . "'" : 'NULL';
+
     // Insérer l'utilisateur avec email vérifié
-    $insert_query = "INSERT INTO users (first_name, last_name, email, password_hash, is_verified, verified_at, created_at) 
-                    VALUES ('$first_name', '$last_name', '$email', '$password_hash', 1, NOW(), NOW())";
+    $insert_query = "INSERT INTO users (first_name, last_name, email, password_hash, birth_date, phone, is_verified, verified_at, created_at) 
+                    VALUES ('$first_name_esc', '$last_name_esc', '$email_esc', '$password_hash', $birth_date_val, $phone_val, 1, NOW(), NOW())";
 
     if (mysqli_query($cnx, $insert_query)) {
         // Nettoyer la session temporaire
@@ -573,7 +595,7 @@ function registerWithVerification()
             'message' => 'Inscription réussie ! Vous pouvez maintenant vous connecter.'
         ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Erreur lors de la création du compte']);
+        echo json_encode(['success' => false, 'message' => 'Erreur lors de la création du compte: ' . mysqli_error($cnx)]);
     }
 }
 

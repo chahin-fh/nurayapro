@@ -16,7 +16,7 @@ return [
     // Configuration de la base de données
     'database' => [
         'host' => 'localhost',
-        'name' => 'nuraya_db',
+        'name' => 'nuraya_pro',
         'username' => 'root',
         'password' => '',
         'charset' => 'utf8mb4',

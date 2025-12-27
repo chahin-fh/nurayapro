@@ -435,8 +435,8 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
             <i class="fas fa-shopping-bag"></i>
             <h2>Votre panier est vide</h2>
             <p>Ajoutez des produits à votre panier pour continuer vos achats</p>
-            <a href="produits/index.php" class="shop-now-btn">
-                <i class="fas fa-shopping-bag"></i> Découvrir les produits
+            <a href="/nurayapro/src/Controllers/produits/index.php" class="shop-now-btn">
+                Découvrir les produits
             </a>
         </div>
         <?php endif; ?>

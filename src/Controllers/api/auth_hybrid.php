@@ -60,7 +60,7 @@ function verifyEmailExists()
     $email = trim($_POST['email'] ?? '');
 
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        jsonResponse(false, 'Email invalide');
+        jsonResponse(false, 'Adresse e-mail invalide');
     }
 
     try {
@@ -69,12 +69,12 @@ function verifyEmailExists()
         $check_result = mysqli_query($cnx, $check_query);
 
         if (mysqli_num_rows($check_result) > 0) {
-            jsonResponse(false, 'Cet email est déjà utilisé');
+            jsonResponse(false, 'Cette adresse e-mail est déjà utilisée');
         } else {
-            jsonResponse(true, 'Email disponible');
+            jsonResponse(true, 'Adresse e-mail disponible');
         }
     } catch (Exception $e) {
-        jsonResponse(false, 'Erreur de vérification email');
+        jsonResponse(false, 'Erreur de vérification de l\'adresse e-mail');
     }
 }
 
@@ -87,7 +87,7 @@ function sendVerificationCode()
     $email = trim($_POST['email'] ?? '');
 
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        jsonResponse(false, 'Email invalide');
+        jsonResponse(false, 'Adresse e-mail invalide');
     }
 
     try {
@@ -115,12 +115,12 @@ function sendVerificationCode()
         if (!$mail_sent) {
             $mail_sent = sendNativeEmail($email, $verification_code, $first_name);
             if ($mail_sent) {
-                jsonResponse(true, 'Code de vérification envoyé par email (mode natif)');
+                jsonResponse(true, 'Code de vérification envoyé par e-mail (mode natif)');
             } else {
-                jsonResponse(false, 'Erreur lors de l\'envoi de l\'email. Veuillez réessayer.');
+                jsonResponse(false, 'Erreur lors de l\'envoi de l\'e-mail. Veuillez réessayer.');
             }
         } else {
-            jsonResponse(true, 'Code de vérification envoyé par email');
+            jsonResponse(true, 'Code de vérification envoyé par e-mail');
         }
 
     } catch (Exception $e) {
@@ -134,14 +134,16 @@ function registerWithVerification()
 
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
+    $birth_date = trim($_POST['birth_date'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     $verification_code = trim($_POST['verification_code'] ?? '');
 
     // Validation
-    if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
-        jsonResponse(false, 'Tous les champs sont obligatoires');
+    if (empty($first_name) || empty($last_name) || empty($email) || empty($password) || empty($birth_date)) {
+        jsonResponse(false, 'Tous les champs obligatoires doivent être remplis');
     }
 
     if ($password !== $confirm_password) {
@@ -153,7 +155,22 @@ function registerWithVerification()
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        jsonResponse(false, 'Email invalide');
+        jsonResponse(false, 'Adresse e-mail invalide');
+    }
+
+    // Valider la date de naissance
+    if (!empty($birth_date)) {
+        $date_obj = DateTime::createFromFormat('Y-m-d', $birth_date);
+        if (!$date_obj || $date_obj->format('Y-m-d') !== $birth_date) {
+            jsonResponse(false, 'Date de naissance invalide');
+        }
+        // Vérifier que la personne n'est pas trop jeune (ex: moins de 13 ans)
+        $min_age = 13;
+        $max_date = new DateTime();
+        $max_date->sub(new DateInterval("P{$min_age}Y"));
+        if ($date_obj > $max_date) {
+            jsonResponse(false, 'Vous devez avoir au moins 13 ans pour vous inscrire');
+        }
     }
 
     // Vérifier le code de vérification
@@ -170,7 +187,7 @@ function registerWithVerification()
     }
 
     if ($_SESSION['temp_verification_email'] !== $email) {
-        jsonResponse(false, 'Email ne correspond pas');
+        jsonResponse(false, 'L\'adresse e-mail ne correspond pas');
     }
 
     if ($_SESSION['temp_verification_code'] !== $verification_code) {
@@ -186,6 +203,8 @@ function registerWithVerification()
         $email = mysqli_real_escape_string($cnx, $email);
         $first_name = mysqli_real_escape_string($cnx, $first_name);
         $last_name = mysqli_real_escape_string($cnx, $last_name);
+        $birth_date = mysqli_real_escape_string($cnx, $birth_date);
+        $phone = !empty($phone) ? "'" . mysqli_real_escape_string($cnx, $phone) . "'" : 'NULL';
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
         // Vérifier si l'email existe déjà
@@ -193,12 +212,13 @@ function registerWithVerification()
         $check_result = mysqli_query($cnx, $check_query);
 
         if (mysqli_num_rows($check_result) > 0) {
-            jsonResponse(false, 'Cet email est déjà utilisé');
+            jsonResponse(false, 'Cette adresse e-mail est déjà utilisée');
         }
 
-        // Insérer l'utilisateur
-        $insert_query = "INSERT INTO users (first_name, last_name, email, password_hash, is_verified, verified_at, created_at) 
-                        VALUES ('$first_name', '$last_name', '$email', '$password_hash', 1, NOW(), NOW())";
+        // Insérer l'utilisateur avec tous les champs
+        $insert_query = "INSERT INTO users (first_name, last_name, email, password_hash, birth_date, phone, is_verified, verified_at, created_at) 
+                        VALUES ('$first_name', '$last_name', '$email', '$password_hash', " .
+            (!empty($birth_date) ? "'$birth_date'" : 'NULL') . ", $phone, 1, NOW(), NOW())";
 
         if (mysqli_query($cnx, $insert_query)) {
             // Nettoyer la session
@@ -208,10 +228,10 @@ function registerWithVerification()
 
             jsonResponse(true, 'Inscription réussie ! Vous pouvez maintenant vous connecter.');
         } else {
-            jsonResponse(false, 'Erreur lors de la création du compte');
+            jsonResponse(false, 'Erreur lors de la création du compte: ' . mysqli_error($cnx));
         }
     } catch (Exception $e) {
-        jsonResponse(false, 'Erreur lors de l\'inscription');
+        jsonResponse(false, 'Erreur lors de l\'inscription: ' . $e->getMessage());
     }
 }
 
@@ -242,40 +262,150 @@ function sendPHPMailerEmail($email, $verification_code, $first_name = '')
         $mail->Body = "
         <html>
         <head>
+            <meta charset='UTF-8'>
+            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            <title>Code de Vérification - Nuraya</title>
             <style>
-                body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #1C1C1C; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #C8B6A6 0%, #d4c4b0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                .header h1 { color: #FAF7F2; margin: 0; font-size: 28px; font-weight: 700; }
-                .content { background: #FAF7F2; padding: 30px; border-radius: 0 0 10px 10px; }
-                .code-box { background: #F5EFE6; border: 2px solid #C8B6A6; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0; }
-                .code { font-size: 32px; font-weight: 700; color: #C8B6A6; letter-spacing: 8px; font-family: monospace; }
-                .info { background: #E6B7C8; color: #1C1C1C; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; }
-                .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #7A7A7A; }
-            </style>
+                body {
+                    font-family: 'Montserrat', Arial, sans-serif;
+                    line-height: 1.6;
+                    color: #1C1C1C;
+                    background-color: #F5EFE6;
+                    margin: 0;
+                    padding: 0;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+                .email-card {
+                    background: #FAF7F2;
+                    border-radius: 16px;
+                    overflow: hidden;
+                    box-shadow: 0 8px 25px rgba(200, 182, 166, 0.15);
+                }
+                .header {
+                    background: linear-gradient(135deg, #1C1C1C 0%, #2a2a2a 100%);
+                    color: #FAF7F2;
+                    padding: 30px;
+                    text-align: center;
+                }
+                .header h1 {
+                    margin: 0;
+                    font-size: 32px;
+                    font-weight: 800;
+                    letter-spacing: 3px;
+                }
+                .header p {
+                    margin: 10px 0 0 0;
+                    font-size: 16px;
+                    opacity: 0.9;
+                }
+                .content {
+                    padding: 40px 30px;
+                    text-align: center;
+                }
+                .welcome-text {
+                    font-size: 18px;
+                    margin-bottom: 25px;
+                    color: #7A7A7A;
+                }
+                .code-box {
+                    background: linear-gradient(135deg, #C8B6A6 0%, #d4c4b0 100%);
+                    color: #FAF7F2;
+                    border-radius: 12px;
+                    padding: 25px;
+                    text-align: center;
+                    margin: 30px 0;
+                    box-shadow: 0 4px 15px rgba(200, 182, 166, 0.2);
+                }
+                .code-label {
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    opacity: 0.8;
+                    margin-bottom: 10px;
+                }
+                .code {
+                    font-size: 36px;
+                    font-weight: 700;
+                    letter-spacing: 6px;
+                    font-family: 'Courier New', monospace;
+                    background: rgba(255, 255, 255, 0.1);
+                    padding: 15px;
+                    border-radius: 8px;
+                    display: inline-block;
+                }
+                .info-box {
+                    background: #E6B7C8;
+                    color: #1C1C1C;
+                    padding: 20px;
+                    border-radius: 12px;
+                    margin: 30px 0;
+                    font-size: 14px;
+                    border-left: 4px solid #1C1C1C;
+                }
+                .footer {
+                    background: rgba(0, 0, 0, 0.05);
+                    padding: 20px;
+                    text-align: center;
+                    border-top: 1px solid rgba(200, 182, 166, 0.1);
+                }
+                .footer p {
+                    margin: 5px 0;
+                    font-size: 12px;
+                    color: #7A7A7A;
+                }
+                .security-notice {
+                    background: #FFF3CD;
+                    border: 1px solid #FFEAA7;
+                    color: #856404;
+                    padding: 15px;
+                    border-radius: 8px;
+                    margin: 20px 0;
+                    font-size: 13px;
+                }
+                @media (max-width: 600px) {
+                    .container { padding: 10px; }
+                    .content { padding: 25px 20px; }
+                    .code { font-size: 28px; letter-spacing: 4px; }
+                }
+            </meta>
         </head>
         <body>
             <div class='container'>
-                <div class='header'>
-                    <h1>Nuraya</h1>
-                </div>
-                <div class='content'>
-                    <h2>Bonjour " . htmlspecialchars($first_name) . ",</h2>
-                    <p>Merci de vous être inscrit sur Nuraya ! Pour finaliser votre inscription, veuillez utiliser le code de vérification ci-dessous :</p>
-                    
-                    <div class='code-box'>
-                        <div class='code'>" . $verification_code . "</div>
+                <div class='email-card'>
+                    <div class='header'>
+                        <h1>NURAYA</h1>
+                        <p>Vérification de votre compte</p>
                     </div>
-                    
-                    <div class='info'>
-                        <strong>⏰ Important :</strong> Ce code expire dans 5 minutes pour des raisons de sécurité.
+                    <div class='content'>
+                        <p class='welcome-text'>
+                            Bonjour " . htmlspecialchars($first_name) . ",<br>
+                            Merci de vous être inscrit sur Nuraya ! Pour finaliser votre inscription, veuillez utiliser le code de vérification ci-dessous :
+                        </p>
+                        
+                        <div class='code-box'>
+                            <div class='code-label'>Votre code de vérification</div>
+                            <div class='code'>" . $verification_code . "</div>
+                        </div>
+                        
+                        <div class='security-notice'>
+                            <strong> Sécurité importante :</strong> Ce code expire dans 5 minutes pour des raisons de sécurité. Ne le partagez avec personne.
+                        </div>
+                        
+                        <p style='color: #7A7A7A; font-size: 14px; margin-top: 20px;'>
+                            Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet e-mail en toute sécurité.
+                        </p>
                     </div>
-                    
-                    <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email en toute sécurité.</p>
-                    
                     <div class='footer'>
-                        <p>&copy; 2025 Nuraya. Tous droits réservés.</p>
-                        <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+                        <p>&copy; " . date('Y') . " NURAYA. Tous droits réservés.</p>
+                        <p>Cet e-mail a été envoyé automatiquement, merci de ne pas y répondre.</p>
+                        <p style='margin-top: 10px;'>
+                            <strong>Besoin d'aide ?</strong> 
+                            <a href='mailto:support@nuraya.com' style='color: #C8B6A6; text-decoration: none;'>Contactez notre support</a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -287,8 +417,8 @@ function sendPHPMailerEmail($email, $verification_code, $first_name = '')
             "Merci de vous être inscrit sur Nuraya !\n\n" .
             "Votre code de vérification est : " . $verification_code . "\n\n" .
             "Ce code expire dans 5 minutes.\n\n" .
-            "Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.\n\n" .
-            "© 2025 Nuraya. Tous droits réservés.";
+            "Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet e-mail.\n\n" .
+            "© " . date('Y') . " Nuraya. Tous droits réservés.";
 
         return $mail->send();
 
@@ -308,8 +438,8 @@ function sendNativeEmail($email, $verification_code, $first_name = '')
     $message .= "Merci de vous être inscrit sur Nuraya !\n\n";
     $message .= "Votre code de vérification est : " . $verification_code . "\n\n";
     $message .= "Ce code expire dans 5 minutes.\n\n";
-    $message .= "Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.\n\n";
-    $message .= "© 2025 Nuraya. Tous droits réservés.";
+    $message .= "Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet e-mail.\n\n";
+    $message .= "© " . date('Y') . " Nuraya. Tous droits réservés.";
 
     $headers = [
         'From: Nuraya <noreply@nuraya.com>',

@@ -297,7 +297,7 @@ if (isset($_SESSION['user_id'])) {
             formData.append('email', email);
             formData.append('password', password);
 
-            fetch('api/auth.php', {
+            fetch('src/Controllers/api/auth.php', {
                 method: 'POST',
                 body: formData
             })

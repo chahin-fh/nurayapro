@@ -21,13 +21,13 @@ define('IMAGE_PLACEHOLDER_COLLECTIONS', 'https://via.placeholder.com/400x300/F5E
 define('IMAGE_PLACEHOLDER_AVATAR', 'https://via.placeholder.com/80x80/F5EFE6/C8B6A6?text=Avatar');
 
 // Configuration des emails
-define('EMAIL_FROM', 'noreply@nuraya.example');
+define('EMAIL_FROM', 'malekfhima1@gmail.com');
 define('EMAIL_FROM_NAME', 'Nuraya');
 define('EMAIL_SUPPORT', 'support@nuraya.example');
 
 // Configuration de la boutique
-define('CURRENCY', 'DT');
-define('CURRENCY_SYMBOL', 'DT');
+define('CURRENCY', 'TND');
+define('CURRENCY_SYMBOL', 'TND');
 define('TAX_RATE', 0.19); // 19%
 define('SHIPPING_COST', 7.000);
 
@@ -39,7 +39,7 @@ define('REVIEWS_PER_PAGE', 5);
 // Configuration de sécurité
 define('SESSION_LIFETIME', 86400); // 24 heures
 define('MAX_LOGIN_ATTEMPTS', 5);
-define('LOGIN_LOCKOUT_TIME', 900); // 15 minutes
+define('LOGIN_LOCKOUT_TIME', 600); // 10 minutes
 
 // Configuration des logs
 define('LOGS_PATH', ROOT_PATH . '/logs');
@@ -60,8 +60,8 @@ define('CACHE_LIFETIME', 3600); // 1 heure
 $social_links = [
     'facebook' => 'https://facebook.com/nuraya',
     'instagram' => 'https://instagram.com/nuraya',
-    'twitter' => 'https://twitter.com/nuraya',
-    'linkedin' => 'https://linkedin.com/company/nuraya'
+    // 'twitter' => 'https://twitter.com/nuraya',
+    // 'linkedin' => 'https://linkedin.com/company/nuraya'
 ];
 
 // Configuration des couleurs du thème
@@ -94,8 +94,8 @@ $order_statuses = [
 // Configuration des méthodes de paiement
 $payment_methods = [
     'cash_on_delivery' => 'Paiement à la livraison',
-    'bank_transfer' => 'Virement bancaire',
-    'credit_card' => 'Carte de crédit'
+    // 'bank_transfer' => 'Virement bancaire',
+    // 'credit_card' => 'Carte de crédit'
 ];
 
 // Configuration des méthodes de livraison
