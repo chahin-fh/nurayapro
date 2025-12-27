@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="cart-item">
                     <input type="hidden" name="idp[]" value="${item.idp}">
                     <input type="hidden" name="qua[]" value="${item.quantity}">
-                    <img src="${item.image}" alt="${item.name}" class="cart-item-img" onerror="this.src='https://via.placeholder.com/70';">
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-img">
                     <div class="cart-item-details">
                         <h4 class="cart-item-title">${item.name}</h4>
                         <p class="cart-item-price">${item.price.toFixed(2)} DT</p>

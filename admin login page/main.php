@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username === $ADMIN_USERNAME && $password === $ADMIN_PASSWORD) {
         $_SESSION['admin'] = true;
         $_SESSION['admin_login_time'] = time();
-        header('Location: upload-product');
+        header('Location: ../uploads/index.php');
         exit();
     } else {
         echo "<script>alert('Invalid credentials');</script>";

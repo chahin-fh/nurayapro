@@ -45,11 +45,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $mail->send();
         echo "<script>alert('Message envoyé avec succès ! Nous vous répondrons rapidement.');</script>";
-        header('Location: contact');
+        header('Location: contact_us.php');
         exit;
     } catch (Exception $e) {
         echo "<script>alert('Erreur lors de l\\'envoi du message : {$mail->ErrorInfo}');</script>";
-        header('Location: contact');
+        header('Location: contact_us.php');
         exit;
     }
 }

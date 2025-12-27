@@ -219,10 +219,10 @@
             </div>
             
             <div class="cta-group">
-                <a href="home" class="cta-button">
+                <a href="../index.php" class="cta-button">
                     <i class="fas fa-home"></i> Back to Home
                 </a>
-                <a href="shop" class="cta-button secondary">
+                <a href="index.php" class="cta-button secondary">
                     <i class="fas fa-shopping-bag"></i> Continue Shopping
                 </a>
             </div>

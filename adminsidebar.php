@@ -100,7 +100,7 @@
       </a>
     </li>
     <li>
-      <a href="../manage-orders" title="Show Orders">
+      <a href="../manage/orderlist.php" title="Show Orders">  
         <i class="fas fa-shopping-bag"></i>
         <span>Show Orders</span>
       </a>

@@ -307,7 +307,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"):
                     Delivery Information
                 </h2>
                 
-                <form action="/nuraya_pro/submit-order" method="post" id="orderForm" novalidate>
+                <form action="order.php" method="post" id="orderForm" novalidate>
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">First name <span style="color: var(--accent);">*</span></label>

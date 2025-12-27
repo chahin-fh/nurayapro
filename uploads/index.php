@@ -133,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <option value="<?php echo $t['category_id']; ?>"><?php echo htmlspecialchars($t['name']); ?></option>
           <?php endwhile; ?>
         </select>
-        <div class="input-hint">Select a category for your product or <a href="../manage-categories" style="color: #667eea; text-decoration: none; font-weight: 600;">manage categories</a></div>
+        <div class="input-hint">Select a category for your product or <a href="../manage/categories.php" style="color: #667eea; text-decoration: none; font-weight: 600;">manage categories</a></div>
       </div>
 
       <div class="form-group">
