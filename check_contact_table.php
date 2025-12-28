@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/src/Controllers/cnx.php';
+require_once 'config/database.php';
 $query = "CREATE TABLE IF NOT EXISTS `contact_messages` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(200) NOT NULL,

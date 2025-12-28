@@ -17,18 +17,29 @@ if (!isset($_SESSION)) {
  * @param string $placeholder_text Texte pour le placeholder si l'image est manquante
  * @return string URL complète utilisable partout
  */
-function get_image_url($path, $placeholder_text = 'Image') {
+function get_image_url($path, $placeholder_text = 'Image')
+{
     if (empty($path)) {
         return "https://via.placeholder.com/400x400/F5EFE6/C8B6A6?text=" . urlencode($placeholder_text);
     }
 
-    // Si le chemin est déjà une URL absolue ou commence par /, on ne touche à rien
-    if (strpos($path, 'http') === 0 || strpos($path, '/') === 0) {
+    // Si le chemin est déjà une URL absolue, on ne touche à rien
+    if (strpos($path, 'http') === 0) {
         return $path;
     }
 
-    // Sinon, on préfixe par le chemin de base du projet
-    return '/nuraya_pro/' . $path;
+    // Si le chemin commence par / ou assets/, c'est déjà correct
+    if (strpos($path, '/') === 0 || strpos($path, 'assets/') === 0) {
+        return $path;
+    }
+
+    // Pour les images dans uploads/, ajouter le préfixe
+    if (strpos($path, 'uploads/') === 0) {
+        return $path;
+    }
+
+    // Sinon, considérer que c'est un chemin relatif depuis uploads/
+    return 'uploads/' . $path;
 }
 
 /**
@@ -275,7 +286,7 @@ function get_site_stats($cnx)
 function sendBirthdayEmail($userEmail, $userName)
 {
     $subject = "Joyeux Anniversaire de la part de Nuraya ! 🎂";
-    
+
     $message = "
     <html>
     <head>
@@ -306,7 +317,7 @@ function sendBirthdayEmail($userEmail, $userName)
                 
                 <!-- CTA Button -->
                 <div style='margin: 30px 0;'>
-                    <a href='http://localhost/nuraya_pro/src/Controllers/produits/index.php' 
+                    <a href='shop.php' 
                        style='display: inline-block; background: #1C1C1C; color: #FAF7F2; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; transition: all 0.3s ease;'>
                         Profiter de mon cadeau
                     </a>
@@ -329,10 +340,10 @@ function sendBirthdayEmail($userEmail, $userName)
     </body>
     </html>
     ";
-    
+
     // Configuration PHPMailer
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/vendor/autoload.php';
-    $emailConfig = require $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/email.php';
+    require_once '../vendor/autoload.php';
+    $emailConfig = require '../config/email.php';
 
     try {
         $mail = new PHPMailer(true);
@@ -368,25 +379,25 @@ function sendBirthdayEmail($userEmail, $userName)
 function sendDailyBirthdayEmails()
 {
     global $cnx;
-    
+
     $today = date('m-d'); // Format mois-jour pour ignorer l'année
-    
+
     $query = "SELECT id, first_name, email, birth_date 
               FROM users 
               WHERE DATE_FORMAT(birth_date, '%m-%d') = '$today' 
               AND birthday_email_sent = 0 
               AND is_active = 1";
-    
+
     $result = mysqli_query($cnx, $query);
     $sentEmails = [];
     $failedEmails = [];
-    
+
     if ($result && mysqli_num_rows($result) > 0) {
         while ($user = mysqli_fetch_assoc($result)) {
             $userName = $user['first_name'];
             $userEmail = $user['email'];
             $userId = $user['id'];
-            
+
             if (sendBirthdayEmail($userEmail, $userName)) {
                 // Marquer l'email comme envoyé
                 $updateQuery = "UPDATE users SET birthday_email_sent = 1 WHERE id = $userId";
@@ -397,7 +408,7 @@ function sendDailyBirthdayEmails()
             }
         }
     }
-    
+
     return [
         'sent' => $sentEmails,
         'failed' => $failedEmails,
@@ -411,12 +422,12 @@ function sendDailyBirthdayEmails()
 function resetBirthdayEmailFlags()
 {
     global $cnx;
-    
+
     // Réinitialiser pour les utilisateurs dont ce n'est plus leur anniversaire aujourd'hui
     $query = "UPDATE users 
               SET birthday_email_sent = 0 
               WHERE DATE_FORMAT(birth_date, '%m-%d') != DATE_FORMAT(NOW(), '%m-%d')";
-    
+
     return mysqli_query($cnx, $query);
 }
 ?>

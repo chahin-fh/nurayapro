@@ -1,7 +1,7 @@
 <?php
 require_once 'includes/auth_check.php';
 
-$order_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$order_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if ($order_id <= 0) {
     header('Location: orders.php');
@@ -30,6 +30,7 @@ $items_result = mysqli_query($cnx, $items_query);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,14 +40,16 @@ $items_result = mysqli_query($cnx, $items_query);
     <link rel="stylesheet" href="css/admin-common.css">
     <script src="../assets/js/toast.js"></script>
 </head>
+
 <body>
     <div class="admin-layout">
         <?php include 'includes/sidebar.php'; ?>
-        
+
         <div class="main-content">
             <div class="page-header">
                 <div>
-                    <a href="orders.php" style="color: var(--text-gray); text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px;">
+                    <a href="orders.php"
+                        style="color: var(--text-gray); text-decoration: none; font-size: 14px; display: block; margin-bottom: 10px;">
                         <i class="fas fa-arrow-left"></i> Retour aux commandes
                     </a>
                     <h1>Commande #<?php echo $order['order_number']; ?></h1>
@@ -55,7 +58,7 @@ $items_result = mysqli_query($cnx, $items_query);
                     <?php echo $order['status']; ?>
                 </span>
             </div>
-            
+
             <div class="content-grid order-details-grid">
                 <div class="left-col">
                     <div class="card">
@@ -74,43 +77,50 @@ $items_result = mysqli_query($cnx, $items_query);
                                 </thead>
                                 <tbody>
                                     <?php while ($item = mysqli_fetch_assoc($items_result)): ?>
-                                        <tr>
-                                            <td>
-                                                <div style="display: flex; align-items: center; gap:15px;">
-                                                    <img src="../<?php echo htmlspecialchars($item['image_url']); ?>" alt="" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
-                                                    <div>
-                                                        <strong><?php echo htmlspecialchars($item['product_name']); ?></strong>
-                                                    </div>
+                                    <tr>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap:15px;">
+                                                <img src="../<?php echo htmlspecialchars($item['image_url']); ?>" alt=""
+                                                    style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                                                <div>
+                                                    <strong><?php echo htmlspecialchars($item['product_name']); ?></strong>
                                                 </div>
-                                            </td>
-                                            <td><?php echo number_format($item['price'], 2); ?> DT</td>
-                                            <td><?php echo $item['quantity']; ?></td>
-                                            <td><strong><?php echo number_format($item['price'] * $item['quantity'], 2); ?> DT</strong></td>
-                                        </tr>
+                                            </div>
+                                        </td>
+                                        <td><?php echo number_format($item['price'], 2); ?> DT</td>
+                                        <td><?php echo $item['quantity']; ?></td>
+                                        <td><strong><?php echo number_format($item['price'] * $item['quantity'], 2); ?>
+                                                DT</strong></td>
+                                    </tr>
                                     <?php endwhile; ?>
                                 </tbody>
                             </table>
                         </div>
-                        
-                        <div style="display: flex; justify-content: flex-end; margin-top: 30px; gap: 40px; border-top: 1px solid rgba(200,182,166,0.1); padding-top: 20px;">
+
+                        <div
+                            style="display: flex; justify-content: flex-end; margin-top: 30px; gap: 40px; border-top: 1px solid rgba(200,182,166,0.1); padding-top: 20px;">
                             <div style="text-align: right;">
                                 <div class="info-row" style="margin-bottom: 10px;">
                                     <span class="info-label">Sous-total:</span>
-                                    <span class="info-value"><?php echo number_format($order['subtotal'], 2); ?> DT</span>
+                                    <span class="info-value"><?php echo number_format($order['subtotal'], 2); ?>
+                                        DT</span>
                                 </div>
                                 <div class="info-row" style="margin-bottom: 15px;">
                                     <span class="info-label">Livraison:</span>
-                                    <span class="info-value"><?php echo number_format($order['shipping_amount'], 2); ?> DT</span>
+                                    <span class="info-value"><?php echo number_format($order['shipping_amount'], 2); ?>
+                                        DT</span>
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label" style="font-size: 18px;">TOTAL:</span>
-                                    <span style="font-size: 24px; font-weight: 700; color: var(--beige-dark);"><?php echo number_format($order['total_amount'], 2); ?> DT</span>
+                                    <span
+                                        style="font-size: 24px; font-weight: 700; color: var(--beige-dark);"><?php echo number_format($order['total_amount'], 2); ?>
+                                        DT</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="right-col">
                     <div class="card">
                         <div class="card-header">
@@ -118,7 +128,8 @@ $items_result = mysqli_query($cnx, $items_query);
                         </div>
                         <div class="info-row" style="margin-bottom: 15px;">
                             <span class="info-label">Nom:</span>
-                            <span class="info-value"><?php echo htmlspecialchars($order['first_name'] . ' ' . $order['last_name']); ?></span>
+                            <span
+                                class="info-value"><?php echo htmlspecialchars($order['first_name'] . ' ' . $order['last_name']); ?></span>
                         </div>
                         <div class="info-row" style="margin-bottom: 15px;">
                             <span class="info-label">Email:</span>
@@ -129,7 +140,7 @@ $items_result = mysqli_query($cnx, $items_query);
                             <span class="info-value"><?php echo htmlspecialchars($order['phone']); ?></span>
                         </div>
                     </div>
-                    
+
                     <div class="card">
                         <div class="card-header">
                             <h3><i class="fas fa-map-marker-alt"></i> Adresse de livraison</h3>
@@ -148,12 +159,20 @@ $items_result = mysqli_query($cnx, $items_query);
                         <div class="form-group">
                             <label>Changer le statut</label>
                             <select onchange="updateOrderStatus(<?php echo $order_id; ?>, this.value)">
-                                <option value="pending" <?php echo $order['status'] == 'pending' ? 'selected' : ''; ?>>En attente</option>
-                                <option value="confirmed" <?php echo $order['status'] == 'confirmed' ? 'selected' : ''; ?>>Confirmée</option>
-                                <option value="processing" <?php echo $order['status'] == 'processing' ? 'selected' : ''; ?>>En préparation</option>
-                                <option value="shipped" <?php echo $order['status'] == 'shipped' ? 'selected' : ''; ?>>Expédiée</option>
-                                <option value="delivered" <?php echo $order['status'] == 'delivered' ? 'selected' : ''; ?>>Livrée</option>
-                                <option value="cancelled" <?php echo $order['status'] == 'cancelled' ? 'selected' : ''; ?>>Annulée</option>
+                                <option value="pending" <?php echo $order['status'] == 'pending' ? 'selected' : ''; ?>>
+                                    En
+                                    attente</option>
+                                <option value="confirmed"
+                                    <?php echo $order['status'] == 'confirmed' ? 'selected' : ''; ?>>Confirmée</option>
+                                <option value="processing"
+                                    <?php echo $order['status'] == 'processing' ? 'selected' : ''; ?>>En préparation
+                                </option>
+                                <option value="shipped" <?php echo $order['status'] == 'shipped' ? 'selected' : ''; ?>>
+                                    Expédiée</option>
+                                <option value="delivered"
+                                    <?php echo $order['status'] == 'delivered' ? 'selected' : ''; ?>>Livrée</option>
+                                <option value="cancelled"
+                                    <?php echo $order['status'] == 'cancelled' ? 'selected' : ''; ?>>Annulée</option>
                             </select>
                         </div>
                     </div>
@@ -161,12 +180,14 @@ $items_result = mysqli_query($cnx, $items_query);
             </div>
         </div>
     </div>
-    
+
     <script>
-        function updateOrderStatus(orderId, newStatus) {
-            fetch('api/orders.php', {
+    function updateOrderStatus(orderId, newStatus) {
+        fetch('api/orders.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
                 body: `action=update_status&order_id=${orderId}&status=${newStatus}`
             })
             .then(response => response.json())
@@ -177,7 +198,8 @@ $items_result = mysqli_query($cnx, $items_query);
                     showToast(data.message, 'error');
                 }
             });
-        }
+    }
     </script>
 </body>
+
 </html>

@@ -8,6 +8,7 @@ $categories_result = mysqli_query($cnx, $query);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +29,7 @@ $categories_result = mysqli_query($cnx, $query);
                 grid-template-columns: 1fr;
             }
         }
-        
+
         .category-card {
             background: var(--bg-white);
             border-radius: 20px;
@@ -37,29 +38,33 @@ $categories_result = mysqli_query($cnx, $query);
             border: 1px solid rgba(200, 182, 166, 0.1);
             transition: all 0.3s ease;
         }
-        
+
         .category-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(200, 182, 166, 0.2);
             border-color: var(--beige-dark);
         }
-        
+
         .category-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 15px;
         }
-        
-        .category-header h3 { font-size: 20px; font-weight: 700; color: var(--text-dark); }
-        
+
+        .category-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
         .category-info {
             color: var(--text-gray);
             font-size: 14px;
             margin-bottom: 20px;
             line-height: 1.5;
         }
-        
+
         .category-footer {
             display: flex;
             justify-content: space-between;
@@ -69,10 +74,11 @@ $categories_result = mysqli_query($cnx, $query);
         }
     </style>
 </head>
+
 <body>
     <div class="admin-layout">
         <?php include 'includes/sidebar.php'; ?>
-        
+
         <div class="main-content">
             <div class="page-header">
                 <h1>Gestion des Catégories</h1>
@@ -80,7 +86,7 @@ $categories_result = mysqli_query($cnx, $query);
                     <i class="fas fa-plus"></i> Nouvelle Catégorie
                 </button>
             </div>
-            
+
             <div class="categories-grid">
                 <?php while ($cat = mysqli_fetch_assoc($categories_result)): ?>
                     <div class="category-card">
@@ -92,7 +98,8 @@ $categories_result = mysqli_query($cnx, $query);
                         </div>
                         <div class="category-info">
                             <p><?php echo htmlspecialchars($cat['description'] ?: 'Aucune description'); ?></p>
-                            <small style="display: block; margin-top: 10px;">Slug: <strong><?php echo htmlspecialchars($cat['slug']); ?></strong></small>
+                            <small style="display: block; margin-top: 10px;">Slug:
+                                <strong><?php echo htmlspecialchars($cat['slug']); ?></strong></small>
                             <small>Ordre: <?php echo $cat['sort_order']; ?></small>
                         </div>
                         <div class="category-footer">
@@ -100,12 +107,12 @@ $categories_result = mysqli_query($cnx, $query);
                                 <i class="fas fa-box"></i> <?php echo $cat['product_count']; ?> produits
                             </div>
                             <div class="actions">
-                                <button onclick="openModal(<?php echo htmlspecialchars(json_encode($cat)); ?>)" 
-                                        class="btn-icon btn-edit" title="Modifier">
+                                <button onclick="openModal(<?php echo htmlspecialchars(json_encode($cat)); ?>)"
+                                    class="btn-icon btn-edit" title="Modifier">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button onclick="deleteCategory(<?php echo $cat['category_id']; ?>)" 
-                                        class="btn-icon btn-delete" title="Supprimer">
+                                <button onclick="deleteCategory(<?php echo $cat['category_id']; ?>)"
+                                    class="btn-icon btn-delete" title="Supprimer">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -154,7 +161,7 @@ $categories_result = mysqli_query($cnx, $query);
             </form>
         </div>
     </div>
-    
+
     <script>
         const modal = document.getElementById('categoryModal');
         const form = document.getElementById('categoryForm');
@@ -188,46 +195,49 @@ $categories_result = mysqli_query($cnx, $query);
             }
         }
 
-        form.onsubmit = function(e) {
+        form.onsubmit = function (e) {
             e.preventDefault();
             const formData = new FormData(form);
             formData.append('action', 'save');
-            
+
             fetch('api/categories.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    showToast(data.message, 'error');
-                }
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        showToast(data.message, 'error');
+                    }
+                });
         };
 
         function deleteCategory(id) {
             if (!confirm('Voulez-vous vraiment supprimer cette catégorie ?')) return;
-            
+
             fetch('api/categories.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
                 body: `action=delete&category_id=${id}`
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    showToast(data.message, 'error');
-                }
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        showToast(data.message, 'error');
+                    }
+                });
         }
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target == modal) closeModal();
         }
     </script>
 </body>
+
 </html>

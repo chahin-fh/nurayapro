@@ -353,7 +353,7 @@ $orders_result = mysqli_query($cnx, $orders_query);
                     </a>
                 </li>
                 <li>
-                    <a href="src/Controllers/api/auth.php?action=logout">
+                    <a href="api/auth.php?action=logout">
                         <i class="fas fa-sign-out-alt"></i>
                         Déconnexion
                     </a>

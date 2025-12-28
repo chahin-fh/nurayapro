@@ -29,6 +29,7 @@ $low_stock = mysqli_query($cnx, $low_stock_query);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,16 +39,17 @@ $low_stock = mysqli_query($cnx, $low_stock_query);
     <link rel="stylesheet" href="css/admin-common.css">
     <script src="../assets/js/toast.js"></script>
 </head>
+
 <body>
     <div class="admin-layout">
         <?php include 'includes/sidebar.php'; ?>
-        
+
         <div class="main-content">
             <div class="page-header">
                 <h1>Tableau de bord</h1>
                 <p>Bienvenue sur votre interface de gestion Nuraya.</p>
             </div>
-            
+
             <div class="stats-grid">
                 <div class="stat-card blue">
                     <div class="icon"><i class="fas fa-shopping-bag"></i></div>
@@ -70,7 +72,7 @@ $low_stock = mysqli_query($cnx, $low_stock_query);
                     <div class="label">Produits en Ligne</div>
                 </div>
             </div>
-            
+
             <div class="content-grid">
                 <!-- Dernières Commandes -->
                 <div class="card">
@@ -90,22 +92,23 @@ $low_stock = mysqli_query($cnx, $low_stock_query);
                             </thead>
                             <tbody>
                                 <?php while ($order = mysqli_fetch_assoc($recent_orders)): ?>
-                                    <tr>
-                                        <td>#<?php echo $order['order_number']; ?></td>
-                                        <td><?php echo htmlspecialchars($order['first_name'] . ' ' . $order['last_name']); ?></td>
-                                        <td><strong><?php echo number_format($order['total_amount'], 2); ?> DT</strong></td>
-                                        <td>
-                                            <span class="status-badge status-<?php echo $order['status']; ?>">
-                                                <?php echo $order['status']; ?>
-                                            </span>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>#<?php echo $order['order_number']; ?></td>
+                                    <td><?php echo htmlspecialchars($order['first_name'] . ' ' . $order['last_name']); ?>
+                                    </td>
+                                    <td><strong><?php echo number_format($order['total_amount'], 2); ?> DT</strong></td>
+                                    <td>
+                                        <span class="status-badge status-<?php echo $order['status']; ?>">
+                                            <?php echo $order['status']; ?>
+                                        </span>
+                                    </td>
+                                </tr>
                                 <?php endwhile; ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                
+
                 <!-- Stock Faible -->
                 <div class="card">
                     <div class="card-header">
@@ -122,25 +125,27 @@ $low_stock = mysqli_query($cnx, $low_stock_query);
                             </thead>
                             <tbody>
                                 <?php if (mysqli_num_rows($low_stock) > 0): ?>
-                                    <?php while ($product = mysqli_fetch_assoc($low_stock)): ?>
-                                        <tr>
-                                            <td>
-                                                <div style="font-weight: 600;"><?php echo htmlspecialchars($product['name']); ?></div>
-                                                <small style="color: var(--text-gray);"><?php echo htmlspecialchars($product['category_name']); ?></small>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-inactive">
-                                                    <?php echo $product['stock_quantity']; ?> restant(s)
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    <?php endwhile; ?>
+                                <?php while ($product = mysqli_fetch_assoc($low_stock)): ?>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight: 600;"><?php echo htmlspecialchars($product['name']); ?>
+                                        </div>
+                                        <small
+                                            style="color: var(--text-gray);"><?php echo htmlspecialchars($product['category_name']); ?></small>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-inactive">
+                                            <?php echo $product['stock_quantity']; ?> restant(s)
+                                        </span>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
                                 <?php else: ?>
-                                    <tr>
-                                        <td colspan="2" style="text-align: center; color: var(--text-gray); padding: 30px;">
-                                            Aucune alerte de stock
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: center; color: var(--text-gray); padding: 30px;">
+                                        Aucune alerte de stock
+                                    </td>
+                                </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -150,4 +155,5 @@ $low_stock = mysqli_query($cnx, $low_stock_query);
         </div>
     </div>
 </body>
+
 </html>

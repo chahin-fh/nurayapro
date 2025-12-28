@@ -30,7 +30,7 @@
 
 ### Fichiers SQL
 
-- `sql/nuraya_pro_fixed.sql` : Schéma complet avec toutes les tables
+- `sql/nurayapro_fixed.sql` : Schéma complet avec toutes les tables
 
 ---
 
@@ -185,7 +185,7 @@
 1. **Importer la base de données**
 
    ```sql
-   mysql -u username -p database_name < sql/nuraya_pro_fixed.sql
+   mysql -u username -p database_name < sql/nurayapro_fixed.sql
    ```
 
 2. **Configurer la connexion**
@@ -200,12 +200,12 @@
 
 4. **Configurer le serveur web**
 
-   - Document root vers `/nuraya_pro/`
+   - Document root vers `/nurayapro/`
    - Activer mod_rewrite pour Apache
    - Configurer HTTPS si possible
 
 5. **Tester l'installation**
-   - Accéder à `http://localhost/nuraya_pro/`
+   - Accéder à `http://localhost/nurayapro/`
    - Créer un compte utilisateur
    - Tester les fonctionnalités principales
 
@@ -288,7 +288,7 @@ RewriteRule ^(.*)$ index.php [QSA,L]
 mysqldump -u username -p database_name > backup_$(date +%Y%m%d).sql
 
 # Backup fichiers
-tar -czf files_$(date +%Y%m%d).tar.gz /path/to/nuraya_pro/
+tar -czf files_$(date +%Y%m%d).tar.gz /path/to/nurayapro/
 ```
 
 ---

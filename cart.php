@@ -389,7 +389,7 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
 </head>
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/templates/navbar_updated.php'; ?>
+    <?php include 'templates/navbar_updated.php'; ?>
 
     <div class="cart-container">
         <?php if (!empty($cart_items)): ?>
@@ -472,7 +472,7 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
             <i class="fas fa-shopping-bag"></i>
             <h2>Votre panier est vide</h2>
             <p>Ajoutez des produits à votre panier pour continuer vos achats</p>
-            <a href="/nuraya_pro/src/Controllers/produits/index.php" class="shop-now-btn">
+            <a href="shop.php" class="shop-now-btn">
                 Découvrir les produits
             </a>
         </div>

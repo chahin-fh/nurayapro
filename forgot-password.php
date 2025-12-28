@@ -4,6 +4,7 @@ include 'templates/navbar_updated.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -138,6 +139,7 @@ include 'templates/navbar_updated.php';
         }
     </style>
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card">
@@ -150,7 +152,8 @@ include 'templates/navbar_updated.php';
                 <form id="forgotForm">
                     <div class="form-group">
                         <label class="form-label" for="email">Email</label>
-                        <input type="email" id="email" name="email" class="form-control" required placeholder="votre@email.com">
+                        <input type="email" id="email" name="email" class="form-control" required
+                            placeholder="votre@email.com">
                     </div>
 
                     <button type="submit" class="btn" id="submitBtn">
@@ -166,43 +169,44 @@ include 'templates/navbar_updated.php';
     </div>
 
     <script>
-        document.getElementById('forgotForm').addEventListener('submit', function(e) {
+        document.getElementById('forgotForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             const email = document.getElementById('email').value.trim();
             const btn = document.getElementById('submitBtn');
-            
+
             if (!email) return;
-            
+
             btn.disabled = true;
             btn.textContent = 'Envoi en cours...';
-            
+
             const formData = new FormData();
             formData.append('action', 'forgot');
             formData.append('email', email);
-            
-            fetch('src/Controllers/api/auth.php', {
+
+            fetch('api/auth.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showToast(data.message, 'success');
-                    document.getElementById('forgotForm').reset();
-                } else {
-                    showToast(data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('Une erreur est survenue.', 'error');
-            })
-            .finally(() => {
-                btn.disabled = false;
-                btn.textContent = 'Envoyer le lien';
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                        document.getElementById('forgotForm').reset();
+                    } else {
+                        showToast(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Une erreur est survenue.', 'error');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Envoyer le lien';
+                });
         });
     </script>
 </body>
+
 </html>

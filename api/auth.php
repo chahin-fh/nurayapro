@@ -13,7 +13,7 @@ use PHPMailer\PHPMailer\Exception;
 
 // Charger PHPMailer avec gestion d'erreur
 try {
-    require $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/vendor/autoload.php';
+    require '../vendor/autoload.php';
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'PHPMailer non disponible']);
     exit;
@@ -21,14 +21,14 @@ try {
 
 // Connexion à la base de données
 try {
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/src/Controllers/cnx.php';
+    require_once '../config/database.php';
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Erreur de connexion BDD']);
     exit;
 }
 
 // Charger la configuration email
-$emailConfig = require $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/email.php';
+$emailConfig = require '../config/email.php';
 
 // Récupérer l'action demandée
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
@@ -285,12 +285,12 @@ function forgotPassword()
     // Mettre à jour l'utilisateur
     $update_query = "UPDATE users SET reset_token = '$reset_token', reset_token_expires = '$token_expires' 
                     WHERE id = " . $user['id'];
-    
+
     if (mysqli_query($cnx, $update_query)) {
         // Préparer le lien de réinitialisation
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
         $host = $_SERVER['HTTP_HOST'];
-        $reset_link = "$protocol://$host/nuraya_pro/reset-password.php?token=$reset_token";
+        $reset_link = "$protocol://$host/nurayapro/reset-password.php?token=$reset_token";
 
         // Envoyer l'email
         try {
@@ -302,7 +302,7 @@ function forgotPassword()
             $mail->Password = $emailConfig['password'];
             $mail->SMTPSecure = $emailConfig['smtp_secure'];
             $mail->Port = $emailConfig['port'];
-            
+
             if (isset($emailConfig['smtp_options'])) {
                 $mail->SMTPOptions = $emailConfig['smtp_options'];
             }
@@ -514,7 +514,7 @@ function sendVerificationEmail($email, $verification_code)
         $mail->Password = $emailConfig['password'];
         $mail->SMTPSecure = $emailConfig['smtp_secure'];
         $mail->Port = $emailConfig['port'];
-        
+
         if (isset($emailConfig['smtp_options'])) {
             $mail->SMTPOptions = $emailConfig['smtp_options'];
         }

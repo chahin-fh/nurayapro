@@ -1,6 +1,9 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
-// Navbar avec recherche fonctionnelle et navigation complète
+include 'config/database.php';
+
+// Pas besoin de chemins dynamiques - tout est à la racine
+$base_path = '';
+$assets_path = 'assets/';
 ?>
 <style>
 :root {
@@ -458,25 +461,26 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
     display: block
 }
 
-/* Responsive */    .mobile-menu-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1999;
-        display: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
+/* Responsive */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
 
-    .mobile-menu-overlay.active {
-        display: block;
-        opacity: 1;
-    }
+.mobile-menu-overlay.active {
+    display: block;
+    opacity: 1;
+}
 
-    @media (max-width:768px) {
+@media (max-width:768px) {
     .nav-links {
         display: none
     }
@@ -513,8 +517,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
     }
 }
 </style>
-<link rel="stylesheet" href="/nuraya_pro/assets/css/toast.css">
-<script src="/nuraya_pro/assets/js/toast.js"></script>
+<link rel="stylesheet" href="<?php echo $assets_path; ?>css/toast.css">
+<script src="<?php echo $assets_path; ?>js/toast.js"></script>
 
 <header>
     <nav class="navbar">
@@ -529,16 +533,16 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
             </div>
         </div>
 
-        <a class="logo" href="/nuraya_pro/index.php">NURAYA</a>
+        <a class="logo" href="<?php echo $base_path; ?>index.php">NURAYA</a>
         <div class="nav-links">
-            <a href="/nuraya_pro/index.php"
-                class="<?php echo (strpos($_SERVER['REQUEST_URI'], '/index.php') !== false || strpos($_SERVER['REQUEST_URI'], '/nuraya_pro/') !== false && strpos($_SERVER['REQUEST_URI'], '.php') === false) ? 'active' : ''; ?>">Accueil</a>
-            <a href="/nuraya_pro/src/Controllers/produits/index.php"
-                class="<?php echo strpos($_SERVER['REQUEST_URI'], 'produits') !== false ? 'active' : ''; ?>">Boutique</a>
-            <a href="/nuraya_pro/about_new.php"
+            <a href="<?php echo $base_path; ?>index.php"
+                class="<?php echo (strpos($_SERVER['REQUEST_URI'], '/index.php') !== false || strpos($_SERVER['REQUEST_URI'], '/nurayapro/') !== false && strpos($_SERVER['REQUEST_URI'], '.php') === false) ? 'active' : ''; ?>">Accueil</a>
+            <a href="<?php echo $base_path; ?>shop.php"
+                class="<?php echo strpos($_SERVER['REQUEST_URI'], 'shop.php') !== false ? 'active' : ''; ?>">Boutique</a>
+            <a href="<?php echo $base_path; ?>about_new.php"
                 class="<?php echo strpos($_SERVER['REQUEST_URI'], 'about_new.php') !== false ? 'active' : ''; ?>">À
                 propos</a>
-            <a href="/nuraya_pro/contact_us.php"
+            <a href="<?php echo $base_path; ?>contact_us.php"
                 class="<?php echo strpos($_SERVER['REQUEST_URI'], 'contact_us.php') !== false ? 'active' : ''; ?>">Contact</a>
         </div>
 
@@ -566,25 +570,25 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
                     </svg>
                 </button>
                 <div class="user-dropdown" id="userDropdown">
-                    <a href="/nuraya_pro/account.php">
+                    <a href="<?php echo $base_path; ?>account.php">
                         <i class="fas fa-user"></i>
                         Mon Compte
                     </a>
-                    <a href="/nuraya_pro/wishlist.php">
+                    <a href="<?php echo $base_path; ?>wishlist.php">
                         <i class="fas fa-heart"></i>
                         Mes Favoris
                     </a>
-                    <a href="/nuraya_pro/orders.php">
+                    <a href="<?php echo $base_path; ?>orders.php">
                         <i class="fas fa-shopping-bag"></i>
                         Mes Commandes
                     </a>
-                    <a href="/nuraya_pro/src/Controllers/api/auth.php?action=logout">
+                    <a href="<?php echo $base_path; ?>api/auth.php?action=logout">
                         <i class="fas fa-sign-out-alt"></i>
                         Déconnexion
                     </a>
                 </div>
                 <?php else: ?>
-                <a href="/nuraya_pro/login.php" class="user-btn" title="Connexion">
+                <a href="<?php echo $base_path; ?>login.php" class="user-btn" title="Connexion">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -594,7 +598,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
                 <?php endif; ?>
             </div>
 
-            <div class="cart-icon" onclick="window.location.href='/nuraya_pro/cart.php'">
+            <div class="cart-icon" onclick="window.location.href='<?php echo $base_path; ?>cart.php'">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="10" cy="20" r="2"></circle>
@@ -621,50 +625,50 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
         </div>
 
         <div class="mobile-menu-content">
-            <a href="/nuraya_pro/index.php"
-                class="<?php echo (strpos($_SERVER['REQUEST_URI'], '/index.php') !== false || strpos($_SERVER['REQUEST_URI'], '/nuraya_pro/') !== false && strpos($_SERVER['REQUEST_URI'], '.php') === false) ? 'active' : ''; ?>">
+            <a href="<?php echo $base_path; ?>index.php"
+                class="<?php echo (strpos($_SERVER['REQUEST_URI'], '/index.php') !== false || strpos($_SERVER['REQUEST_URI'], '/nurayapro/') !== false && strpos($_SERVER['REQUEST_URI'], '.php') === false) ? 'active' : ''; ?>">
                 <i class="fas fa-home"></i>
                 Accueil
             </a>
-            <a href="/nuraya_pro/src/Controllers/produits/index.php"
+            <a href="<?php echo $base_path; ?>shop.php"
                 class="<?php echo strpos($_SERVER['REQUEST_URI'], 'produits') !== false ? 'active' : ''; ?>">
                 <i class="fas fa-shopping-bag"></i>
                 Boutique
             </a>
-            <a href="/nuraya_pro/about_new.php"
+            <a href="<?php echo $base_path; ?>about_new.php"
                 class="<?php echo strpos($_SERVER['REQUEST_URI'], 'about_new.php') !== false ? 'active' : ''; ?>">
                 <i class="fas fa-info-circle"></i>
                 À propos
             </a>
-            <a href="/nuraya_pro/contact_us.php"
+            <a href="<?php echo $base_path; ?>contact_us.php"
                 class="<?php echo strpos($_SERVER['REQUEST_URI'], 'contact_us.php') !== false ? 'active' : ''; ?>">
                 <i class="fas fa-envelope"></i>
                 Contact
             </a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="/nuraya_pro/account.php">
+            <a href="<?php echo $base_path; ?>account.php">
                 <i class="fas fa-user"></i>
                 Mon Compte
             </a>
-            <a href="/nuraya_pro/wishlist.php">
+            <a href="<?php echo $base_path; ?>wishlist.php">
                 <i class="fas fa-heart"></i>
                 Mes Favoris
             </a>
-            <a href="/nuraya_pro/orders.php">
+            <a href="<?php echo $base_path; ?>orders.php">
                 <i class="fas fa-shopping-bag"></i>
                 Mes Commandes
             </a>
-            <a href="/nuraya_pro/src/Controllers/api/auth.php?action=logout">
+            <a href="<?php echo $base_path; ?>api/auth.php?action=logout">
                 <i class="fas fa-sign-out-alt"></i>
                 Déconnexion
             </a>
             <?php else: ?>
-            <a href="/nuraya_pro/login.php">
+            <a href="<?php echo $base_path; ?>login.php">
                 <i class="fas fa-sign-in-alt"></i>
                 Connexion
             </a>
-            <a href="/nuraya_pro/register.php">
+            <a href="<?php echo $base_path; ?>register.php">
                 <i class="fas fa-user-plus"></i>
                 Inscription
             </a>
@@ -677,19 +681,19 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
                     <span class="categories-arrow" id="categoriesArrow">▼</span>
                 </div>
                 <div class="categories-list" id="categoriesList">
-                    <a href="/nuraya_pro/src/Controllers/produits/index.php?category=mode" class="category-item">
+                    <a href="<?php echo $base_path; ?>shop.php?category=mode" class="category-item">
                         <span>></span> Mode
                     </a>
-                    <a href="/nuraya_pro/src/Controllers/produits/index.php?category=accessoires" class="category-item">
+                    <a href="<?php echo $base_path; ?>shop.php?category=accessoires" class="category-item">
                         <span>></span> Accessoires
                     </a>
-                    <a href="/nuraya_pro/src/Controllers/produits/index.php?category=chaussures" class="category-item">
+                    <a href="<?php echo $base_path; ?>shop.php?category=chaussures" class="category-item">
                         <span>></span> Chaussures
                     </a>
-                    <a href="/nuraya_pro/src/Controllers/produits/index.php?category=sacs" class="category-item">
+                    <a href="<?php echo $base_path; ?>shop.php?category=sacs" class="category-item">
                         <span>></span> Sacs
                     </a>
-                    <a href="/nuraya_pro/src/Controllers/produits/index.php?category=bijoux" class="category-item">
+                    <a href="<?php echo $base_path; ?>shop.php?category=bijoux" class="category-item">
                         <span>></span> Bijoux
                     </a>
                 </div>
@@ -703,6 +707,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
 <script>
 let searchTimeout;
 let currentSearchTerm = '';
+const basePath = '<?php echo $base_path; ?>';
 
 // Mobile Menu Functions
 function toggleMobileMenu() {
@@ -735,12 +740,14 @@ function toggleUserMenu() {
 
 // Close dropdowns when clicking outside
 document.addEventListener('click', function(e) {
-    if (!e.target.closest('.user-menu')) {
-        document.getElementById('userDropdown').classList.remove('show');
+    const userDropdown = document.getElementById('userDropdown');
+    if (userDropdown && !e.target.closest('.user-menu')) {
+        userDropdown.classList.remove('show');
     }
 
-    if (!e.target.closest('.search-container')) {
-        document.getElementById('searchResults').classList.remove('show');
+    const searchResults = document.getElementById('searchResults');
+    if (searchResults && !e.target.closest('.search-container')) {
+        searchResults.classList.remove('show');
     }
 });
 
@@ -748,7 +755,7 @@ document.addEventListener('click', function(e) {
 function performSearch() {
     const searchTerm = document.getElementById('searchInput').value.trim();
     if (searchTerm) {
-        window.location.href = `/nuraya_pro/src/Controllers/produits/index.php?search=${encodeURIComponent(searchTerm)}`;
+        window.location.href = `<?php echo $base_path; ?>shop.php?search=${encodeURIComponent(searchTerm)}`;
     }
 }
 
@@ -771,7 +778,7 @@ function handleSearchInput() {
 }
 
 function fetchSearchResults(searchTerm) {
-    fetch(`/nuraya_pro/src/Controllers/api/search.php?q=${encodeURIComponent(searchTerm)}`)
+    fetch(`${basePath}api/search.php?q=${encodeURIComponent(searchTerm)}`)
         .then(response => response.json())
         .then(data => {
             displaySearchResults(data);
@@ -788,7 +795,7 @@ function displaySearchResults(data) {
         let html = '';
         data.results.forEach(product => {
             html += `
-                <a href="/nuraya_pro/src/Controllers/produits/product.php?id=${product.product_id}" class="search-result-item">
+                <a href="${basePath}product.php?id=${product.product_id}" class="search-result-item">
                     <img src="${product.image_url}" alt="${product.name}" class="search-result-image"
                          onerror="this.src='https://via.placeholder.com/40x40/F5EFE6/C8B6A6?text=P'">
                     <div class="search-result-info">
@@ -810,7 +817,7 @@ function displaySearchResults(data) {
 function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
     let overlay = document.getElementById('mobileMenuOverlay');
-    
+
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'mobileMenuOverlay';
@@ -821,7 +828,7 @@ function toggleMobileMenu() {
 
     menu.classList.toggle('active');
     overlay.classList.toggle('active');
-    
+
     if (menu.classList.contains('active')) {
         document.body.style.overflow = 'hidden';
     } else {
@@ -834,20 +841,20 @@ if (mobileSearchInput) {
     mobileSearchInput.addEventListener('input', function() {
         const searchTerm = this.value.trim();
         const resultsContainer = document.getElementById('mobileSearchResults');
-        
+
         if (searchTerm.length < 2) {
             resultsContainer.classList.remove('show');
             return;
         }
 
-        fetch(`/nuraya_pro/src/Controllers/api/search.php?q=${encodeURIComponent(searchTerm)}`)
+        fetch(`${basePath}api/search.php?q=${encodeURIComponent(searchTerm)}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.results.length > 0) {
                     let html = '';
                     data.results.forEach(product => {
                         html += `
-                            <a href="/nuraya_pro/src/Controllers/produits/product.php?id=${product.product_id}" class="search-result-item">
+                            <a href="${basePath}product.php?id=${product.product_id}" class="search-result-item">
                                 <img src="${product.image_url}" alt="${product.name}" class="search-result-image"
                                      onerror="this.src='https://via.placeholder.com/40x40/F5EFE6/C8B6A6?text=P'">
                                 <div class="search-result-info">
@@ -871,7 +878,8 @@ if (mobileSearchInput) {
         if (e.key === 'Enter') {
             const searchTerm = this.value.trim();
             if (searchTerm) {
-                window.location.href = `/nuraya_pro/src/Controllers/produits/index.php?search=${encodeURIComponent(searchTerm)}`;
+                window.location.href =
+                    `${basePath}shop.php?search=${encodeURIComponent(searchTerm)}`;
             }
         }
     });
@@ -879,7 +887,7 @@ if (mobileSearchInput) {
 
 // Load cart count on page load
 function loadCartCount() {
-    fetch('/nuraya_pro/src/Controllers/api/cart.php?action=get')
+    fetch(`${basePath}api/cart.php?action=get`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {

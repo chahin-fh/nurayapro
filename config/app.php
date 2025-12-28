@@ -16,7 +16,7 @@ return [
     // Configuration de la base de données
     'database' => [
         'host' => 'localhost',
-        'name' => 'nuraya_pro',
+        'name' => 'nurayapro',
         'username' => 'root',
         'password' => '',
         'charset' => 'utf8mb4',
@@ -59,9 +59,9 @@ return [
 
     // Configuration des URLs
     'urls' => [
-        'base' => 'http://localhost/nuraya_pro',
-        'assets' => 'http://localhost/nuraya_pro/assets',
-        'uploads' => 'http://localhost/nuraya_pro/uploads'
+        'base' => 'http://localhost',
+        'assets' => 'http://localhost/assets',
+        'uploads' => 'http://localhost/uploads'
     ],
 
     // Configuration des logs

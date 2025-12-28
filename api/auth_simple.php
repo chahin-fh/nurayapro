@@ -22,7 +22,7 @@ function jsonResponse($success, $message, $data = null)
 
 // Connexion BDD sécurisée
 try {
-    include '../cnx.php';
+    require_once '../config/database.php';
 } catch (Exception $e) {
     jsonResponse(false, 'Erreur de connexion à la base de données');
 }

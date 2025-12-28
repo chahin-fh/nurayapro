@@ -257,9 +257,9 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                         <button class="remove-wishlist" onclick="removeFromWishlist(<?php echo $item['product_id']; ?>)">
                             <i class="fas fa-times"></i>
                         </button>
-                        <a href="src/Controllers/produits/product.php?id=<?php echo $item['product_id']; ?>" class="product-link">
-                            <img src="<?php echo get_image_url($item['image_url'], 'Produit'); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"
-                                class="product-image"
+                        <a href="product.php?id=<?php echo $item['product_id']; ?>" class="product-link">
+                            <img src="<?php echo get_image_url($item['image_url'], 'Produit'); ?>"
+                                alt="<?php echo htmlspecialchars($item['name']); ?>" class="product-image"
                                 onerror="this.src='https://via.placeholder.com/280x280/F5EFE6/C8B6A6?text=Produit'">
                             <div class="product-info">
                                 <div class="product-category"><?php echo htmlspecialchars($item['category_name']); ?></div>
@@ -281,7 +281,7 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                 <i class="fas fa-heart"></i>
                 <h2>Votre liste de favoris est vide</h2>
                 <p>Ajoutez des produits à vos favoris pour les retrouver facilement</p>
-                <a href="produits/index.php" class="shop-now-btn">
+                <a href="shop.php" class="shop-now-btn">
                     Découvrir les produits
                 </a>
             </div>
@@ -294,7 +294,7 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                 return;
             }
 
-            fetch('src/Controllers/api/wishlist.php', {
+            fetch('api/wishlist.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -318,7 +318,7 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
         function addToCart(event, productId) {
             event.preventDefault();
 
-            fetch('src/Controllers/api/cart.php', {
+            fetch('api/cart.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

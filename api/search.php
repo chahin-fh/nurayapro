@@ -2,8 +2,8 @@
 header('Content-Type: application/json');
 
 // Connexion à la base de données
-include '../cnx.php';
-include '../../includes/functions.php';
+require_once '../config/database.php';
+include '../includes/functions.php';
 
 // Récupérer le terme de recherche
 $searchTerm = isset($_GET['q']) ? trim($_GET['q']) : '';

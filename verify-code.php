@@ -558,7 +558,7 @@ if ($remaining_time <= 0) {
             formData.append('confirm_password', tempPassword || '');
             formData.append('verification_code', code);
 
-            fetch('src/Controllers/api/auth.php', {
+            fetch('api/auth.php', {
                 method: 'POST',
                 body: formData
             })
@@ -606,7 +606,7 @@ if ($remaining_time <= 0) {
             this.disabled = true;
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
 
-            fetch('src/Controllers/api/auth.php', {
+            fetch('api/auth.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

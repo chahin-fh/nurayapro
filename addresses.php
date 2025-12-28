@@ -152,7 +152,7 @@ $address_result = mysqli_query($cnx, $address_query);
         font-size: 24px;
         margin-bottom: 8px;
     }
-    
+
     .header-text p {
         color: var(--text-gray);
         font-size: 14px;
@@ -229,7 +229,7 @@ $address_result = mysqli_query($cnx, $address_query);
     .address-actions {
         margin-top: 20px;
         padding-top: 15px;
-        border-top: 1px solid rgba(0,0,0,0.05);
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
         display: flex;
         gap: 10px;
     }
@@ -244,11 +244,21 @@ $address_result = mysqli_query($cnx, $address_query);
         transition: color 0.3s ease;
     }
 
-    .btn-edit { color: var(--text-dark); }
-    .btn-delete { color: #e74c3c; }
-    .btn-default { color: var(--beige-dark); }
+    .btn-edit {
+        color: var(--text-dark);
+    }
 
-    .btn-action:hover { text-decoration: underline; }
+    .btn-delete {
+        color: #e74c3c;
+    }
+
+    .btn-default {
+        color: var(--beige-dark);
+    }
+
+    .btn-action:hover {
+        text-decoration: underline;
+    }
 
     /* Modal Styles */
     .modal {
@@ -258,14 +268,16 @@ $address_result = mysqli_query($cnx, $address_query);
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0, 0, 0, 0.5);
         z-index: 1000;
         justify-content: center;
         align-items: center;
         padding: 20px;
     }
 
-    .modal.active { display: flex; }
+    .modal.active {
+        display: flex;
+    }
 
     .modal-content {
         background: var(--bg-white);
@@ -284,20 +296,46 @@ $address_result = mysqli_query($cnx, $address_query);
         margin-bottom: 24px;
     }
 
-    .modal-title { font-size: 20px; font-weight: 700; }
-    .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-gray); }
+    .modal-title {
+        font-size: 20px;
+        font-weight: 700;
+    }
 
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; }
-    .form-input { 
-        width: 100%; 
-        padding: 10px; 
-        border: 1px solid #ddd; 
-        border-radius: 8px; 
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-gray);
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
         font-size: 14px;
     }
-    .form-row { display: flex; gap: 15px; }
-    .form-row .form-group { flex: 1; }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
 
     .btn-submit {
         width: 100%;
@@ -313,10 +351,24 @@ $address_result = mysqli_query($cnx, $address_query);
     }
 
     @media (max-width: 900px) {
-        .account-container { flex-direction: column; }
-        .account-sidebar { width: 100%; }
-        .sidebar-menu { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
-        .sidebar-menu li { flex-shrink: 0; }
+        .account-container {
+            flex-direction: column;
+        }
+
+        .account-sidebar {
+            width: 100%;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 10px;
+        }
+
+        .sidebar-menu li {
+            flex-shrink: 0;
+        }
     }
     </style>
 </head>
@@ -331,7 +383,8 @@ $address_result = mysqli_query($cnx, $address_query);
                 <div class="user-avatar">
                     <?php echo strtoupper(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1)); ?>
                 </div>
-                <div class="user-name"><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></div>
+                <div class="user-name"><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>
+                </div>
                 <div class="user-email"><?php echo htmlspecialchars($user['email']); ?></div>
             </div>
             <ul class="sidebar-menu">
@@ -340,7 +393,7 @@ $address_result = mysqli_query($cnx, $address_query);
                 <li><a href="wishlist.php"><i class="fas fa-heart"></i> Mes Favoris</a></li>
                 <li><a href="addresses.php" class="active"><i class="fas fa-map-marker-alt"></i> Adresses</a></li>
                 <li><a href="settings.php"><i class="fas fa-cog"></i> Paramètres</a></li>
-                <li><a href="src/Controllers/api/auth.php?action=logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+                <li><a href="api/auth.php?action=logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
             </ul>
         </div>
 
@@ -357,35 +410,40 @@ $address_result = mysqli_query($cnx, $address_query);
 
             <div class="address-grid">
                 <?php while ($addr = mysqli_fetch_assoc($address_result)): ?>
-                    <div class="address-card <?php echo $addr['is_default'] ? 'default' : ''; ?>">
-                        <?php if ($addr['is_default']): ?>
-                            <span class="default-badge">Défaut</span>
-                        <?php endif; ?>
-                        
-                        <div class="address-title"><?php echo htmlspecialchars($addr['title']); ?></div>
-                        <div class="address-details">
-                            <p><strong><?php echo htmlspecialchars($addr['first_name'] . ' ' . $addr['last_name']); ?></strong></p>
-                            <p><?php echo htmlspecialchars($addr['address_line1']); ?></p>
-                            <?php if (!empty($addr['address_line2'])): ?>
-                                <p><?php echo htmlspecialchars($addr['address_line2']); ?></p>
-                            <?php endif; ?>
-                            <p><?php echo htmlspecialchars($addr['postal_code'] . ' ' . $addr['city']); ?></p>
-                            <p><?php echo htmlspecialchars($addr['country']); ?></p>
-                            <p><i class="fas fa-phone"></i> <?php echo htmlspecialchars($addr['phone']); ?></p>
-                        </div>
+                <div class="address-card <?php echo $addr['is_default'] ? 'default' : ''; ?>">
+                    <?php if ($addr['is_default']): ?>
+                    <span class="default-badge">Défaut</span>
+                    <?php endif; ?>
 
-                        <div class="address-actions">
-                            <button class="btn-action btn-edit" onclick='openModal("edit", <?php echo json_encode($addr); ?>)'>Modifier</button>
-                            <span style="color:#ddd">|</span>
-                            <?php if (!$addr['is_default']): ?>
-                                <button class="btn-action btn-default" onclick="setDefault(<?php echo $addr['id']; ?>)">Définir par défaut</button>
-                                <span style="color:#ddd">|</span>
-                                <button class="btn-action btn-delete" onclick="deleteAddress(<?php echo $addr['id']; ?>)">Supprimer</button>
-                            <?php else: ?>
-                                <span class="btn-action" style="cursor: default; color: var(--success-green);">Adresse principale</span>
-                            <?php endif; ?>
-                        </div>
+                    <div class="address-title"><?php echo htmlspecialchars($addr['title']); ?></div>
+                    <div class="address-details">
+                        <p><strong><?php echo htmlspecialchars($addr['first_name'] . ' ' . $addr['last_name']); ?></strong>
+                        </p>
+                        <p><?php echo htmlspecialchars($addr['address_line1']); ?></p>
+                        <?php if (!empty($addr['address_line2'])): ?>
+                        <p><?php echo htmlspecialchars($addr['address_line2']); ?></p>
+                        <?php endif; ?>
+                        <p><?php echo htmlspecialchars($addr['postal_code'] . ' ' . $addr['city']); ?></p>
+                        <p><?php echo htmlspecialchars($addr['country']); ?></p>
+                        <p><i class="fas fa-phone"></i> <?php echo htmlspecialchars($addr['phone']); ?></p>
                     </div>
+
+                    <div class="address-actions">
+                        <button class="btn-action btn-edit"
+                            onclick='openModal("edit", <?php echo json_encode($addr); ?>)'>Modifier</button>
+                        <span style="color:#ddd">|</span>
+                        <?php if (!$addr['is_default']): ?>
+                        <button class="btn-action btn-default" onclick="setDefault(<?php echo $addr['id']; ?>)">Définir
+                            par défaut</button>
+                        <span style="color:#ddd">|</span>
+                        <button class="btn-action btn-delete"
+                            onclick="deleteAddress(<?php echo $addr['id']; ?>)">Supprimer</button>
+                        <?php else: ?>
+                        <span class="btn-action" style="cursor: default; color: var(--success-green);">Adresse
+                            principale</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
                 <?php endwhile; ?>
             </div>
         </div>
@@ -400,7 +458,7 @@ $address_result = mysqli_query($cnx, $address_query);
             </div>
             <form id="addressForm">
                 <input type="hidden" name="action" value="add">
-                
+
                 <div class="form-group">
                     <label class="form-label">Titre (ex: Maison, Bureau)</label>
                     <input type="text" name="title" class="form-input" placeholder="Mon adresse">
@@ -409,11 +467,13 @@ $address_result = mysqli_query($cnx, $address_query);
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Prénom</label>
-                        <input type="text" name="first_name" class="form-input" required value="<?php echo htmlspecialchars($user['first_name']); ?>">
+                        <input type="text" name="first_name" class="form-input" required
+                            value="<?php echo htmlspecialchars($user['first_name']); ?>">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Nom</label>
-                        <input type="text" name="last_name" class="form-input" required value="<?php echo htmlspecialchars($user['last_name']); ?>">
+                        <input type="text" name="last_name" class="form-input" required
+                            value="<?php echo htmlspecialchars($user['last_name']); ?>">
                     </div>
                 </div>
 
@@ -449,68 +509,69 @@ $address_result = mysqli_query($cnx, $address_query);
     </div>
 
     <script>
-        function openModal(mode = 'add', data = null) {
-            const modal = document.getElementById('addressModal');
-            const form = document.getElementById('addressForm');
-            const title = modal.querySelector('.modal-title');
-            const submitBtn = modal.querySelector('.btn-submit');
+    function openModal(mode = 'add', data = null) {
+        const modal = document.getElementById('addressModal');
+        const form = document.getElementById('addressForm');
+        const title = modal.querySelector('.modal-title');
+        const submitBtn = modal.querySelector('.btn-submit');
 
-            // Reset form
-            form.reset();
-            
-            // Remove hidden id input if exists
-            const existingId = form.querySelector('input[name="address_id"]');
-            if(existingId) existingId.remove();
+        // Reset form
+        form.reset();
 
-            if (mode === 'edit' && data) {
-                title.textContent = 'Modifier l\'adresse';
-                submitBtn.textContent = 'Mettre à jour';
-                form.querySelector('input[name="action"]').value = 'update';
-                
-                // Add hidden id input
-                const idInput = document.createElement('input');
-                idInput.type = 'hidden';
-                idInput.name = 'address_id';
-                idInput.value = data.id;
-                form.appendChild(idInput);
+        // Remove hidden id input if exists
+        const existingId = form.querySelector('input[name="address_id"]');
+        if (existingId) existingId.remove();
 
-                // Fill fields
-                form.querySelector('input[name="title"]').value = data.title;
-                form.querySelector('input[name="first_name"]').value = data.first_name;
-                form.querySelector('input[name="last_name"]').value = data.last_name;
-                form.querySelector('input[name="phone"]').value = data.phone;
-                form.querySelector('input[name="address_line1"]').value = data.address_line1;
-                form.querySelector('input[name="address_line2"]').value = data.address_line2 || '';
-                form.querySelector('input[name="postal_code"]').value = data.postal_code;
-                form.querySelector('input[name="city"]').value = data.city;
-            } else {
-                title.textContent = 'Nouvelle Adresse';
-                submitBtn.textContent = 'Ajouter l\'adresse';
-                form.querySelector('input[name="action"]').value = 'add';
-                // Pre-fill name from PHP user data if adding new
-                form.querySelector('input[name="first_name"]').value = '<?php echo htmlspecialchars($user['first_name']); ?>';
-                form.querySelector('input[name="last_name"]').value = '<?php echo htmlspecialchars($user['last_name']); ?>';
-            }
+        if (mode === 'edit' && data) {
+            title.textContent = 'Modifier l\'adresse';
+            submitBtn.textContent = 'Mettre à jour';
+            form.querySelector('input[name="action"]').value = 'update';
 
-            modal.classList.add('active');
+            // Add hidden id input
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'address_id';
+            idInput.value = data.id;
+            form.appendChild(idInput);
+
+            // Fill fields
+            form.querySelector('input[name="title"]').value = data.title;
+            form.querySelector('input[name="first_name"]').value = data.first_name;
+            form.querySelector('input[name="last_name"]').value = data.last_name;
+            form.querySelector('input[name="phone"]').value = data.phone;
+            form.querySelector('input[name="address_line1"]').value = data.address_line1;
+            form.querySelector('input[name="address_line2"]').value = data.address_line2 || '';
+            form.querySelector('input[name="postal_code"]').value = data.postal_code;
+            form.querySelector('input[name="city"]').value = data.city;
+        } else {
+            title.textContent = 'Nouvelle Adresse';
+            submitBtn.textContent = 'Ajouter l\'adresse';
+            form.querySelector('input[name="action"]').value = 'add';
+            // Pre-fill name from PHP user data if adding new
+            form.querySelector('input[name="first_name"]').value =
+                '<?php echo htmlspecialchars($user['first_name']); ?>';
+            form.querySelector('input[name="last_name"]').value = '<?php echo htmlspecialchars($user['last_name']); ?>';
         }
 
-        function closeModal() {
-            document.getElementById('addressModal').classList.remove('active');
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('addressModal').classList.remove('active');
+    }
+
+    // Close on outside click
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('addressModal')) {
+            closeModal();
         }
+    }
 
-        // Close on outside click
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('addressModal')) {
-                closeModal();
-            }
-        }
+    document.getElementById('addressForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
 
-        document.getElementById('addressForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-
-            fetch('src/Controllers/api/addresses.php', {
+        fetch('api/addresses.php', {
                 method: 'POST',
                 body: formData
             })
@@ -523,16 +584,16 @@ $address_result = mysqli_query($cnx, $address_query);
                 }
             })
             .catch(error => console.error('Error:', error));
-        });
+    });
 
-        function deleteAddress(id) {
-            if(!confirm('Voulez-vous vraiment supprimer cette adresse ?')) return;
+    function deleteAddress(id) {
+        if (!confirm('Voulez-vous vraiment supprimer cette adresse ?')) return;
 
-            const formData = new FormData();
-            formData.append('action', 'delete');
-            formData.append('address_id', id);
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('address_id', id);
 
-            fetch('src/Controllers/api/addresses.php', {
+        fetch('api/addresses.php', {
                 method: 'POST',
                 body: formData
             })
@@ -544,14 +605,14 @@ $address_result = mysqli_query($cnx, $address_query);
                     alert(data.message);
                 }
             });
-        }
+    }
 
-        function setDefault(id) {
-            const formData = new FormData();
-            formData.append('action', 'set_default');
-            formData.append('address_id', id);
+    function setDefault(id) {
+        const formData = new FormData();
+        formData.append('action', 'set_default');
+        formData.append('address_id', id);
 
-            fetch('src/Controllers/api/addresses.php', {
+        fetch('api/addresses.php', {
                 method: 'POST',
                 body: formData
             })
@@ -563,7 +624,8 @@ $address_result = mysqli_query($cnx, $address_query);
                     alert(data.message);
                 }
             });
-        }
+    }
     </script>
 </body>
+
 </html>

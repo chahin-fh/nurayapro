@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Connexion à la base de données
-include '../cnx.php';
+include 'config/database.php';
 
 // Récupérer l'action
 $action = $_POST['action'] ?? '';

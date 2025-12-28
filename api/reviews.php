@@ -3,7 +3,7 @@ session_start();
 header('Content-Type: application/json');
 
 // Connexion à la base de données
-include '../cnx.php';
+require_once '../config/database.php';
 
 // Récupérer l'action demandée
 $action = $_POST['action'] ?? $_GET['action'] ?? '';

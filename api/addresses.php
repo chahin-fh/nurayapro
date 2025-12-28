@@ -2,7 +2,7 @@
 session_start();
 header('Content-Type: application/json');
 
-include '../cnx.php';
+require_once '../config/database.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
@@ -70,7 +70,7 @@ function deleteAddress()
 {
     global $cnx, $user_id;
 
-    $address_id = (int)($_POST['address_id'] ?? 0);
+    $address_id = (int) ($_POST['address_id'] ?? 0);
 
     if ($address_id <= 0) {
         echo json_encode(['success' => false, 'message' => 'ID invalide']);
@@ -105,7 +105,7 @@ function setDefaultAddress()
 {
     global $cnx, $user_id;
 
-    $address_id = (int)($_POST['address_id'] ?? 0);
+    $address_id = (int) ($_POST['address_id'] ?? 0);
 
     if ($address_id <= 0) {
         echo json_encode(['success' => false, 'message' => 'ID invalide']);
@@ -129,14 +129,12 @@ function setDefaultAddress()
         echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour']);
     }
 }
-?>
 
-<?php
 function updateAddress()
 {
     global $cnx, $user_id;
 
-    $address_id = (int)($_POST['address_id'] ?? 0);
+    $address_id = (int) ($_POST['address_id'] ?? 0);
     $title = trim($_POST['title'] ?? 'Mon adresse');
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
@@ -174,5 +172,10 @@ function updateAddress()
     } else {
         echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour: ' . mysqli_error($cnx)]);
     }
+}
+
+// Fermer la connexion BDD
+if (isset($cnx)) {
+    mysqli_close($cnx);
 }
 ?>

@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     exit;
 }
 
-require_once __DIR__ . '/../../../src/Controllers/cnx.php';
+require_once '../../config/database.php';
 
 $action = $_POST['action'] ?? '';
 
@@ -28,11 +28,11 @@ switch ($action) {
 function toggleUserStatus()
 {
     global $cnx;
-    $user_id = (int)($_POST['user_id'] ?? 0);
-    $status = (int)($_POST['status'] ?? 1);
-    
+    $user_id = (int) ($_POST['user_id'] ?? 0);
+    $status = (int) ($_POST['status'] ?? 1);
+
     $query = "UPDATE users SET is_active = $status WHERE id = $user_id AND role != 'admin'";
-    
+
     if (mysqli_query($cnx, $query)) {
         echo json_encode(['success' => true, 'message' => 'Statut mis à jour']);
     } else {
@@ -43,16 +43,16 @@ function toggleUserStatus()
 function updateUserRole()
 {
     global $cnx;
-    $user_id = (int)($_POST['user_id'] ?? 0);
+    $user_id = (int) ($_POST['user_id'] ?? 0);
     $role = mysqli_real_escape_string($cnx, $_POST['role'] ?? 'user');
-    
+
     if (!in_array($role, ['user', 'admin'])) {
         echo json_encode(['success' => false, 'message' => 'Rôle invalide']);
         return;
     }
-    
+
     $query = "UPDATE users SET role = '$role' WHERE id = $user_id";
-    
+
     if (mysqli_query($cnx, $query)) {
         echo json_encode(['success' => true, 'message' => 'Rôle mis à jour']);
     } else {
@@ -63,16 +63,16 @@ function updateUserRole()
 function deleteUser()
 {
     global $cnx;
-    $user_id = (int)($_POST['user_id'] ?? 0);
-    
+    $user_id = (int) ($_POST['user_id'] ?? 0);
+
     // Empêcher la suppression de son propre compte ou d'un autre admin si besoin
     if ($user_id == $_SESSION['user_id']) {
         echo json_encode(['success' => false, 'message' => 'Vous ne pouvez pas supprimer votre propre compte']);
         return;
     }
-    
+
     $query = "DELETE FROM users WHERE id = $user_id AND role != 'admin'";
-    
+
     if (mysqli_query($cnx, $query)) {
         echo json_encode(['success' => true, 'message' => 'Utilisateur supprimé']);
     } else {

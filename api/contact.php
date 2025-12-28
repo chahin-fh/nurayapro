@@ -2,15 +2,15 @@
 header('Content-Type: application/json');
 
 // Connexion à la base de données
-require_once $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/src/Controllers/cnx.php';
+require_once 'config/database.php';
 
 // Charger PHPMailer
-require $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/vendor/autoload.php';
+require '../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Charger la configuration email
-$emailConfig = require $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/email.php';
+$emailConfig = require '../config/email.php';
 
 // Récupérer l'action
 $action = $_POST['action'] ?? '';

@@ -5,9 +5,9 @@
 
 // Configuration de base
 define('SITE_NAME', 'Nuraya');
-define('SITE_URL', '/nuraya_pro');
-define('ASSETS_URL', '/nuraya_pro/assets');
-define('IMAGES_URL', '/nuraya_pro/img');
+define('SITE_URL', '');
+define('ASSETS_URL', 'assets');
+define('IMAGES_URL', 'img');
 
 // Configuration des chemins
 define('ROOT_PATH', __DIR__);

@@ -56,46 +56,53 @@ if ($dl == 1 && $id > 0) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Product</title>
-    <link rel="stylesheet" href="../uploads/style.css">
+    <link rel="stylesheet" href="uploads/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        .current-image {
-            max-width: 200px;
-            max-height: 200px;
-            margin: 10px 0;
-            display: block;
-        }
-        .photo-upload {
-            border: 2px dashed #ccc;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-        }
-        .photo-upload:hover {
-            border-color: #999;
-        }
-        .required {
-            color: red;
-        }
+    .current-image {
+        max-width: 200px;
+        max-height: 200px;
+        margin: 10px 0;
+        display: block;
+    }
+
+    .photo-upload {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .photo-upload:hover {
+        border-color: #999;
+    }
+
+    .required {
+        color: red;
+    }
     </style>
 </head>
+
 <body>
     <div class="form-container">
         <h2><i class="fas fa-edit"></i> EDIT PRODUCT</h2>
-        <form id="productForm" method="post" action="/nuraya_pro/manage-edit" enctype="multipart/form-data">
+        <form id="productForm" method="post" action="/nurayapro/manage-edit" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="photos">
                     <i class="fas fa-images"></i> Photo actuelle
                 </label>
                 <?php if (!empty($product['image_url'])) : ?>
-                    <img src="<?php echo htmlspecialchars($product['image_url']); ?>" class="current-image" alt="Current product image">
-                    <input type="hidden" name="current_image" value="<?php echo htmlspecialchars($product['image_url']); ?>">
+                <img src="<?php echo htmlspecialchars($product['image_url']); ?>" class="current-image"
+                    alt="Current product image">
+                <input type="hidden" name="current_image"
+                    value="<?php echo htmlspecialchars($product['image_url']); ?>">
                 <?php endif; ?>
-                
+
                 <label for="photos">
                     <i class="fas fa-images"></i> Nouvelle photo
                 </label>
@@ -106,23 +113,25 @@ if ($dl == 1 && $id > 0) {
                     <input type="file" id="photos" name="pro_images" accept="image/*" style="display: none;">
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label for="title">
                     <i class="fas fa-heading"></i> Title
                     <span class="required">*</span>
                 </label>
-                <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($product['name']); ?>" required minlength="3">
+                <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($product['name']); ?>"
+                    required minlength="3">
                 <div class="input-hint">Minimum 3 characters</div>
             </div>
-            
+
             <div class="form-group">
                 <label for="price">
                     <i class="fas fa-tag"></i> Price
                     <span class="required">*</span>
                 </label>
                 <div class="price-container">
-                    <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" min="0.01" step="0.01" required>
+                    <input type="number" id="price" name="price"
+                        value="<?php echo htmlspecialchars($product['price']); ?>" min="0.01" step="0.01" required>
                 </div>
                 <div class="input-hint">Enter a price greater than 0</div>
             </div>
@@ -133,11 +142,12 @@ if ($dl == 1 && $id > 0) {
                     <span class="required">*</span>
                 </label>
                 <div class="quantity-container">
-                    <input type="number" id="quantity" name="quantity" value="<?php echo htmlspecialchars($product['stock_quantity']); ?>" min="1" required>
+                    <input type="number" id="quantity" name="quantity"
+                        value="<?php echo htmlspecialchars($product['stock_quantity']); ?>" min="1" required>
                 </div>
                 <div class="input-hint">Enter the stock quantity</div>
-            </div>            
-            
+            </div>
+
             <div class="form-group">
                 <label for="category">
                     <i class="fas fa-tags"></i> Category
@@ -148,26 +158,27 @@ if ($dl == 1 && $id > 0) {
                     <?php 
                     mysqli_data_seek($cat_res, 0);
                     while($tc = mysqli_fetch_assoc($cat_res)) : ?>
-                        <option value="<?php echo $tc['category_id']; ?>" 
-                            <?php echo ($tc['category_id'] == $product['category_id']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($tc['name']); ?>
-                        </option>
-                    <?php endwhile; ?>    
+                    <option value="<?php echo $tc['category_id']; ?>"
+                        <?php echo ($tc['category_id'] == $product['category_id']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($tc['name']); ?>
+                    </option>
+                    <?php endwhile; ?>
                 </select>
                 <div class="input-hint">Select a category for your product</div>
             </div>
-            
+
             <div class="form-group">
                 <label for="description">
                     <i class="fas fa-align-left"></i> Description
                     <span class="required">*</span>
                 </label>
-                <textarea id="description" name="description" required minlength="10"><?php echo htmlspecialchars($product['description']); ?></textarea>
+                <textarea id="description" name="description" required
+                    minlength="10"><?php echo htmlspecialchars($product['description']); ?></textarea>
                 <div class="input-hint">Minimum 10 characters</div>
             </div>
-            
+
             <input type="hidden" name="id" value="<?php echo $product['product_id']; ?>">
-            
+
             <button type="submit" class="btn">
                 <i class="fas fa-save"></i> Update Product
             </button>
@@ -175,30 +186,31 @@ if ($dl == 1 && $id > 0) {
     </div>
 
     <script>
-        // Gestion du téléchargement d'image
-        document.getElementById('photoUploadArea').addEventListener('click', function() {
-            document.getElementById('photos').click();
-        });
+    // Gestion du téléchargement d'image
+    document.getElementById('photoUploadArea').addEventListener('click', function() {
+        document.getElementById('photos').click();
+    });
 
-        document.getElementById('photos').addEventListener('change', function(e) {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const uploadArea = document.getElementById('photoUploadArea');
-                    uploadArea.innerHTML = '';
-                    
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.style.maxWidth = '100%';
-                    img.style.maxHeight = '200px';
-                    
-                    uploadArea.appendChild(img);
-                };
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
+    document.getElementById('photos').addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const uploadArea = document.getElementById('photoUploadArea');
+                uploadArea.innerHTML = '';
+
+                const img = document.createElement('img');
+                img.src = event.target.result;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '200px';
+
+                uploadArea.appendChild(img);
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
     </script>
 </body>
+
 </html>
 <?php } 
 mysqli_close($cnx);
