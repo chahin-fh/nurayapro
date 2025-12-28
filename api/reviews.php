@@ -15,6 +15,21 @@ switch ($action) {
     case 'get':
         getReviews();
         break;
+    case 'update':
+        updateReview();
+        break;
+    case 'delete':
+        deleteReview();
+        break;
+    case 'helpful':
+        markHelpful();
+        break;
+    case 'report':
+        reportReview();
+        break;
+    case 'user_reviews':
+        getUserReviews();
+        break;
     default:
         echo json_encode(['success' => false, 'message' => 'Action non valide']);
         break;

@@ -207,11 +207,31 @@ function login()
 
 function logout()
 {
+    // Détruire toutes les variables de session
+    $_SESSION = array();
+
+    // Détruire le cookie de session
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params["path"],
+            $params["domain"],
+            $params["secure"],
+            $params["httponly"]
+        );
+    }
+
     // Détruire la session
     session_destroy();
 
-    // Rediriger vers la page de connexion
-    header('Location: ../../../login.php');
+    // Détruire le cookie remember_token s'il existe
+    setcookie('remember_token', '', time() - 3600, '/');
+
+    // Rediriger vers la page d'accueil
+    header('Location: ../index.php');
     exit;
 }
 
@@ -320,11 +340,11 @@ function forgotPassword()
                 <style>
                     body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #1C1C1C; }
                     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #C8B6A6 0%, #d4c4b0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                    .header { background: linear-gradient(135deg, #BDA18A 0%, #C49D83 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
                     .header h1 { color: #FAF7F2; margin: 0; font-size: 28px; font-weight: 700; }
                     .content { background: #FAF7F2; padding: 30px; border-radius: 0 0 10px 10px; }
-                    .info { background: #F5EFE6; border-left: 4px solid #C8B6A6; padding: 15px; margin: 20px 0; font-size: 14px; }
-                    .btn { display: inline-block; background: #C8B6A6; color: #FAF7F2 !important; padding: 14px 28px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 700; }
+                    .info { background: #f5efe6; border-left: 4px solid #BDA18A; padding: 15px; margin: 20px 0; font-size: 14px; }
+                    .btn { display: inline-block; background: #BDA18A; color: #FAF7F2 !important; padding: 14px 28px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 700; }
                     .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #7A7A7A; }
                 </style>
             </head>
@@ -534,20 +554,20 @@ function sendVerificationEmail($email, $verification_code)
             <style>
                 body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #1C1C1C; }
                 .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #C8B6A6 0%, #d4c4b0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .header { background: linear-gradient(135deg, #BDA18A 0%, #C49D83 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
                 .header h1 { color: #FAF7F2; margin: 0; font-size: 28px; font-weight: 700; }
                 .content { background: #FAF7F2; padding: 30px; border-radius: 0 0 10px 10px; }
-                .code-box { background: #F5EFE6; border: 2px solid #C8B6A6; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0; }
-                .code { font-size: 32px; font-weight: 700; color: #C8B6A6; letter-spacing: 8px; font-family: monospace; }
-                .info { background: #E6B7C8; color: #1C1C1C; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; }
-                .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #7A7A7A; }
-                .btn { display: inline-block; background: #C8B6A6; color: #FAF7F2; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0; }
+                .code-box { background: #f5efe6; border: 2px solid #BDA18A; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0; }
+                .code { font-size: 32px; font-weight: 700; color: #BDA18A; letter-spacing: 8px; font-family: monospace; }
+                .info { background: #E8D5CC; color: #1a1a1a; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; }
+                .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #718096; }
+                .btn { display: inline-block; background: #BDA18A; color: #FAF7F2; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0; }
             </style>
         </head>
         <body>
             <div class='container'>
                 <div class='header'>
-                    <h1>🔐 Vérification Nuraya</h1>
+                    <h1> Vérification Nuraya</h1>
                 </div>
                 <div class='content'>
                     <p>Bonjour,</p>

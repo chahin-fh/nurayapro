@@ -375,11 +375,11 @@ $i = 0;
         <div class="categories-filter">
             <h3>Catégories</h3>
             <div class="filter-list">
-                <a href="index.php" class="filter-item <?php echo empty($category_slug) ? 'active' : ''; ?>">
+                <a href="shop.php" class="filter-item <?php echo empty($category_slug) ? 'active' : ''; ?>">
                     Tous les Produits
                 </a>
                 <?php while ($cat = mysqli_fetch_assoc($categories_result)): ?>
-                <a href="index.php?category=<?php echo $cat['slug']; ?>"
+                <a href="shop.php?category=<?php echo $cat['slug']; ?>"
                     class="filter-item <?php echo $category_slug === $cat['slug'] ? 'active' : ''; ?>">
                     <?php echo htmlspecialchars($cat['name']); ?>
                 </a>

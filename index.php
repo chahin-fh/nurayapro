@@ -525,7 +525,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
 
     <div class="main-content">
         <div class="content-items">
-            <a href="#" class="content-item">
+            <a href="contact_us.php" class="content-item">
                 <div class="content-item-left">
                     <span class="item-arrow">></span>
                     <span class="item-text">Contacter un Conseiller</span>
@@ -533,7 +533,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
                 <span class="item-plus">+</span>
             </a>
 
-            <a href="#" class="content-item">
+            <a href="shop.php?category=must-have" class="content-item">
                 <div class="content-item-left">
                     <span class="item-arrow">></span>
                     <span class="item-text">Must Have</span>
@@ -541,10 +541,10 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
                 <span class="item-plus">+</span>
             </a>
 
-            <a href="#" class="content-item">
+            <a href="about.php" class="content-item">
                 <div class="content-item-left">
                     <span class="item-arrow">></span>
-                    <span class="item-text">About US</span>
+                    <span class="item-text">About us</span>
                 </div>
                 <span class="item-plus">+</span>
             </a>

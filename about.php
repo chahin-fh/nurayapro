@@ -8,257 +8,257 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-    :root {
-        --bg-light: #F5EFE6;
-        --bg-white: #FAF7F2;
-        --beige-dark: #C8B6A6;
-        --text-dark: #1C1C1C;
-        --text-gray: #7A7A7A;
-        --accent-pink: #E6B7C8;
-    }
+        :root {
+            --bg-light: #F5EFE6;
+            --bg-white: #FAF7F2;
+            --beige-dark: #C8B6A6;
+            --text-dark: #1C1C1C;
+            --text-gray: #7A7A7A;
+            --accent-pink: #E6B7C8;
+        }
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
 
-    body {
-        font-family: 'Montserrat', sans-serif;
-        background: var(--bg-light);
-        color: var(--text-dark);
-        line-height: 1.6
-    }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6
+        }
 
-    /* Hero Section */
-    .hero {
-        background: linear-gradient(135deg, var(--beige-dark) 0%, rgba(200, 182, 166, 0.8) 100%);
-        color: var(--bg-white);
-        padding: 80px 28px;
-        text-align: center;
-        border-radius: 16px;
-        margin: 30px 28px;
-        position: relative;
-        overflow: hidden
-    }
-
-    .hero::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, var(--text-dark) 0%, transparent 50%);
-        opacity: 0.2
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2
-    }
-
-    .hero h1 {
-        font-size: 48px;
-        margin-bottom: 16px;
-        letter-spacing: 2px;
-        font-weight: 700
-    }
-
-    .hero p {
-        font-size: 18px;
-        color: var(--bg-white);
-        max-width: 600px;
-        margin: 0 auto;
-        opacity: 0.95
-    }
-
-    /* Container */
-    .container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 40px 28px
-    }
-
-    /* Sections */
-    .section {
-        margin-bottom: 60px
-    }
-
-    .section-title {
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 24px;
-        color: var(--text-dark);
-        position: relative;
-        padding-bottom: 12px
-    }
-
-    .section-title::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 60px;
-        height: 3px;
-        background: var(--beige-dark)
-    }
-
-    /* Feature Cards */
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 24px;
-        margin-top: 28px
-    }
-
-    .feature-card {
-        background: var(--bg-white);
-        padding: 28px;
-        border-radius: 16px;
-        box-shadow: 0 4px 15px rgba(200, 182, 166, 0.15);
-        transition: transform 0.3s, box-shadow 0.3s;
-        border-left: 4px solid var(--beige-dark)
-    }
-
-    .feature-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(200, 182, 166, 0.25)
-    }
-
-    .feature-card h3 {
-        font-size: 18px;
-        margin-bottom: 12px;
-        color: var(--text-dark);
-        font-weight: 600
-    }
-
-    .feature-card p {
-        color: var(--text-gray);
-        line-height: 1.7;
-        font-size: 14px
-    }
-
-    /* Content Box */
-    .content-block {
-        background: var(--bg-white);
-        padding: 32px;
-        border-radius: 16px;
-        box-shadow: 0 4px 15px rgba(200, 182, 166, 0.15);
-        margin-bottom: 28px
-    }
-
-    .content-block p {
-        color: var(--text-dark);
-        line-height: 1.8;
-        font-size: 15px;
-        margin-bottom: 14px
-    }
-
-    .content-block p:last-child {
-        margin-bottom: 0
-    }
-
-    /* Highlight Box */
-    .highlight-box {
-        background: linear-gradient(135deg, var(--accent-pink) 0%, rgba(230, 183, 200, 0.1) 100%);
-        padding: 28px;
-        border-radius: 16px;
-        border-left: 4px solid var(--beige-dark);
-        margin: 28px 0
-    }
-
-    .highlight-box p {
-        color: var(--text-dark);
-        font-weight: 600;
-        font-size: 16px;
-        margin: 0
-    }
-
-    /* Stats Section */
-    .stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 24px;
-        margin-top: 28px;
-        text-align: center
-    }
-
-    .stat {
-        padding: 24px;
-        background: var(--bg-white);
-        border-radius: 16px;
-        box-shadow: 0 4px 15px rgba(200, 182, 166, 0.15)
-    }
-
-    .stat-number {
-        font-size: 36px;
-        font-weight: 700;
-        color: var(--beige-dark);
-        margin-bottom: 8px
-    }
-
-    .stat-label {
-        color: var(--text-gray);
-        font-size: 14px;
-        font-weight: 600
-    }
-
-    /* CTA Button */
-    .cta-button {
-        display: inline-block;
-        background: var(--beige-dark);
-        color: var(--bg-white);
-        padding: 14px 32px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s;
-        margin-top: 20px;
-        border: none;
-        cursor: pointer
-    }
-
-    .cta-button:hover {
-        background: var(--text-dark);
-        transform: translateY(-2px)
-    }
-
-    /* Responsive */
-    @media (max-width:900px) {
+        /* Hero Section */
         .hero {
-            padding: 60px 20px;
-            margin: 20px
+            background: linear-gradient(135deg, var(--beige-dark) 0%, rgba(200, 182, 166, 0.8) 100%);
+            color: var(--bg-white);
+            padding: 80px 28px;
+            text-align: center;
+            border-radius: 16px;
+            margin: 30px 28px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--text-dark) 0%, transparent 50%);
+            opacity: 0.2
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2
         }
 
         .hero h1 {
-            font-size: 32px
+            font-size: 48px;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+            font-weight: 700
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--bg-white);
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.95
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 28px
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 60px
         }
 
         .section-title {
-            font-size: 24px
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-dark);
+            position: relative;
+            padding-bottom: 12px
         }
 
-        .container {
-            padding: 30px 20px
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--beige-dark)
         }
-    }
 
-    @media (max-width:600px) {
-        .hero h1 {
-            font-size: 28px
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 28px
         }
 
-        .navbar {
-            padding: 16px 20px
+        .feature-card {
+            background: var(--bg-white);
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(200, 182, 166, 0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid var(--beige-dark)
         }
-    }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(200, 182, 166, 0.25)
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+            font-weight: 600
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            line-height: 1.7;
+            font-size: 14px
+        }
+
+        /* Content Box */
+        .content-block {
+            background: var(--bg-white);
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(200, 182, 166, 0.15);
+            margin-bottom: 28px
+        }
+
+        .content-block p {
+            color: var(--text-dark);
+            line-height: 1.8;
+            font-size: 15px;
+            margin-bottom: 14px
+        }
+
+        .content-block p:last-child {
+            margin-bottom: 0
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--accent-pink) 0%, rgba(230, 183, 200, 0.1) 100%);
+            padding: 28px;
+            border-radius: 16px;
+            border-left: 4px solid var(--beige-dark);
+            margin: 28px 0
+        }
+
+        .highlight-box p {
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 28px;
+            text-align: center
+        }
+
+        .stat {
+            padding: 24px;
+            background: var(--bg-white);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(200, 182, 166, 0.15)
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--beige-dark);
+            margin-bottom: 8px
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            background: var(--beige-dark);
+            color: var(--bg-white);
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer
+        }
+
+        .cta-button:hover {
+            background: var(--text-dark);
+            transform: translateY(-2px)
+        }
+
+        /* Responsive */
+        @media (max-width:900px) {
+            .hero {
+                padding: 60px 20px;
+                margin: 20px
+            }
+
+            .hero h1 {
+                font-size: 32px
+            }
+
+            .section-title {
+                font-size: 24px
+            }
+
+            .container {
+                padding: 30px 20px
+            }
+        }
+
+        @media (max-width:600px) {
+            .hero h1 {
+                font-size: 28px
+            }
+
+            .navbar {
+                padding: 16px 20px
+            }
+        }
     </style>
 </head>
 
 <body>
     <header>
-        <?php include('navbar.php'); ?>
+        <?php include 'templates/navbar_updated.php'; ?>
     </header>
 
     <section class="hero">
@@ -346,7 +346,7 @@
             <h2 class="section-title" style="text-align:center;margin-bottom:16px">Ready to Join Us?</h2>
             <p style="color:var(--muted);margin-bottom:24px;font-size:15px">Explore our collection and discover products
                 that resonate with your values.</p>
-            <a href="shop" class="cta-button">Shop Now</a>
+            <a href="shop.php" class="cta-button">Shop Now</a>
         </section>
     </div>
 </body>
