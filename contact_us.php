@@ -272,15 +272,15 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert(data.message);
+                        showToast(data.message, 'success');
                         this.reset();
                     } else {
-                        alert(data.message);
+                        showToast(data.message, 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Erreur:', error);
-                    alert('Erreur lors de l\'envoi du message. Veuillez réessayer.');
+                    showToast('Erreur lors de l\'envoi du message. Veuillez réessayer.', 'error');
                 })
                 .finally(() => {
                     // Réactiver le bouton

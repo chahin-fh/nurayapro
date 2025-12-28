@@ -15,11 +15,18 @@ $categories_result = mysqli_query($cnx, $query);
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin-common.css">
+    <script src="../assets/js/toast.js"></script>
     <style>
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         .category-card {
@@ -195,7 +202,7 @@ $categories_result = mysqli_query($cnx, $query);
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert(data.message);
+                    showToast(data.message, 'error');
                 }
             });
         };
@@ -213,7 +220,7 @@ $categories_result = mysqli_query($cnx, $query);
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert(data.message);
+                    showToast(data.message, 'error');
                 }
             });
         }

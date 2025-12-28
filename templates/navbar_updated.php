@@ -458,8 +458,25 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/database.php';
     display: block
 }
 
-/* Responsive */
-@media (max-width:768px) {
+/* Responsive */    .mobile-menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1999;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .mobile-menu-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+
+    @media (max-width:768px) {
     .nav-links {
         display: none
     }
@@ -473,7 +490,11 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/database.php';
     }
 
     .mobile-menu {
-        display: block
+        display: block;
+        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 2000;
+        background: var(--bg-white);
     }
 
     .navbar {
@@ -492,6 +513,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/database.php';
     }
 }
 </style>
+<link rel="stylesheet" href="/nurayapro/assets/css/toast.css">
+<script src="/nurayapro/assets/js/toast.js"></script>
 
 <header>
     <nav class="navbar">
@@ -594,6 +617,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/database.php';
         <div class="mobile-search">
             <input type="text" class="mobile-search-input" id="mobileSearchInput"
                 placeholder="Rechercher un produit...">
+            <div class="search-results" id="mobileSearchResults"></div>
         </div>
 
         <div class="mobile-menu-content">
@@ -764,7 +788,7 @@ function displaySearchResults(data) {
         let html = '';
         data.results.forEach(product => {
             html += `
-                <a href="/nurayapro/produits/product.php?id=${product.product_id}" class="search-result-item">
+                <a href="/nurayapro/src/Controllers/produits/product.php?id=${product.product_id}" class="search-result-item">
                     <img src="${product.image_url}" alt="${product.name}" class="search-result-image"
                          onerror="this.src='https://via.placeholder.com/40x40/F5EFE6/C8B6A6?text=P'">
                     <div class="search-result-info">
@@ -783,34 +807,74 @@ function displaySearchResults(data) {
     }
 }
 
-// Mobile Search
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    let overlay = document.getElementById('mobileMenuOverlay');
+    
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'mobileMenuOverlay';
+        overlay.className = 'mobile-menu-overlay';
+        overlay.onclick = toggleMobileMenu;
+        document.body.appendChild(overlay);
+    }
+
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    if (menu.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+}
+
 const mobileSearchInput = document.getElementById('mobileSearchInput');
 if (mobileSearchInput) {
+    mobileSearchInput.addEventListener('input', function() {
+        const searchTerm = this.value.trim();
+        const resultsContainer = document.getElementById('mobileSearchResults');
+        
+        if (searchTerm.length < 2) {
+            resultsContainer.classList.remove('show');
+            return;
+        }
+
+        fetch(`/nurayapro/src/Controllers/api/search.php?q=${encodeURIComponent(searchTerm)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.results.length > 0) {
+                    let html = '';
+                    data.results.forEach(product => {
+                        html += `
+                            <a href="/nurayapro/src/Controllers/produits/product.php?id=${product.product_id}" class="search-result-item">
+                                <img src="${product.image_url}" alt="${product.name}" class="search-result-image"
+                                     onerror="this.src='https://via.placeholder.com/40x40/F5EFE6/C8B6A6?text=P'">
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${product.name}</div>
+                                    <div class="search-result-category">${product.category_name}</div>
+                                </div>
+                                <div class="search-result-price">${product.price} DT</div>
+                            </a>
+                        `;
+                    });
+                    resultsContainer.innerHTML = html;
+                    resultsContainer.classList.add('show');
+                } else {
+                    resultsContainer.innerHTML = '<div class="no-results">Aucun produit trouvé</div>';
+                    resultsContainer.classList.add('show');
+                }
+            });
+    });
+
     mobileSearchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             const searchTerm = this.value.trim();
             if (searchTerm) {
-                window.location.href =
-                    `/nurayapro/src/Controllers/produits/index.php?search=${encodeURIComponent(searchTerm)}`;
+                window.location.href = `/nurayapro/src/Controllers/produits/index.php?search=${encodeURIComponent(searchTerm)}`;
             }
         }
     });
-}
-
-// Event Listeners
-const searchInput = document.getElementById('searchInput');
-if (searchInput) {
-    searchInput.addEventListener('input', handleSearchInput);
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            performSearch();
-        }
-    });
-}
-
-const hamburgerMenu = document.querySelector('.hamburger-menu');
-if (hamburgerMenu) {
-    hamburgerMenu.addEventListener('click', toggleMobileMenu);
 }
 
 // Load cart count on page load

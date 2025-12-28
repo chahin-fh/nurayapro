@@ -357,7 +357,7 @@ if ($remaining_time <= 0) {
 </head>
 
 <body>
-    <?php include 'navbar_updated.php'; ?>
+    <?php include 'templates/navbar_updated.php'; ?>
 
     <div class="verify-container">
         <div class="verify-card">
@@ -529,13 +529,7 @@ if ($remaining_time <= 0) {
         }
 
         function showAlert(message, type) {
-            const alertEl = document.getElementById('alertMessage');
-            alertEl.textContent = message;
-            alertEl.className = `alert show alert-${type}`;
-
-            setTimeout(() => {
-                alertEl.classList.remove('show');
-            }, 5000);
+            showToast(message, type === 'error' ? 'error' : 'success');
         }
 
         // Soumission du formulaire
@@ -626,7 +620,7 @@ if ($remaining_time <= 0) {
 
                         // Réinitialiser le timer
                         clearInterval(timerInterval);
-                        timeLeft = 300; // 5 minutes
+                        timeLeft = 960; // 16 minutes
                         timerElement.classList.remove('expired', 'warning');
                         resendBtn.disabled = false;
                         resendBtn.innerHTML = '<i class="fas fa-redo"></i> Renvoyer le code';

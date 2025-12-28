@@ -23,6 +23,7 @@ $categories = mysqli_query($cnx, $categories_query);
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin-common.css">
+    <script src="../assets/js/toast.js"></script>
 </head>
 <body>
     <div class="admin-layout">
@@ -63,7 +64,7 @@ $categories = mysqli_query($cnx, $categories_query);
                         <div class="card-header">
                             <h3>Prix & Inventaire</h3>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-row-grid">
                             <div class="form-group">
                                 <label>Prix de vente (DT)</label>
                                 <input type="number" step="0.01" name="price" value="<?php echo $product['price'] ?? ''; ?>" required>
@@ -134,7 +135,7 @@ $categories = mysqli_query($cnx, $categories_query);
                         </div>
                         <div id="imagePreview" style="width: 100%; height: 200px; border: 2px dashed var(--beige-dark); border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--bg-light);">
                             <?php if (isset($product['image_url']) && $product['image_url']): ?>
-                                <img src="../<?php echo htmlspecialchars($product['image_url']); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>" style="width: 100%; height: 100%; object-fit: cover;">
                             <?php else: ?>
                                 <i class="fas fa-image" style="font-size: 40px; color: var(--beige-dark);"></i>
                             <?php endif; ?>
@@ -191,15 +192,17 @@ $categories = mysqli_query($cnx, $categories_query);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Produit enregistré avec succès !');
-                    window.location.href = 'products.php';
+                    showToast('Produit enregistré avec succès !', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'products.php';
+                    }, 1000);
                 } else {
-                    alert(data.message);
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Une erreur est survenue lors de l\'enregistrement');
+                showToast('Une erreur est survenue lors de l\'enregistrement', 'error');
             });
         };
     </script>

@@ -3,6 +3,7 @@ header('Content-Type: application/json');
 
 // Connexion à la base de données
 include '../cnx.php';
+include '../../includes/functions.php';
 
 // Récupérer le terme de recherche
 $searchTerm = isset($_GET['q']) ? trim($_GET['q']) : '';
@@ -37,7 +38,7 @@ while ($product = mysqli_fetch_assoc($result)) {
         'product_id' => $product['product_id'],
         'name' => htmlspecialchars($product['name']),
         'price' => number_format((float) $product['price'], 3),
-        'image_url' => $product['image_url'],
+        'image_url' => get_image_url($product['image_url'], 'Produit'),
         'category_name' => htmlspecialchars($product['category_name']),
         'category_slug' => $product['category_slug']
     ];

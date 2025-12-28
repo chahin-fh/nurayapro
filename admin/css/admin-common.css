@@ -1,3 +1,4 @@
+@import url('../../assets/css/toast.css');
 :root {
     --bg-light: #F5EFE6;
     --bg-white: #FAF7F2;
@@ -51,9 +52,15 @@ body {
 /* Stats Cards */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 25px;
     margin-bottom: 40px;
+}
+
+.form-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
 }
 
 .stat-card {
@@ -321,6 +328,7 @@ table tr:hover { background: rgba(200, 182, 166, 0.02); }
     overflow-y: auto;
     box-shadow: 2px 0 15px rgba(28, 28, 28, 0.1);
     z-index: 1000;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-header {
@@ -394,7 +402,85 @@ table tr:hover { background: rgba(200, 182, 166, 0.02); }
     border-left-color: var(--accent-pink) !important;
 }
 
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+}
+
+.admin-nav-toggle {
+    display: none;
+    background: var(--text-dark);
+    color: var(--bg-white);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+    .admin-sidebar.active {
+        transform: translateX(0);
+    }
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+    .admin-nav-toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .sidebar-overlay.active {
+        display: block;
+    }
+    .content-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .form-row-grid {
+        grid-template-columns: 1fr;
+    }
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .filters {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .filter-group {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
-    .main-content { margin-left: 0; padding: 20px; }
-    .filters, .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    table th, table td {
+        white-space: nowrap;
+    }
 }

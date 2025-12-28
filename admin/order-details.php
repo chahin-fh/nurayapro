@@ -37,6 +37,7 @@ $items_result = mysqli_query($cnx, $items_query);
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin-common.css">
+    <script src="../assets/js/toast.js"></script>
 </head>
 <body>
     <div class="admin-layout">
@@ -55,7 +56,7 @@ $items_result = mysqli_query($cnx, $items_query);
                 </span>
             </div>
             
-            <div class="content-grid" style="grid-template-columns: 2fr 1fr;">
+            <div class="content-grid order-details-grid">
                 <div class="left-col">
                     <div class="card">
                         <div class="card-header">
@@ -173,7 +174,7 @@ $items_result = mysqli_query($cnx, $items_query);
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert(data.message);
+                    showToast(data.message, 'error');
                 }
             });
         }

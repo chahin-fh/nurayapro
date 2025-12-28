@@ -1,5 +1,5 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/database.php';
+require_once 'includes/autoload.php';
 
 $session_id = $_SESSION['cart_session_id'] ?? '';
 $cart_query = "SELECT c.*, p.name, p.price, p.image_url, p.stock_quantity
@@ -23,7 +23,7 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
         'name' => $item['name'],
         'price' => (float) $item['price'],
         'quantity' => $item['quantity'],
-        'image_url' => $item['image_url'],
+        'image_url' => get_image_url($item['image_url'], 'Produit'),
         'stock_quantity' => $item['stock_quantity'],
         'total' => $item_total
     ];
@@ -327,25 +327,62 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
         transform: translateY(-2px)
     }
 
-    @media (max-width:768px) {
+    @media (max-width:992px) {
         .cart-container {
             grid-template-columns: 1fr;
             gap: 20px
         }
 
         .cart-sidebar {
-            order: -1;
-            position: static
+            position: static;
         }
 
+        .cart-main {
+            padding: 20px;
+        }
+    }
+
+    @media (max-width:768px) {
+        .cart-item {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+        }
+
+        .item-name {
+            font-size: 14px;
+        }
+
+        .item-price {
+            font-size: 16px;
+        }
+    }
+
+    @media (max-width:576px) {
         .cart-item {
             flex-direction: column;
-            gap: 16px
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 200px;
         }
 
         .item-actions {
             justify-content: space-between;
-            width: 100%
+            width: 100%;
+        }
+
+        .quantity-selector {
+            flex: 1;
+            justify-content: space-between;
+            max-width: 150px;
         }
     }
     </style>
@@ -470,12 +507,12 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert(data.message);
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Erreur lors de la mise à jour du panier');
+                showToast('Erreur lors de la mise à jour du panier', 'error');
             });
     }
 
@@ -496,12 +533,12 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert(data.message);
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Erreur lors de la suppression du panier');
+                showToast('Erreur lors de la suppression du panier', 'error');
             });
     }
 

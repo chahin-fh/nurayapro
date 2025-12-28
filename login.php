@@ -274,13 +274,7 @@ if (isset($_SESSION['user_id'])) {
         }
 
         function showAlert(message, type) {
-            const alertEl = document.getElementById('alertMessage');
-            alertEl.textContent = message;
-            alertEl.className = `alert show alert-${type}`;
-
-            setTimeout(() => {
-                alertEl.classList.remove('show');
-            }, 5000);
+            showToast(message, type === 'error' ? 'error' : 'success');
         }
 
         document.getElementById('loginForm').addEventListener('submit', function (e) {

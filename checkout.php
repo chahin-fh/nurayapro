@@ -314,9 +314,17 @@ $user = mysqli_fetch_assoc($user_result);
         }
 
         .checkout-steps {
-            flex-direction: column;
-            gap: 16px;
-            align-items: center
+            flex-direction: row;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .step span {
+            display: none;
+        }
+
+        .step::after {
+            display: none;
         }
 
         .checkout-content {

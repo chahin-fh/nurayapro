@@ -36,6 +36,7 @@ $low_stock = mysqli_query($cnx, $low_stock_query);
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin-common.css">
+    <script src="../assets/js/toast.js"></script>
 </head>
 <body>
     <div class="admin-layout">

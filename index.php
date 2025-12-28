@@ -201,8 +201,8 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
 
         .collections-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
             margin-top: 40px
         }
 
@@ -371,7 +371,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
             font-weight: 700
         }
 
-        @media (max-width:900px) {
+        @media (max-width:992px) {
             .hero {
                 min-height: 400px;
                 margin: 15px;
@@ -383,25 +383,24 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
                 letter-spacing: 4px
             }
 
-            .hero p {
-                font-size: 16px
+            .collections-container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
             }
+        }
 
-            .section {
-                margin: 40px auto
-            }
-
+        @media (max-width:768px) {
             .section h2 {
                 font-size: 28px
             }
 
             .products-container {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                grid-template-columns: repeat(2, 1fr);
                 gap: 20px
             }
 
             .product-image {
-                height: 280px
+                height: 250px
             }
         }
 
@@ -411,17 +410,17 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
                 letter-spacing: 2px
             }
 
-            .hero p {
-                font-size: 14px
-            }
-
-            .section h2 {
-                font-size: 24px
+            .hero-subtitle {
+                font-size: 18px;
             }
 
             .products-container {
                 grid-template-columns: 1fr;
                 gap: 16px
+            }
+
+            .product-image {
+                height: 320px;
             }
 
             .product-info {
@@ -449,7 +448,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
         <div class="collections-container">
             <div class="collection-card">
                 <div class="collection-image">
-                    <img src="img/collection-1.jpg" alt="Printemps - Été 2025"
+                    <img src="<?php echo get_image_url('img/collection-1.jpg'); ?>" alt="Printemps - Été 2025"
                         onerror="this.src='https://via.placeholder.com/400x300/F5EFE6/C8B6A6?text=Printemps+Été'">
                 </div>
                 <div class="collection-info">
@@ -461,7 +460,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
 
             <div class="collection-card">
                 <div class="collection-image">
-                    <img src="img/collection-2.jpg" alt="Collection Classique"
+                    <img src="<?php echo get_image_url('img/collection-2.jpg'); ?>" alt="Collection Classique"
                         onerror="this.src='https://via.placeholder.com/400x300/F5EFE6/C8B6A6?text=Classique'">
                 </div>
                 <div class="collection-info">
@@ -473,7 +472,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
 
             <div class="collection-card">
                 <div class="collection-image">
-                    <img src="img/collection-3.jpg" alt="Collection Exclusive"
+                    <img src="<?php echo get_image_url('img/collection-3.jpg'); ?>" alt="Collection Exclusive"
                         onerror="this.src='https://via.placeholder.com/400x300/F5EFE6/C8B6A6?text=Exclusive'">
                 </div>
                 <div class="collection-info">
@@ -494,8 +493,8 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
         <div class="products-container">
             <?php if (mysqli_num_rows($featured_result) > 0): ?>
                 <?php while ($product = mysqli_fetch_assoc($featured_result)): ?>
-                    <a href="/nurayapro/produits/product.php?id=<?php echo $product['product_id']; ?>" class="product-card">
-                        <img src="<?php echo $product['image_url']; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>"
+                    <a href="/nurayapro/src/Controllers/produits/product.php?id=<?php echo $product['product_id']; ?>" class="product-card">
+                        <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>"
                             class="product-image"
                             onerror="this.src='https://via.placeholder.com/280x340/F5EFE6/C8B6A6?text=Produit'">
                         <div class="product-info">

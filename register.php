@@ -347,19 +347,7 @@ if (is_logged_in()) {
     }
 
     function showAlert(message, type) {
-        try {
-            const alertEl = document.getElementById('alertMessage');
-            if (alertEl) {
-                alertEl.textContent = message;
-                alertEl.className = `alert show alert-${type}`;
-
-                setTimeout(() => {
-                    alertEl.classList.remove('show');
-                }, 5000);
-            }
-        } catch (error) {
-            console.error('Error in showAlert:', error);
-        }
+        showToast(message, type === 'error' ? 'error' : 'success');
     }
 
     // Fonction de vérification par email

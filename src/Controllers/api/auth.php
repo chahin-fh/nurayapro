@@ -117,7 +117,7 @@ function register()
 
     // Générer un code de vérification
     $verification_code = sprintf('%06d', mt_rand(0, 999999));
-    $code_expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+    $code_expires = date('Y-m-d H:i:s', strtotime('+16 minutes'));
 
     // Insérer l'utilisateur
     $first_name_esc = mysqli_real_escape_string($cnx, $first_name);
@@ -255,7 +255,7 @@ function verifyEmail()
 
 function forgotPassword()
 {
-    global $cnx;
+    global $cnx, $emailConfig;
 
     $email = trim($_POST['email'] ?? '');
 
@@ -265,31 +265,115 @@ function forgotPassword()
     }
 
     // Vérifier si l'email existe
-    $query = "SELECT id FROM users WHERE email = '$email'";
+    $query = "SELECT id, first_name, last_name FROM users WHERE email = '$email'";
     $result = mysqli_query($cnx, $query);
 
     if (mysqli_num_rows($result) === 0) {
+        // Pour des raisons de sécurité, on peut dire que l'email a été envoyé même s'il n'existe pas
+        // Mais ici, on va rester simple pour le debug utilisateur
         echo json_encode(['success' => false, 'message' => 'Email non trouvé']);
         return;
     }
 
     $user = mysqli_fetch_assoc($result);
+    $full_name = $user['first_name'] . ' ' . $user['last_name'];
 
     // Générer un token de réinitialisation
     $reset_token = bin2hex(random_bytes(32));
-    $token_expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+    $token_expires = date('Y-m-d H:i:s', strtotime('+16 minutes'));
 
     // Mettre à jour l'utilisateur
     $update_query = "UPDATE users SET reset_token = '$reset_token', reset_token_expires = '$token_expires' 
                     WHERE id = " . $user['id'];
-    mysqli_query($cnx, $update_query);
+    
+    if (mysqli_query($cnx, $update_query)) {
+        // Préparer le lien de réinitialisation
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+        $host = $_SERVER['HTTP_HOST'];
+        $reset_link = "$protocol://$host/nurayapro/reset-password.php?token=$reset_token";
 
-    // TODO: Envoyer l'email de réinitialisation
-    echo json_encode([
-        'success' => true,
-        'message' => 'Email de réinitialisation envoyé',
-        'reset_token' => $reset_token // Pour le développement uniquement
-    ]);
+        // Envoyer l'email
+        try {
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = $emailConfig['host'];
+            $mail->SMTPAuth = $emailConfig['smtp_auth'];
+            $mail->Username = $emailConfig['username'];
+            $mail->Password = $emailConfig['password'];
+            $mail->SMTPSecure = $emailConfig['smtp_secure'];
+            $mail->Port = $emailConfig['port'];
+            
+            if (isset($emailConfig['smtp_options'])) {
+                $mail->SMTPOptions = $emailConfig['smtp_options'];
+            }
+
+            $mail->setFrom($emailConfig['from_email'], $emailConfig['from_name']);
+            $mail->addAddress($email);
+            $mail->addReplyTo($emailConfig['reply_to'], $emailConfig['reply_to_name']);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Réinitialisation de votre mot de passe - Nuraya';
+
+            $email_body = "
+            <html>
+            <head>
+                <style>
+                    body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #1C1C1C; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: linear-gradient(135deg, #C8B6A6 0%, #d4c4b0 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                    .header h1 { color: #FAF7F2; margin: 0; font-size: 28px; font-weight: 700; }
+                    .content { background: #FAF7F2; padding: 30px; border-radius: 0 0 10px 10px; }
+                    .info { background: #F5EFE6; border-left: 4px solid #C8B6A6; padding: 15px; margin: 20px 0; font-size: 14px; }
+                    .btn { display: inline-block; background: #C8B6A6; color: #FAF7F2 !important; padding: 14px 28px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 700; }
+                    .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #7A7A7A; }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h1>🔑 Réinitialisation Nuraya</h1>
+                    </div>
+                    <div class='content'>
+                        <p>Bonjour $full_name,</p>
+                        <p>Vous avez demandé la réinitialisation de votre mot de passe pour votre compte Nuraya.</p>
+                        
+                        <div style='text-align: center;'>
+                            <a href='$reset_link' class='btn'>Réinitialiser mon mot de passe</a>
+                        </div>
+                        
+                        <div class='info'>
+                            ⏰ <strong>Note :</strong> Ce lien est valable pendant 16 minutes seulement.
+                        </div>
+                        
+                        <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email en toute sécurité. Votre mot de passe restera inchangé.</p>
+                        
+                        
+                    </div>
+                    <div class='footer'>
+                        <p>© " . date('Y') . " Nuraya. Tous droits réservés.</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+
+            $mail->Body = $email_body;
+            $mail->AltBody = "Bonjour $full_name,\n\nVous avez demandé la réinitialisation de votre mot de passe Nuraya.\n\nCopiez-collez ce lien dans votre navigateur : $reset_link\n\nCe lien est valable 16 minutes.";
+
+            $mail->send();
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Un email de réinitialisation a été envoyé.'
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Erreur d\'envoi d\'email : ' . $mail->ErrorInfo
+            ]);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Erreur technique']);
+    }
 }
 
 function resetPassword()
@@ -391,7 +475,7 @@ function sendVerificationCode()
 
     // Générer un code de vérification
     $verification_code = sprintf('%06d', mt_rand(0, 999999));
-    $code_expires = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+    $code_expires = date('Y-m-d H:i:s', strtotime('+16 minutes'));
 
     // Stocker le code en session (temporaire pour l'inscription)
     $_SESSION['temp_verification_code'] = $verification_code;
@@ -474,7 +558,7 @@ function sendVerificationEmail($email, $verification_code)
                     </div>
                     
                     <div class='info'>
-                        ⏰ <strong>Important :</strong> Ce code expire dans 5 minutes.
+                        ⏰ <strong>Important :</strong> Ce code expire dans 16 minutes.
                     </div>
                     
                     <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.</p>
@@ -488,7 +572,7 @@ function sendVerificationEmail($email, $verification_code)
         </html>";
 
         $mail->Body = $email_body;
-        $mail->AltBody = "Votre code de vérification Nuraya est : $verification_code\n\nCe code expire dans 5 minutes.";
+        $mail->AltBody = "Votre code de vérification Nuraya est : $verification_code\n\nCe code expire dans 16 minutes.";
 
         return $mail->send();
 

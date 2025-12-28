@@ -1,5 +1,6 @@
 <?php
 include '../cnx.php';
+include '../../includes/functions.php';
 session_start();
 
 // Récupérer l'ID du produit
@@ -510,6 +511,15 @@ if (isset($_SESSION['user_id'])) {
             font-size: 18px
         }
 
+        @media (max-width:992px) {
+            .product-container {
+                gap: 30px;
+            }
+            .product-info {
+                padding: 30px;
+            }
+        }
+
         @media (max-width:768px) {
             .product-container {
                 grid-template-columns: 1fr;
@@ -537,15 +547,53 @@ if (isset($_SESSION['user_id'])) {
             }
 
             .product-actions {
-                flex-direction: column
+                flex-direction: column;
+                gap: 12px;
             }
 
-            .btn-primary {
-                width: 100%
+            .quantity-selector {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .quantity-input {
+                flex: 1;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .tab-nav {
+                overflow-x: auto;
+                white-space: nowrap;
+                scrollbar-width: none;
+            }
+            
+            .tab-nav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .tab-btn {
+                padding: 12px 16px;
+                font-size: 14px;
             }
 
             .similar-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media (max-width:480px) {
+            .main-image {
+                height: 320px;
+            }
+            .product-meta {
+                grid-template-columns: 1fr;
+            }
+            .similar-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -553,12 +601,12 @@ if (isset($_SESSION['user_id'])) {
 
 <body>
     <header>
-        <?php include('../navbar.php'); ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/templates/navbar_updated.php'; ?>
     </header>
 
     <div class="product-container">
         <div class="product-images">
-            <img src="<?php echo $product['image_url']; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>"
+            <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>"
                 class="main-image" onerror="this.src='https://via.placeholder.com/600x500/F5EFE6/C8B6A6?text=Produit'">
         </div>
 
@@ -734,7 +782,7 @@ if (isset($_SESSION['user_id'])) {
             <div class="similar-grid">
                 <?php while ($similar = mysqli_fetch_assoc($similar_result)): ?>
                     <a href="product.php?id=<?php echo $similar['product_id']; ?>" class="similar-card">
-                        <img src="<?php echo $similar['image_url']; ?>" alt="<?php echo htmlspecialchars($similar['name']); ?>"
+                        <img src="<?php echo get_image_url($similar['image_url'], 'Produit'); ?>" alt="<?php echo htmlspecialchars($similar['name']); ?>"
                             class="similar-image"
                             onerror="this.src='https://via.placeholder.com/250x200/F5EFE6/C8B6A6?text=Produit'">
                         <div class="similar-info">

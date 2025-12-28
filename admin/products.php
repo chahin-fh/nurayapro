@@ -67,7 +67,7 @@ if (isset($_GET['ajax'])) {
                 <tr>
                     <td>
                         <?php if ($product['image_url']): ?>
-                            <img src="../<?php echo htmlspecialchars($product['image_url']); ?>" alt="" class="product-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                            <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>" alt="" class="product-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
                         <?php else: ?>
                             <div style="width: 60px; height: 60px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                 <i class="fas fa-image" style="color: #ccc;"></i>
@@ -131,6 +131,7 @@ if (isset($_GET['ajax'])) {
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin-common.css">
+    <script src="../assets/js/toast.js"></script>
     <script src="js/dynamic-filters.js" defer></script>
 </head>
 <body>
@@ -194,7 +195,7 @@ if (isset($_GET['ajax'])) {
                             <tr>
                                 <td>
                                     <?php if ($product['image_url']): ?>
-                                        <img src="../<?php echo htmlspecialchars($product['image_url']); ?>" alt="" class="product-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                        <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>" alt="" class="product-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
                                     <?php else: ?>
                                         <div style="width: 60px; height: 60px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                             <i class="fas fa-image" style="color: #ccc;"></i>
@@ -262,7 +263,7 @@ if (isset($_GET['ajax'])) {
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert(data.message);
+                    showToast(data.message, 'error');
                 }
             });
         }

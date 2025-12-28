@@ -1,9 +1,20 @@
 <?php
 $current_page = basename($_SERVER['PHP_SELF'], '.php');
 ?>
-<aside class="admin-sidebar">
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<button class="admin-nav-toggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i> Menu
+</button>
+
+<aside class="admin-sidebar" id="adminSidebar">
     <div class="sidebar-header">
-        <h2><i class="fas fa-crown"></i> Admin Panel</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <h2><i class="fas fa-crown"></i> Admin</h2>
+            <button class="btn-icon" onclick="toggleSidebar()" style="background: none; color: var(--bg-white); font-size: 20px; display: none;" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
         <p class="admin-name"><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?></p>
     </div>
     
@@ -31,3 +42,27 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
         </a>
     </nav>
 </aside>
+
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById('adminSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
+
+// Show close button on mobile
+if (window.innerWidth <= 992) {
+    document.getElementById('closeSidebar').style.display = 'block';
+}
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth <= 992) {
+        document.getElementById('closeSidebar').style.display = 'block';
+    } else {
+        document.getElementById('closeSidebar').style.display = 'none';
+        document.getElementById('adminSidebar').classList.remove('active');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+    }
+});
+</script>

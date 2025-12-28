@@ -257,8 +257,8 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                         <button class="remove-wishlist" onclick="removeFromWishlist(<?php echo $item['product_id']; ?>)">
                             <i class="fas fa-times"></i>
                         </button>
-                        <a href="produits/product.php?id=<?php echo $item['product_id']; ?>" class="product-link">
-                            <img src="<?php echo $item['image_url']; ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"
+                        <a href="src/Controllers/produits/product.php?id=<?php echo $item['product_id']; ?>" class="product-link">
+                            <img src="<?php echo get_image_url($item['image_url'], 'Produit'); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"
                                 class="product-image"
                                 onerror="this.src='https://via.placeholder.com/280x280/F5EFE6/C8B6A6?text=Produit'">
                             <div class="product-info">
@@ -306,12 +306,12 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                     if (data.success) {
                         location.reload();
                     } else {
-                        alert(data.message);
+                        showToast(data.message, 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Erreur lors du retrait des favoris');
+                    showToast('Erreur lors du retrait des favoris', 'error');
                 });
         }
 
@@ -328,7 +328,7 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Produit ajouté au panier !');
+                        showToast('Produit ajouté au panier !', 'success');
                         // Mettre à jour le compteur du panier
                         const cartCount = document.getElementById('cartCount');
                         if (cartCount) {
@@ -336,12 +336,12 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                             cartCount.textContent = currentCount + 1;
                         }
                     } else {
-                        alert(data.message);
+                        showToast(data.message, 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Erreur lors de l\'ajout au panier');
+                    showToast('Erreur lors de l\'ajout au panier', 'error');
                 });
         }
     </script>

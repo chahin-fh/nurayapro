@@ -144,6 +144,10 @@ $i = 0;
         border-color: var(--beige-dark)
     }
 
+    .mobile-filter-toggle {
+        display: none;
+    }
+
     .products-section {
         flex: 1
     }
@@ -297,26 +301,63 @@ $i = 0;
         border: none
     }
 
-    @media (max-width:768px) {
+    @media (max-width:992px) {
         .featured-products {
             flex-direction: column;
-            gap: 20px
+            gap: 30px
         }
 
         .categories-filter {
-            width: 100%
+            width: 100%;
+            padding: 20px;
+        }
+
+        .filter-list {
+            flex-direction: row;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            gap: 12px;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .filter-list::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Edge */
+        }
+
+        .filter-item {
+            white-space: nowrap;
+            flex-shrink: 0;
+            padding: 10px 20px;
         }
 
         .products {
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px
+        }
+    }
+
+    @media (max-width:768px) {
+        .products {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px
+        }
+
+        .product-image {
+            height: 250px;
+        }
+
+        .section-title {
+            font-size: 24px;
         }
     }
 
     @media (max-width:480px) {
         .products {
             grid-template-columns: 1fr;
-            gap: 16px
+        }
+
+        .product-image {
+            height: 320px;
         }
     }
     </style>
@@ -353,7 +394,7 @@ $i = 0;
                         ?>
                 <a href="product.php?id=<?php echo $t['product_id']; ?>" class="product-card">
                     <div class="product-image">
-                        <img src="<?php echo $t['image_url']; ?>" alt="<?php echo htmlspecialchars($t['name']); ?>"
+                        <img src="<?php echo get_image_url($t['image_url'], 'Produit'); ?>" alt="<?php echo htmlspecialchars($t['name']); ?>"
                             loading="lazy" style="width:100%;height:100%;object-fit:cover;">
                     </div>
                     <div class="product-info">

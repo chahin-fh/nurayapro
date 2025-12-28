@@ -12,58 +12,36 @@ if (!isset($_SESSION)) {
 }
 
 /**
- * Générer l'URL des assets statiques (CSS, JS, images)
- * @param string $path Chemin relatif depuis le dossier assets
- * @return string URL complète
+ * Générer l'URL d'une image de manière robuste
+ * @param string $path Chemin de l'image (provenant de la BDD ou codé en dur)
+ * @param string $placeholder_text Texte pour le placeholder si l'image est manquante
+ * @return string URL complète utilisable partout
  */
-function asset_url($path)
-{
-    $base_url = '/nurayapro/assets';
-    return $base_url . '/' . ltrim($path, '/');
+function get_image_url($path, $placeholder_text = 'Image') {
+    if (empty($path)) {
+        return "https://via.placeholder.com/400x400/F5EFE6/C8B6A6?text=" . urlencode($placeholder_text);
+    }
+
+    // Si le chemin est déjà une URL absolue ou commence par /, on ne touche à rien
+    if (strpos($path, 'http') === 0 || strpos($path, '/') === 0) {
+        return $path;
+    }
+
+    // Sinon, on préfixe par le chemin de base du projet
+    return '/nurayapro/' . $path;
 }
 
 /**
- * Générer l'URL des images produits
+ * Générer l'URL des images produits (Ancien système)
  * @param string $filename Nom du fichier image
  * @return string URL complète
  */
 function product_image_url($filename)
 {
-    if (empty($filename) || !file_exists(__DIR__ . '/img/products/' . $filename)) {
+    if (empty($filename)) {
         return 'https://via.placeholder.com/280x340/F5EFE6/C8B6A6?text=Produit';
     }
-    return '/nurayapro/img/products/' . $filename;
-}
-
-/**
- * Générer l'URL des images de collection
- * @param string $filename Nom du fichier image
- * @return string URL complète
- */
-function collection_image_url($filename)
-{
-    if (empty($filename) || !file_exists(__DIR__ . '/img/collections/' . $filename)) {
-        return 'https://via.placeholder.com/400x300/F5EFE6/C8B6A6?text=Collection';
-    }
-    return '/nurayapro/img/collections/' . $filename;
-}
-
-/**
- * Générer l'URL des images par défaut
- * @param string $filename Nom du fichier image
- * @param string $type Type d'image (products, collections, etc.)
- * @return string URL complète
- */
-function image_url($filename, $type = 'products')
-{
-    $folder = $type === 'collections' ? 'collections' : 'products';
-    $default_size = $type === 'collections' ? '400x300' : '280x340';
-    $default_text = $type === 'collections' ? 'Collection' : 'Produit';
-
-    if (empty($filename) || !file_exists(__DIR__ . '/img/' . $folder . '/' . $filename)) {
-        return "https://via.placeholder.com/{$default_size}/F5EFE6/C8B6A6?text={$default_text}";
-    }
-    return "/nurayapro/img/{$folder}/{$filename}";
+    return get_image_url('img/products/' . $filename, 'Produit');
 }
 
 /**
