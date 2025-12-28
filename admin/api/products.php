@@ -13,6 +13,9 @@ require_once __DIR__ . '/../../../src/Controllers/cnx.php';
 $action = $_POST['action'] ?? '';
 
 switch ($action) {
+    case 'save':
+        saveProduct();
+        break;
     case 'delete':
         deleteProduct();
         break;
@@ -81,6 +84,73 @@ function updateStock()
         echo json_encode(['success' => true, 'message' => 'Stock mis à jour']);
     } else {
         echo json_encode(['success' => false, 'message' => 'Erreur de mise à jour']);
+    }
+}
+function saveProduct()
+{
+    global $cnx;
+    $id = (int)($_POST['product_id'] ?? 0);
+    $name = mysqli_real_escape_string($cnx, $_POST['name'] ?? '');
+    $category_id = (int)($_POST['category_id'] ?? 0);
+    $sku = mysqli_real_escape_string($cnx, $_POST['sku'] ?? '');
+    $price = (float)($_POST['price'] ?? 0);
+    $compare_price = $_POST['compare_price'] ? (float)$_POST['compare_price'] : 'NULL';
+    $stock_quantity = (int)($_POST['stock_quantity'] ?? 0);
+    $min_stock_level = (int)($_POST['min_stock_level'] ?? 5);
+    $short_description = mysqli_real_escape_string($cnx, $_POST['short_description'] ?? '');
+    $description = mysqli_real_escape_string($cnx, $_POST['description'] ?? '');
+    $is_active = (int)($_POST['is_active'] ?? 1);
+    $is_featured = (int)($_POST['is_featured'] ?? 0);
+    
+    // Gestion de l'image
+    $image_url = mysqli_real_escape_string($cnx, $_POST['existing_image'] ?? '');
+    
+    if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp = $_FILES['product_image']['tmp_name'];
+        $file_name = $_FILES['product_image']['name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        
+        $allowed_ext = ['jpg', 'jpeg', 'png', 'webp'];
+        if (in_array($file_ext, $allowed_ext)) {
+            $new_file_name = uniqid('prod_') . '.' . $file_ext;
+            $upload_dir = __DIR__ . '/../../../uploads/';
+            
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
+            
+            if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
+                $image_url = 'uploads/' . $new_file_name;
+            }
+        }
+    }
+
+    if (empty($name) || $category_id <= 0) {
+        echo json_encode(['success' => false, 'message' => 'Nom et catégorie sont requis']);
+        return;
+    }
+    
+    if ($id > 0) {
+        $query = "UPDATE products SET 
+                  name = '$name', category_id = $category_id, sku = '$sku', 
+                  price = $price, compare_price = $compare_price, 
+                  stock_quantity = $stock_quantity, min_stock_level = $min_stock_level, 
+                  image_url = '$image_url', short_description = '$short_description', 
+                  description = '$description', is_active = $is_active, is_featured = $is_featured 
+                  WHERE product_id = $id";
+    } else {
+        $query = "INSERT INTO products (name, category_id, sku, price, compare_price, 
+                  stock_quantity, min_stock_level, image_url, short_description, 
+                  description, is_active, is_featured) 
+                  VALUES ('$name', $category_id, '$sku', $price, $compare_price, 
+                  $stock_quantity, $min_stock_level, '$image_url', '$short_description', 
+                  '$description', $is_active, $is_featured)";
+    }
+    
+    if (mysqli_query($cnx, $query)) {
+        echo json_encode(['success' => true, 'message' => 'Produit enregistré', 'image_url' => $image_url]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'enregistrement: ' . mysqli_error($cnx)]);
     }
 }
 ?>
