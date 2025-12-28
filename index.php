@@ -454,7 +454,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
                 <div class="collection-info">
                     <h3>Printemps - Été 2025</h3>
                     <p>Découvrez notre nouvelle collection printanière aux couleurs vibrantes et aux tissus légers.</p>
-                    <a href="/nurayapro/produits/index.php?category=printemps-ete" class="collection-btn">Explorer</a>
+                    <a href="/nuraya_pro/produits/index.php?category=printemps-ete" class="collection-btn">Explorer</a>
                 </div>
             </div>
 
@@ -466,7 +466,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
                 <div class="collection-info">
                     <h3>Collection Classique</h3>
                     <p>Des pièces intemporelles qui traversent les saisons avec élégance et raffinement.</p>
-                    <a href="/nurayapro/produits/index.php?category=classique" class="collection-btn">Explorer</a>
+                    <a href="/nuraya_pro/produits/index.php?category=classique" class="collection-btn">Explorer</a>
                 </div>
             </div>
 
@@ -478,7 +478,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
                 <div class="collection-info">
                     <h3>Collection Exclusive</h3>
                     <p>Des pièces uniques en édition limitée, créées avec les matériaux les plus précieux.</p>
-                    <a href="/nurayapro/produits/index.php?category=exclusive" class="collection-btn">Explorer</a>
+                    <a href="/nuraya_pro/produits/index.php?category=exclusive" class="collection-btn">Explorer</a>
                 </div>
             </div>
         </div>
@@ -493,7 +493,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
         <div class="products-container">
             <?php if (mysqli_num_rows($featured_result) > 0): ?>
                 <?php while ($product = mysqli_fetch_assoc($featured_result)): ?>
-                    <a href="/nurayapro/src/Controllers/produits/product.php?id=<?php echo $product['product_id']; ?>" class="product-card">
+                    <a href="/nuraya_pro/src/Controllers/produits/product.php?id=<?php echo $product['product_id']; ?>" class="product-card">
                         <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>"
                             class="product-image"
                             onerror="this.src='https://via.placeholder.com/280x340/F5EFE6/C8B6A6?text=Produit'">
@@ -515,7 +515,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
             <?php endif; ?>
         </div>
         <div style="text-align: center; margin-top: 40px;">
-            <a href="/nurayapro/src/Controllers/produits/index.php" class="hero-btn"
+            <a href="/nuraya_pro/src/Controllers/produits/index.php" class="hero-btn"
                 style="background: var(--beige-dark); color: var(--bg-white);">
                 Voir Tous les Produits
             </a>

@@ -265,10 +265,10 @@
             </div>
         </div>
 
-        <a class="logo" href="/nurayapro/home">NURAYA</a>
+        <a class="logo" href="/nuraya_pro/home">NURAYA</a>
 
         <div class="nav-right">
-            <a href="/nurayapro/cree_compte/" class="user-icon" title="Connexion / Créer un compte">
+            <a href="/nuraya_pro/cree_compte/" class="user-icon" title="Connexion / Créer un compte">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -294,10 +294,10 @@
             <span class="close-menu" onclick="toggleMobileMenu()">×</span>
         </div>
         <div class="mobile-menu-content">
-            <a href="/nurayapro/home">Accueil</a>
-            <a href="/nurayapro/shop">Shop</a>
-            <a href="/nurayapro/about">About</a>
-            <a href="/nurayapro/contact">Contact</a>
+            <a href="/nuraya_pro/home">Accueil</a>
+            <a href="/nuraya_pro/shop">Shop</a>
+            <a href="/nuraya_pro/about">About</a>
+            <a href="/nuraya_pro/contact">Contact</a>
 
             <!-- Categories Section -->
             <div class="categories-section">
@@ -306,19 +306,19 @@
                     <span class="categories-arrow" id="categoriesArrow">▼</span>
                 </div>
                 <div class="categories-list" id="categoriesList">
-                    <a href="/nurayapro/produits/index.php?category=mode" class="category-item">
+                    <a href="/nuraya_pro/produits/index.php?category=mode" class="category-item">
                         <span>></span> Mode
                     </a>
-                    <a href="/nurayapro/produits/index.php?category=accessoires" class="category-item">
+                    <a href="/nuraya_pro/produits/index.php?category=accessoires" class="category-item">
                         <span>></span> Accessoires
                     </a>
-                    <a href="/nurayapro/produits/index.php?category=chaussures" class="category-item">
+                    <a href="/nuraya_pro/produits/index.php?category=chaussures" class="category-item">
                         <span>></span> Chaussures
                     </a>
-                    <a href="/nurayapro/produits/index.php?category=sacs" class="category-item">
+                    <a href="/nuraya_pro/produits/index.php?category=sacs" class="category-item">
                         <span>></span> Sacs
                     </a>
-                    <a href="/nurayapro/produits/index.php?category=bijoux" class="category-item">
+                    <a href="/nuraya_pro/produits/index.php?category=bijoux" class="category-item">
                         <span>></span> Bijoux
                     </a>
                 </div>

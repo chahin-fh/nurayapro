@@ -1,6 +1,6 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/database.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/includes/functions.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/includes/functions.php';
 
 // Récupérer la catégorie et le terme de recherche depuis l'URL
 $category_slug = isset($_GET['category']) ? $_GET['category'] : '';
@@ -365,7 +365,7 @@ $i = 0;
 
 <body>
     <header>
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/templates/navbar_updated.php'; ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/templates/navbar_updated.php'; ?>
     </header>
 
     <section class="featured-products">
@@ -469,16 +469,125 @@ $i = 0;
     </section>
 
     <script>
-    // Fonction pour ajouter au panier (à développer)
+    // Fonction pour ajouter au panier
     function addToCart(productId, name, price, image) {
-        console.log('Ajout au panier:', {
-            productId,
-            name,
-            price,
-            image
+        // Envoyer au serveur pour sauvegarder en base de données
+        fetch('/nuraya_pro/api/cart.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `action=add&product_id=${productId}&quantity=1`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Afficher le message de confirmation
+                showAddToCartMessage(name);
+                // Mettre à jour le compteur
+                updateCartCount();
+            } else {
+                console.error('Erreur:', data.message);
+                showAddToCartMessage('Erreur: ' + data.message, true);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Fallback: sauvegarder en localStorage si le serveur échoue
+            savToLocalStorage(productId, name, price, image);
         });
-        // TODO: Implémenter la logique du panier
     }
+
+    // Fallback: sauvegarder en localStorage
+    function savToLocalStorage(productId, name, price, image) {
+        let cart = localStorage.getItem('cart');
+        cart = cart ? JSON.parse(cart) : [];
+
+        let existingItem = cart.find(item => item.productId == productId);
+
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.push({
+                productId: productId,
+                name: name,
+                price: parseFloat(price),
+                image: image,
+                quantity: 1
+            });
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+    }
+
+    // Fonction pour afficher un message de confirmation
+    function showAddToCartMessage(productName, isError = false) {
+        const message = document.createElement('div');
+        message.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${isError ? '#f44336' : '#4CAF50'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 9999;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease-out;
+        `;
+        message.textContent = (isError ? '✗ ' : '✓ ') + productName + (isError ? '' : ' ajouté au panier');
+        document.body.appendChild(message);
+
+        setTimeout(() => {
+            message.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => message.remove(), 300);
+        }, 3000);
+    }
+
+    // Fonction pour mettre à jour le compteur du panier dans la navbar
+    function updateCartCount() {
+        // Récupérer le count depuis le serveur
+        fetch('/nuraya_pro/api/cart.php?action=count')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const cartBadge = document.querySelector('[data-cart-count]');
+                    if (cartBadge) {
+                        cartBadge.textContent = data.count;
+                        cartBadge.style.display = data.count > 0 ? 'inline-block' : 'none';
+                    }
+                }
+            })
+            .catch(error => console.error('Error updating cart count:', error));
+    }
+
+    // Ajouter les styles d'animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 
     // Ajouter les écouteurs d'événements pour les boutons "Ajouter au panier"
     document.querySelectorAll('.add-to-cart').forEach(button => {
@@ -503,6 +612,9 @@ $i = 0;
             }
         });
     });
+
+    // Initialiser le compteur du panier au chargement
+    document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
 
     <?php mysqli_close($cnx); ?>

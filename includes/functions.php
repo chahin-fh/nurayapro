@@ -28,7 +28,7 @@ function get_image_url($path, $placeholder_text = 'Image') {
     }
 
     // Sinon, on préfixe par le chemin de base du projet
-    return '/nurayapro/' . $path;
+    return '/nuraya_pro/' . $path;
 }
 
 /**
@@ -306,7 +306,7 @@ function sendBirthdayEmail($userEmail, $userName)
                 
                 <!-- CTA Button -->
                 <div style='margin: 30px 0;'>
-                    <a href='http://localhost/nurayapro/src/Controllers/produits/index.php' 
+                    <a href='http://localhost/nuraya_pro/src/Controllers/produits/index.php' 
                        style='display: inline-block; background: #1C1C1C; color: #FAF7F2; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; transition: all 0.3s ease;'>
                         Profiter de mon cadeau
                     </a>
@@ -331,8 +331,8 @@ function sendBirthdayEmail($userEmail, $userName)
     ";
     
     // Configuration PHPMailer
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/vendor/autoload.php';
-    $emailConfig = require $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/email.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/vendor/autoload.php';
+    $emailConfig = require $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/email.php';
 
     try {
         $mail = new PHPMailer(true);

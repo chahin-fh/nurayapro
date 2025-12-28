@@ -1,3 +1,3 @@
 <?php
-$cnx = mysqli_connect("localhost","root","","nuraya_pro");
+$cnx = mysqli_connect("localhost","root","","newnuraya");
 ?>

@@ -245,7 +245,7 @@
     <div class="footer-content">
         <!-- Brand Section -->
         <div class="footer-section footer-brand">
-            <a href="/nurayapro/index.php" class="footer-logo">NURAYA</a>
+            <a href="/nuraya_pro/index.php" class="footer-logo">NURAYA</a>
             <p class="footer-description">
                 Découvrez l'élégance intemporelle à travers nos collections uniques.
             </p>
@@ -266,11 +266,11 @@
         <div class="footer-section">
             <h3>Liens Utiles</h3>
             <div class="footer-links">
-                <a href="/nurayapro/index.php">Accueil</a>
-                <a href="/nurayapro/src/Controllers/produits/index.php">Boutique</a>
-                <a href="/nurayapro/about_new.php">À Propos</a>
-                <a href="/nurayapro/contact_us.php">Contact</a>
-                <a href="/nurayapro/account.php">Mon Compte</a>
+                <a href="/nuraya_pro/index.php">Accueil</a>
+                <a href="/nuraya_pro/src/Controllers/produits/index.php">Boutique</a>
+                <a href="/nuraya_pro/about_new.php">À Propos</a>
+                <a href="/nuraya_pro/contact_us.php">Contact</a>
+                <a href="/nuraya_pro/account.php">Mon Compte</a>
             </div>
         </div>
 

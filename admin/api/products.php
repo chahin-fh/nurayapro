@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     exit;
 }
 
-require_once __DIR__ . '/../../../src/Controllers/cnx.php';
+require_once __DIR__ . '/../../config/database.php';
 
 $action = $_POST['action'] ?? '';
 
@@ -113,7 +113,7 @@ function saveProduct()
         $allowed_ext = ['jpg', 'jpeg', 'png', 'webp'];
         if (in_array($file_ext, $allowed_ext)) {
             $new_file_name = uniqid('prod_') . '.' . $file_ext;
-            $upload_dir = __DIR__ . '/../../../uploads/';
+            $upload_dir = __DIR__ . '/../../uploads/';
             
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0777, true);

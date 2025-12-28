@@ -15,7 +15,7 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 // Charger PHPMailer
-require $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/vendor/autoload.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/vendor/autoload.php';
 
 // Fonction pour envoyer une réponse JSON propre
 function jsonResponse($success, $message, $data = null)
@@ -30,7 +30,7 @@ function jsonResponse($success, $message, $data = null)
 
 // Connexion BDD sécurisée
 try {
-    include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/database.php';
 } catch (Exception $e) {
     jsonResponse(false, 'Erreur de connexion à la base de données');
 }

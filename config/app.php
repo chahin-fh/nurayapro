@@ -59,9 +59,9 @@ return [
 
     // Configuration des URLs
     'urls' => [
-        'base' => 'http://localhost/nurayapro',
-        'assets' => 'http://localhost/nurayapro/assets',
-        'uploads' => 'http://localhost/nurayapro/uploads'
+        'base' => 'http://localhost/nuraya_pro',
+        'assets' => 'http://localhost/nuraya_pro/assets',
+        'uploads' => 'http://localhost/nuraya_pro/uploads'
     ],
 
     // Configuration des logs

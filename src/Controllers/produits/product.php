@@ -601,7 +601,7 @@ if (isset($_SESSION['user_id'])) {
 
 <body>
     <header>
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/templates/navbar_updated.php'; ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/templates/navbar_updated.php'; ?>
     </header>
 
     <div class="product-container">

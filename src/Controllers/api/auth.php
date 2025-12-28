@@ -13,7 +13,7 @@ use PHPMailer\PHPMailer\Exception;
 
 // Charger PHPMailer avec gestion d'erreur
 try {
-    require $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/vendor/autoload.php';
+    require $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/vendor/autoload.php';
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'PHPMailer non disponible']);
     exit;
@@ -21,14 +21,14 @@ try {
 
 // Connexion à la base de données
 try {
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/src/Controllers/cnx.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/src/Controllers/cnx.php';
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Erreur de connexion BDD']);
     exit;
 }
 
 // Charger la configuration email
-$emailConfig = require $_SERVER['DOCUMENT_ROOT'] . '/nurayapro/config/email.php';
+$emailConfig = require $_SERVER['DOCUMENT_ROOT'] . '/nuraya_pro/config/email.php';
 
 // Récupérer l'action demandée
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
@@ -290,7 +290,7 @@ function forgotPassword()
         // Préparer le lien de réinitialisation
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
         $host = $_SERVER['HTTP_HOST'];
-        $reset_link = "$protocol://$host/nurayapro/reset-password.php?token=$reset_token";
+        $reset_link = "$protocol://$host/nuraya_pro/reset-password.php?token=$reset_token";
 
         // Envoyer l'email
         try {

@@ -1,6 +1,5 @@
 <?php
-include 'cnx.php';
-include 'functions.php';
+require_once 'includes/autoload.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!is_logged_in()) {
@@ -29,6 +28,12 @@ if (mysqli_num_rows($order_result) === 0) {
 }
 
 $order = mysqli_fetch_assoc($order_result);
+
+// Ensure shipping, tax, and total are set (with defaults if missing)
+$order['shipping'] = isset($order['shipping']) ? (float)$order['shipping'] : 0;
+$order['tax'] = isset($order['tax']) ? (float)$order['tax'] : 0;
+$order['total'] = isset($order['total']) ? (float)$order['total'] : 0;
+$order['subtotal'] = isset($order['subtotal']) ? (float)$order['subtotal'] : 0;
 
 // Récupérer les articles de la commande
 $items_query = "SELECT oi.*, p.name, p.image_url 
@@ -346,7 +351,7 @@ $items_result = mysqli_query($cnx, $items_query);
 </head>
 
 <body>
-    <?php include 'navbar_updated.php'; ?>
+    <?php include 'templates/navbar_updated.php'; ?>
 
     <div class="confirmation-container">
         <div class="success-card">

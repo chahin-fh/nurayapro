@@ -1,6 +1,5 @@
 <?php
-include 'cnx.php';
-include 'functions.php';
+require_once 'includes/autoload.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!is_logged_in()) {
@@ -345,7 +344,7 @@ $user = mysqli_fetch_assoc($user_result);
 </head>
 
 <body>
-    <?php include 'navbar_updated.php'; ?>
+    <?php include 'templates/navbar_updated.php'; ?>
 
     <div class="checkout-container">
         <div class="page-header">
