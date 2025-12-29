@@ -418,7 +418,7 @@ $orders_result = mysqli_query($cnx, $orders_query);
                     <i class="fas fa-shopping-bag"></i>
                     <p>Vous n'avez pas encore de commandes</p>
                     <p style="margin-top: 8px; font-size: 14px;">
-                        <a href="produits/index.php" style="color: var(--beige-dark); text-decoration: none;">
+                        <a href="shop.php" style="color: var(--beige-dark); text-decoration: none;">
                             Commencer vos achats →
                         </a>
                     </p>

@@ -68,7 +68,7 @@ if (isset($_GET['ajax'])) {
             <tr>
                 <td>
                     <?php if ($product['image_url']): ?>
-                    <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>" alt=""
+                    <img src="../<?php echo get_image_url($product['image_url'], 'Produit'); ?>" alt=""
                         class="product-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
                     <?php else: ?>
                     <div
@@ -207,7 +207,7 @@ if (isset($_GET['ajax'])) {
                         <tr>
                             <td>
                                 <?php if ($product['image_url']): ?>
-                                <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>" alt=""
+                                <img src="../<?php echo get_image_url($product['image_url'], 'Produit'); ?>" alt=""
                                     class="product-image"
                                     style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
                                 <?php else: ?>
@@ -290,6 +290,7 @@ if (isset($_GET['ajax'])) {
             });
     }
     </script>
+    <script> src=""></script>
 </body>
 
 </html>

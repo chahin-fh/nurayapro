@@ -436,7 +436,7 @@
                 Découvrez nos collections et trouvez la pièce qui vous ressemble.
             </p>
             <div class="cta-buttons">
-                <a href="produits/index.php" class="btn btn-primary">
+                <a href="shop.php" class="btn btn-primary">
                     <i class="fas fa-shopping-bag"></i>
                     Explorer les Collections
                 </a>

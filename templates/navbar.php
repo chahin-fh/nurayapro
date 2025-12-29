@@ -306,19 +306,19 @@
                     <span class="categories-arrow" id="categoriesArrow">▼</span>
                 </div>
                 <div class="categories-list" id="categoriesList">
-                    <a href="../produits/index.php?category=mode" class="category-item">
+                    <a href="../shop.php?category=mode" class="category-item">
                         <span>></span> Mode
                     </a>
-                    <a href="../produits/index.php?category=accessoires" class="category-item">
+                    <a href="../shop.php?category=accessoires" class="category-item">
                         <span>></span> Accessoires
                     </a>
-                    <a href="../produits/index.php?category=chaussures" class="category-item">
+                    <a href="../shop.php?category=chaussures" class="category-item">
                         <span>></span> Chaussures
                     </a>
-                    <a href="../produits/index.php?category=sacs" class="category-item">
+                    <a href="../shop.php?category=sacs" class="category-item">
                         <span>></span> Sacs
                     </a>
-                    <a href="../produits/index.php?category=bijoux" class="category-item">
+                    <a href="../shop.php?category=bijoux" class="category-item">
                         <span>></span> Bijoux
                     </a>
                 </div>

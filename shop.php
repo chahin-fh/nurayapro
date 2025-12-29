@@ -475,7 +475,7 @@ $i = 0;
     // Fonction pour ajouter au panier
     function addToCart(productId, name, price, image) {
         // Envoyer au serveur pour sauvegarder en base de données
-        fetch('../api/cart.php', {
+        fetch('api/cart.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -552,14 +552,14 @@ $i = 0;
     // Fonction pour mettre à jour le compteur du panier dans la navbar
     function updateCartCount() {
         // Récupérer le count depuis le serveur
-        fetch('../api/cart.php?action=count')
+        fetch('api/cart.php?action=count')
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
+                    if (data.success) {
                     const cartBadge = document.querySelector('[data-cart-count]');
                     if (cartBadge) {
                         cartBadge.textContent = data.count;
-                        cartBadge.style.display = data.count > 0 ? 'inline-block' : 'none';
+                        cartBadge.style.visibility = data.count > 0 ? 'visible' : 'hidden';
                     }
                 }
             })
@@ -619,6 +619,7 @@ $i = 0;
     // Initialiser le compteur du panier au chargement
     document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
+    <script src="assets/js/cart-count.js"></script>
 
     <?php mysqli_close($cnx); ?>
 </body>

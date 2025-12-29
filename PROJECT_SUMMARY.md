@@ -39,7 +39,7 @@
 ### Pages Publiques
 
 - **index.php** : Accueil avec produits dynamiques
-- **produits/index.php** : Boutique avec filtres et recherche
+- **shop.php** : Boutique avec filtres et recherche
 - **produits/product.php** : Page produit détaillée
 - **login.php** : Connexion utilisateur
 - **register.php** : Inscription utilisateur

@@ -159,7 +159,7 @@ $categories = mysqli_query($cnx, $categories_query);
                         <div id="imagePreview"
                             style="width: 100%; height: 200px; border: 2px dashed var(--beige-dark); border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--bg-light);">
                             <?php if (isset($product['image_url']) && $product['image_url']): ?>
-                            <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>"
+                            <img src="..<?php echo get_image_url($product['image_url'], 'Produit'); ?>"
                                 style="width: 100%; height: 100%; object-fit: cover;">
                             <?php else: ?>
                             <i class="fas fa-image" style="font-size: 40px; color: var(--beige-dark);"></i>

@@ -938,7 +938,7 @@ if (isset($_SESSION['user_id'])) {
             });
     });
     </script>
-
+    <script src="assets\js\cart-count.js"></script>
     <?php mysqli_close($cnx); ?>
 </body>
 

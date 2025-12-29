@@ -432,7 +432,7 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
             </div>
 
             <div class="continue-shopping">
-                <a href="produits/index.php">
+                <a href="shop.php">
                     <i class="fas fa-arrow-left"></i> Continuer mes achats
                 </a>
             </div>
@@ -555,6 +555,7 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
         window.location.href = 'checkout.php';
     }
     </script>
+    <script src="assets/js/cart-count.js"></script>
 </body>
 
 </html>

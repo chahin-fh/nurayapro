@@ -312,3 +312,4 @@ $assets_path = 'assets/';
         </div>
     </div>
 </footer>
+<script src="<?php echo $assets_path; ?>js/cart-count.js"></script>
