@@ -342,8 +342,8 @@ function sendBirthdayEmail($userEmail, $userName)
     ";
 
     // Configuration PHPMailer
-    require_once '../vendor/autoload.php';
-    $emailConfig = require '../config/email.php';
+    require_once __DIR__ . '/../vendor/autoload.php';
+    $emailConfig = require __DIR__ . '/../config/email.php';
 
     try {
         $mail = new PHPMailer(true);
