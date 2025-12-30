@@ -1,6 +1,9 @@
 <?php
 // Footer professionnel pour Nuraya
 
+// Inclusion de la configuration
+require_once 'config/settings.php';
+
 // Pas besoin de chemins dynamiques - tout est à la racine
 $base_path = '';
 $assets_path = 'assets/';
@@ -254,15 +257,36 @@ $assets_path = 'assets/';
                 Découvrez l'élégance intemporelle à travers nos collections uniques.
             </p>
             <div class="social-links">
-                <a href="#" class="social-link" title="Facebook">
+                <?php if (isset($social_links['facebook'])): ?>
+                <a href="<?php echo htmlspecialchars($social_links['facebook']); ?>" class="social-link"
+                    title="Facebook" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="#" class="social-link" title="Instagram">
+                <?php endif; ?>
+                <?php if (isset($social_links['instagram'])): ?>
+                <a href="<?php echo htmlspecialchars($social_links['instagram']); ?>" class="social-link"
+                    title="Instagram" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="#" class="social-link" title="Pinterest">
+                <?php endif; ?>
+                <?php if (isset($social_links['twitter'])): ?>
+                <a href="<?php echo htmlspecialchars($social_links['twitter']); ?>" class="social-link" title="Twitter"
+                    target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <?php endif; ?>
+                <?php if (isset($social_links['linkedin'])): ?>
+                <a href="<?php echo htmlspecialchars($social_links['linkedin']); ?>" class="social-link"
+                    title="LinkedIn" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <?php endif; ?>
+                <?php if (isset($social_links['pinterest'])): ?>
+                <a href="<?php echo htmlspecialchars($social_links['pinterest']); ?>" class="social-link"
+                    title="Pinterest" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-pinterest-p"></i>
                 </a>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -312,4 +336,7 @@ $assets_path = 'assets/';
         </div>
     </div>
 </footer>
+<!-- Système de Toast Unifié Nuraya -->
+<link rel="stylesheet" href="<?php echo $assets_path; ?>css/toast.css">
+<script src="<?php echo $assets_path; ?>js/toast.js"></script>
 <script src="<?php echo $assets_path; ?>js/cart-count.js"></script>

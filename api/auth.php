@@ -338,20 +338,44 @@ function forgotPassword()
             <html>
             <head>
                 <style>
-                    body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #1C1C1C; }
+                    body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #1C1C1C; margin: 0; padding: 0; }
                     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #BDA18A 0%, #C49D83 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                    .header { background: linear-gradient(135deg, #BDA18A 0%, #C49D83 100%); padding: 30px 20px; text-align: center; border-radius: 10px 10px 0 0; }
                     .header h1 { color: #FAF7F2; margin: 0; font-size: 28px; font-weight: 700; }
-                    .content { background: #FAF7F2; padding: 30px; border-radius: 0 0 10px 10px; }
-                    .info { background: #f5efe6; border-left: 4px solid #BDA18A; padding: 15px; margin: 20px 0; font-size: 14px; }
+                    .content { background: #FAF7F2; padding: 30px 20px; border-radius: 0 0 10px 10px; }
+                    .info { background: #f5efe6; border-left: 4px solid #BDA18A; padding: 15px; margin: 20px 0; font-size: 14px; border-radius: 0 8px 8px 0; }
                     .btn { display: inline-block; background: #BDA18A; color: #FAF7F2 !important; padding: 14px 28px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 700; }
                     .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #7A7A7A; }
+                    
+                    /* Responsive styles */
+                    @media screen and (max-width: 600px) {
+                        .container { padding: 10px; }
+                        .header { padding: 20px 15px; }
+                        .header h1 { font-size: 24px !important; }
+                        .content { padding: 20px 15px; }
+                        .info { padding: 12px; margin: 15px 0; font-size: 13px; }
+                        .btn { padding: 12px 20px; font-size: 14px; }
+                    }
+                    
+                    @media screen and (max-width: 480px) {
+                        .container { padding: 5px; }
+                        .header { padding: 15px 10px; }
+                        .header h1 { font-size: 20px !important; }
+                        .content { padding: 15px 10px; }
+                        .info { padding: 10px; margin: 12px 0; font-size: 12px; }
+                        .btn { padding: 10px 16px; font-size: 13px; display: block; text-align: center; }
+                    }
                 </style>
             </head>
             <body>
                 <div class='container'>
                     <div class='header'>
-                        <h1>🔑 Réinitialisation Nuraya</h1>
+                        <div style='text-align: center; margin-bottom: 20px;'>
+                            <div style='display: inline-block; background: #FAF7F2; padding: 15px 30px; border-radius: 8px; margin-bottom: 15px;'>
+                                <h1 style='color: #BDA18A; margin: 0; font-size: 32px; font-weight: 800; letter-spacing: 3px;'>NURAYA</h1>
+                            </div>
+                        </div>
+                        <h2 style='color: #FAF7F2; margin: 0; font-size: 24px; font-weight: 600;'>🔑 Réinitialisation Nuraya</h2>
                     </div>
                     <div class='content'>
                         <p>Bonjour $full_name,</p>
@@ -552,22 +576,48 @@ function sendVerificationEmail($email, $verification_code)
         <html>
         <head>
             <style>
-                body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #1C1C1C; }
+                body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #1C1C1C; margin: 0; padding: 0; }
                 .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #BDA18A 0%, #C49D83 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .header { background: linear-gradient(135deg, #BDA18A 0%, #C49D83 100%); padding: 30px 20px; text-align: center; border-radius: 10px 10px 0 0; }
                 .header h1 { color: #FAF7F2; margin: 0; font-size: 28px; font-weight: 700; }
-                .content { background: #FAF7F2; padding: 30px; border-radius: 0 0 10px 10px; }
+                .content { background: #FAF7F2; padding: 30px 20px; border-radius: 0 0 10px 10px; }
                 .code-box { background: #f5efe6; border: 2px solid #BDA18A; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0; }
                 .code { font-size: 32px; font-weight: 700; color: #BDA18A; letter-spacing: 8px; font-family: monospace; }
                 .info { background: #E8D5CC; color: #1a1a1a; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; }
                 .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #718096; }
                 .btn { display: inline-block; background: #BDA18A; color: #FAF7F2; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0; }
+                
+                /* Responsive styles */
+                @media screen and (max-width: 600px) {
+                    .container { padding: 10px; }
+                    .header { padding: 20px 15px; }
+                    .header h1 { font-size: 24px !important; }
+                    .content { padding: 20px 15px; }
+                    .code-box { padding: 15px; margin: 15px 0; }
+                    .code { font-size: 28px; letter-spacing: 6px; }
+                    .info { padding: 12px; margin: 15px 0; font-size: 13px; }
+                }
+                
+                @media screen and (max-width: 480px) {
+                    .container { padding: 5px; }
+                    .header { padding: 15px 10px; }
+                    .header h1 { font-size: 20px !important; }
+                    .content { padding: 15px 10px; }
+                    .code-box { padding: 12px; margin: 12px 0; }
+                    .code { font-size: 24px; letter-spacing: 4px; }
+                    .info { padding: 10px; margin: 12px 0; font-size: 12px; }
+                }
             </style>
         </head>
         <body>
             <div class='container'>
                 <div class='header'>
-                    <h1> Vérification Nuraya</h1>
+                    <div style='text-align: center; margin-bottom: 20px;'>
+                        <div style='display: inline-block; background: #FAF7F2; padding: 15px 30px; border-radius: 8px; margin-bottom: 15px;'>
+                            <h1 style='color: #BDA18A; margin: 0; font-size: 32px; font-weight: 800; letter-spacing: 3px;'>NURAYA</h1>
+                        </div>
+                    </div>
+                    <h2 style='color: #FAF7F2; margin: 0; font-size: 24px; font-weight: 600;'> Vérification Nuraya</h2>
                 </div>
                 <div class='content'>
                     <p>Bonjour,</p>

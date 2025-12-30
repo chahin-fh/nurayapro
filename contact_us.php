@@ -269,7 +269,14 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                // Check if response is actually JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('La réponse du serveur n\'est pas au format JSON');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     showToast(data.message, 'success');

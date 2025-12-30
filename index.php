@@ -439,7 +439,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
         <div class="hero-content">
             <h1>Mode</h1>
             <p class="hero-subtitle">Collection Automne - Hiver 2025/26</p>
-            <a href="#" class="hero-btn">Voir Plus</a>
+            <a href="shop.php?category=automne-hiver" class="hero-btn">Voir Plus</a>
         </div>
     </section>
 
