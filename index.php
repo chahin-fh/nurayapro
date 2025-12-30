@@ -541,7 +541,7 @@ while ($product = mysqli_fetch_assoc($collections_result)) {
                 <span class="item-plus">+</span>
             </a>
 
-            <a href="about.php" class="content-item">
+            <a href="about_new.php" class="content-item">
                 <div class="content-item-left">
                     <span class="item-arrow">></span>
                     <span class="item-text">About us</span>
