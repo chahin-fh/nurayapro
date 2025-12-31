@@ -1,15 +1,25 @@
 <?php
+// Désactiver l'affichage des erreurs pour ne pas casser le JSON
+error_reporting(0);
+ini_set('display_errors', 0);
+
+// Démarrer la tamporisation de sortie
+ob_start();
+
 session_start();
 header('Content-Type: application/json');
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
+    ob_end_clean(); // Nettoyer le tampon
     echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
     exit;
 }
 
 // Connexion à la base de données
 require_once '../config/database.php';
+// Nettoyer tout output qui aurait pu être généré par l'include (espaces, warnings)
+ob_clean();
 
 // Récupérer l'action demandée
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
@@ -42,10 +52,10 @@ function addToWishlist()
     }
 
     // Vérifier si le produit existe
-    $product_query = "SELECT id FROM products WHERE product_id = $product_id AND is_active = 1";
+    $product_query = "SELECT product_id FROM products WHERE product_id = $product_id AND is_active = 1";
     $product_result = mysqli_query($cnx, $product_query);
 
-    if (mysqli_num_rows($product_result) === 0) {
+    if (!$product_result || mysqli_num_rows($product_result) === 0) {
         echo json_encode(['success' => false, 'message' => 'Produit non disponible']);
         return;
     }

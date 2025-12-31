@@ -733,6 +733,52 @@ if (isset($_SESSION['user_id'])) {
 
 
     <script src="assets/js/cart-count.js"></script>
+    <script>
+        function toggleWishlist() {
+            const btn = document.querySelector('.btn-secondary'); // The wishlist button
+            const productId = <?php echo $product_id; ?>;
+            const isAdding = !btn.classList.contains('active');
+            const action = isAdding ? 'add' : 'remove';
+
+            fetch('api/wishlist.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=${action}&product_id=${productId}`
+                })
+                .then(response => response.text())
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            if (isAdding) {
+                                btn.classList.add('active');
+                                btn.innerHTML = '<i class="fas fa-heart"></i> Dans les favoris';
+                                showToast('Ajouté aux favoris', 'success');
+                            } else {
+                                btn.classList.remove('active');
+                                btn.innerHTML = '<i class="fas fa-heart"></i> Favoris';
+                                showToast('Retiré des favoris', 'success');
+                            }
+                        } else {
+                            if (data.message === 'Utilisateur non connecté') {
+                                window.location.href = 'login.php';
+                            } else {
+                                showToast(data.message, 'error');
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Invalid JSON:', text);
+                        showToast('Erreur serveur: ' + text.substring(0, 50), 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Une erreur est survenue: ' + error.message, 'error');
+                });
+        }
+    </script>
     <?php mysqli_close($cnx); ?>
 </body>
 

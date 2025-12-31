@@ -42,7 +42,11 @@ $total_products = mysqli_fetch_assoc($count_result)['total'];
 $total_pages = ceil($total_products / $limit);
 
 // Récupérer les produits avec pagination
-$query = "SELECT p.*, c.name as category_name, c.slug as category_slug 
+// Récupérer les produits avec pagination
+$user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+$wishlist_select = $user_id > 0 ? ", (SELECT COUNT(*) FROM wishlist w WHERE w.product_id = p.product_id AND w.user_id = $user_id) as is_in_wishlist" : ", 0 as is_in_wishlist";
+
+$query = "SELECT p.*, c.name as category_name, c.slug as category_slug $wishlist_select
             FROM products p 
             LEFT JOIN categories c ON p.category_id = c.category_id 
             $where_clause 
@@ -186,7 +190,40 @@ $i = 0;
         box-shadow: 0 4px 15px rgba(200, 182, 166, 0.15);
         transition: transform 0.3s, box-shadow 0.3s;
         cursor: pointer;
-        border: 1px solid rgba(200, 182, 166, 0.2)
+        border: 1px solid rgba(200, 182, 166, 0.2);
+        position: relative;
+    }
+
+    .wishlist-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-gray);
+        transition: all 0.3s ease;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .wishlist-btn:hover {
+        transform: scale(1.1);
+        background: var(--bg-white);
+    }
+
+    .wishlist-btn.active {
+        color: var(--accent-pink);
+    }
+
+    .wishlist-btn i {
+        font-size: 18px;
     }
 
     .product-card:hover {
@@ -395,6 +432,10 @@ $i = 0;
                         $i++;
                         ?>
                 <a href="product.php?id=<?php echo $t['product_id']; ?>" class="product-card">
+                    <button class="wishlist-btn <?php echo (isset($t['is_in_wishlist']) && $t['is_in_wishlist'] > 0) ? 'active' : ''; ?>" 
+                            onclick="toggleShopWishlist(event, <?php echo $t['product_id']; ?>)">
+                        <i class="fas fa-heart"></i>
+                    </button>
                     <div class="product-image">
                         <img src="<?php echo get_image_url($t['image_url'], 'Produit'); ?>"
                             alt="<?php echo htmlspecialchars($t['name']); ?>" loading="lazy"
@@ -615,6 +656,53 @@ $i = 0;
             }
         });
     });
+
+    // Fonction pour gérer les favoris sur la page shop
+    function toggleShopWishlist(event, productId) {
+        event.preventDefault(); // Empêcher la navigation vers la page produit
+        event.stopPropagation();
+        
+        const btn = event.currentTarget;
+        const isAdding = !btn.classList.contains('active');
+        const action = isAdding ? 'add' : 'remove';
+
+        fetch('api/wishlist.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `action=${action}&product_id=${productId}`
+        })
+        .then(response => response.text())
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                if (data.success) {
+                    if (isAdding) {
+                        btn.classList.add('active');
+                        showToast('Ajouté aux favoris', 'success');
+                    } else {
+                        btn.classList.remove('active');
+                        showToast('Retiré des favoris', 'success');
+                    }
+                } else {
+                    if (data.message === 'Utilisateur non connecté') {
+                        // Rediriger vers login ou afficher message
+                        window.location.href = 'login.php';
+                    } else {
+                        showToast(data.message, 'error');
+                    }
+                }
+            } catch (e) {
+                console.error('Invalid JSON:', text);
+                showToast('Erreur serveur: ' + text.substring(0, 50), 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Une erreur est survenue: ' + error.message, 'error');
+        });
+    }
 
     // Initialiser le compteur du panier au chargement
     document.addEventListener('DOMContentLoaded', updateCartCount);
