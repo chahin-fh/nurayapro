@@ -727,11 +727,14 @@ function setupEventListeners() {
 
 function handleQuickRating(rating) {
     // Check if user is logged in
-    fetch('../api/auth.php?action=checkAuth')
+    fetch('api/auth.php?action=checkAuth', { credentials: 'include' })
         .then(response => response.json())
         .then(data => {
             if (!data.authenticated) {
-                showMessage('Vous devez être connecté pour noter ce produit', 'error');
+                if(confirm('Vous devez être connecté pour noter ce produit. Voulez-vous vous connecter ?')) {
+                     const currentUrl = encodeURIComponent(window.location.href);
+                     window.location.href = `login.php?redirect=${currentUrl}`;
+                }
                 return;
             }
 
@@ -760,11 +763,14 @@ function updateQuickRatingDisplay(rating) {
 
 function openReviewModal() {
     // Check if user is logged in
-    fetch('../api/auth.php?action=checkAuth')
+    fetch('api/auth.php?action=checkAuth', { credentials: 'include' })
         .then(response => response.json())
         .then(data => {
             if (!data.authenticated) {
-                showMessage('Vous devez être connecté pour laisser un avis', 'error');
+                if(confirm('Vous devez être connecté pour noter ce produit. Voulez-vous vous connecter ?')) {
+                    const currentUrl = encodeURIComponent(window.location.href);
+                    window.location.href = `login.php?redirect=${currentUrl}`;
+                }
                 return;
             }
             document.getElementById('reviewModal').classList.add('show');
@@ -809,7 +815,7 @@ function submitReview(e) {
     formData.append('title', title);
     formData.append('comment', comment);
 
-    fetch('../api/reviews.php', {
+    fetch('api/reviews.php', {
             method: 'POST',
             body: formData
         })
@@ -835,7 +841,7 @@ function submitReview(e) {
 }
 
 function loadReviews() {
-    fetch(`../api/reviews.php?action=get&product_id=${currentProductId}&page=${currentPage}`)
+    fetch(`api/reviews.php?action=get&product_id=${currentProductId}&page=${currentPage}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -850,7 +856,7 @@ function loadReviews() {
 }
 
 function loadRatingSummary() {
-    fetch(`../api/reviews.php?action=get&product_id=${currentProductId}&page=1`)
+    fetch(`api/reviews.php?action=get&product_id=${currentProductId}&page=1`)
         .then(response => response.json())
         .then(data => {
             if (data.success && data.stats) {
@@ -981,7 +987,7 @@ function loadMoreReviews() {
 }
 
 function markHelpful(reviewId, button) {
-    fetch('../api/reviews.php', {
+    fetch('api/reviews.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -1028,7 +1034,7 @@ function submitReport(e) {
         return;
     }
 
-    fetch('../api/reviews.php', {
+    fetch('api/reviews.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

@@ -162,7 +162,12 @@ if (isset($_SESSION['user_id'])) {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 24px
+            margin-bottom: 24px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .product-rating:hover {
+            opacity: 0.8;
         }
 
         .stars {
@@ -628,7 +633,7 @@ if (isset($_SESSION['user_id'])) {
 
             <h1 class="product-title"><?php echo htmlspecialchars($product['name']); ?></h1>
 
-            <div class="product-rating">
+            <div class="product-rating" onclick="showTab('reviews'); document.getElementById('reviews').scrollIntoView({behavior: 'smooth', block: 'start'});">
                 <div class="stars">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
                         <span class="star <?php echo $i <= $avg_rating ? 'filled' : ''; ?>">★</span>
@@ -734,6 +739,70 @@ if (isset($_SESSION['user_id'])) {
 
     <script src="assets/js/cart-count.js"></script>
     <script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            // Show selected content
+            const content = document.getElementById(tabId);
+            if(content) content.classList.add('active');
+            
+            // Activate corresponding button
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.textContent.toLowerCase().includes(tabId === 'reviews' ? 'avis' : 'description')) {
+                    btn.classList.add('active');
+                }
+            });
+             // Also check onclick attribute for more robust matching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                const search = "showTab('" + tabId + "')";
+                const search2 = 'showTab("' + tabId + '")';
+                if((btn.getAttribute('onclick') || '').includes(search) || (btn.getAttribute('onclick') || '').includes(search2)) {
+                    // It might be already active from previous loop, but that's fine
+                     btn.classList.add('active');
+                }
+            });
+        }
+
+        function updateQuantity(change) {
+            const input = document.getElementById('quantity');
+            let val = parseInt(input.value) + change;
+            const max = parseInt(input.getAttribute('max'));
+            if (val < 1) val = 1;
+            if (val > max) val = max;
+            input.value = val;
+        }
+
+        function addToCart() {
+             const productId = <?php echo $product_id; ?>;
+             const quantity = document.getElementById('quantity').value;
+             
+             const formData = new FormData();
+             formData.append('action', 'add');
+             formData.append('product_id', productId);
+             formData.append('quantity', quantity);
+             
+             fetch('api/cart.php', {
+                 method: 'POST',
+                 body: formData
+             })
+             .then(response => response.json())
+             .then(data => {
+                 if(data.success) {
+                     showToast(data.message, 'success');
+                     if(window.updateCartCount) window.updateCartCount();
+                 } else {
+                     showToast(data.message, 'error');
+                 }
+             })
+             .catch(error => {
+                 console.error('Error:', error);
+                 showToast('Erreur lors de l\'ajout au panier', 'error');
+             });
+        }
+
         function toggleWishlist() {
             const btn = document.querySelector('.btn-secondary'); // The wishlist button
             const productId = <?php echo $product_id; ?>;

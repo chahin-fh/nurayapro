@@ -1,7 +1,9 @@
 <?php
 // Désactiver l'affichage des erreurs HTML
-error_reporting(0);
-ini_set('display_errors', 0);
+// error_reporting(0);
+// ini_set('display_errors', 0);
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 
 session_start();
 header('Content-Type: application/json');
@@ -13,7 +15,7 @@ use PHPMailer\PHPMailer\Exception;
 
 // Charger PHPMailer avec gestion d'erreur
 try {
-    require '../vendor/autoload.php';
+    require_once __DIR__ . '/../vendor/autoload.php';
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'PHPMailer non disponible']);
     exit;
@@ -21,14 +23,14 @@ try {
 
 // Connexion à la base de données
 try {
-    require_once '../config/database.php';
+    require_once __DIR__ . '/../config/database.php';
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Erreur de connexion BDD']);
     exit;
 }
 
 // Charger la configuration email
-$emailConfig = require '../config/email.php';
+$emailConfig = require __DIR__ . '/../config/email.php';
 
 // Récupérer l'action demandée
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
@@ -467,6 +469,12 @@ function resetPassword()
 
 function checkAuth()
 {
+    // Debug logging
+    $debug = "Session ID: " . session_id() . "\n";
+    $debug .= "Session Content: " . print_r($_SESSION, true) . "\n";
+    $debug .= "Cookies: " . print_r($_COOKIE, true) . "\n";
+    file_put_contents(__DIR__ . '/../debug_auth.txt', $debug, FILE_APPEND);
+
     if (isset($_SESSION['user_id'])) {
         echo json_encode([
             'success' => true,
