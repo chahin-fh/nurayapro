@@ -761,6 +761,18 @@ function updateQuickRatingDisplay(rating) {
     });
 }
 
+function updateRatingDisplay(rating) {
+    document.querySelectorAll('#ratingInput i').forEach((star, index) => {
+        if (index < rating) {
+            star.classList.remove('far');
+            star.classList.add('fas', 'active');
+        } else {
+            star.classList.remove('fas', 'active');
+            star.classList.add('far');
+        }
+    });
+}
+
 function openReviewModal() {
     // Check if user is logged in
     fetch('api/auth.php?action=checkAuth', { credentials: 'include' })
@@ -891,6 +903,10 @@ function createReviewElement(review) {
         month: 'long',
         day: 'numeric'
     });
+    
+    const helpfulCount = review.helpful_count || 0;
+    const userVoted = review.user_voted || false;
+    const activeClass = userVoted ? 'active' : '';
 
     div.innerHTML = `
         <div class="review-header">
@@ -910,8 +926,8 @@ function createReviewElement(review) {
         ${review.title ? `<div class="review-title">${review.title}</div>` : ''}
         <div class="review-comment">${review.comment}</div>
         <div class="review-actions">
-            <button class="review-action-btn" onclick="markHelpful(${review.id}, this)">
-                <i class="fas fa-thumbs-up"></i> Utile
+            <button class="review-action-btn ${activeClass}" onclick="markHelpful(${review.id}, this)" data-review-id="${review.id}">
+                <i class="fas fa-thumbs-up"></i> Utile ${helpfulCount > 0 ? `(${helpfulCount})` : ''}
             </button>
             <button class="review-action-btn" onclick="openReportModal(${review.id})">
                 <i class="fas fa-flag"></i> Signaler
@@ -997,12 +1013,34 @@ function markHelpful(reviewId, button) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                const buttonIcon = button.querySelector('i');
+                const buttonText = button.childNodes[button.childNodes.length - 1];
+                
+                // Get current count from button text
+                const match = buttonText.textContent.match(/\((\d+)\)/);
+                let currentCount = match ? parseInt(match[1]) : 0;
+                
                 if (data.action === 'added') {
                     button.classList.add('active');
+                    currentCount++;
                     showMessage('Vote ajouté', 'success');
                 } else {
                     button.classList.remove('active');
+                    currentCount--;
                     showMessage('Vote retiré', 'success');
+                }
+                
+                // Update button text with new count
+                const countText = currentCount > 0 ? ` (${currentCount})` : '';
+                button.innerHTML = `<i class="fas fa-thumbs-up"></i> Utile${countText}`;
+            } else {
+                if (data.message === 'Utilisateur non connecté') {
+                    if(confirm('Vous devez être connecté pour voter. Voulez-vous vous connecter ?')) {
+                        const currentUrl = encodeURIComponent(window.location.href);
+                        window.location.href = `login.php?redirect=${currentUrl}`;
+                    }
+                } else {
+                    showMessage(data.message, 'error');
                 }
             }
         })

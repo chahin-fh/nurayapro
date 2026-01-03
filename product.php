@@ -737,6 +737,8 @@ if (isset($_SESSION['user_id'])) {
     <?php endif; ?>
 
 
+
+    <script src="assets/js/toast.js"></script>
     <script src="assets/js/cart-count.js"></script>
     <script>
         function showTab(tabId) {

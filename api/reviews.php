@@ -115,19 +115,28 @@ function getReviews()
     $page = (int) ($_GET['page'] ?? 1);
     $limit = 10;
     $offset = ($page - 1) * $limit;
+    $user_id = $_SESSION['user_id'] ?? 0;
 
     if ($product_id <= 0) {
         echo json_encode(['success' => false, 'message' => 'ID produit invalide']);
         return;
     }
 
-    // Récupérer les avis avec pagination
+    // Récupérer les avis avec pagination et informations de votes
     $reviews_query = "SELECT r.*, u.first_name, u.last_name, u.role as user_role,
-                      CASE WHEN u.role = 'admin' THEN 1 ELSE 0 END as is_admin_review
-                      FROM reviews r 
+                      CASE WHEN u.role = 'admin' THEN 1 ELSE 0 END as is_admin_review,
+                      COALESCE(r.helpful_count, 0) as helpful_count";
+    
+    // Si l'utilisateur est connecté, vérifier s'il a voté
+    if ($user_id > 0) {
+        $reviews_query .= ",
+                      (SELECT COUNT(*) FROM review_helpful WHERE review_id = r.id AND user_id = $user_id) as user_voted";
+    }
+    
+    $reviews_query .= " FROM reviews r 
                       LEFT JOIN users u ON r.user_id = u.id 
                       WHERE r.product_id = $product_id AND r.is_approved = 1 
-                      ORDER BY is_admin_review DESC, r.created_at DESC 
+                      ORDER BY is_admin_review DESC, helpful_count DESC, r.created_at DESC 
                       LIMIT $limit OFFSET $offset";
     $reviews_result = mysqli_query($cnx, $reviews_query);
 
@@ -153,7 +162,7 @@ function getReviews()
     $reviews = [];
 
     while ($review = mysqli_fetch_assoc($reviews_result)) {
-        $reviews[] = [
+        $reviewData = [
             'id' => $review['id'],
             'rating' => $review['rating'],
             'title' => $review['title'],
@@ -161,8 +170,15 @@ function getReviews()
             'author' => $review['first_name'] . ' ' . $review['last_name'],
             'date' => $review['created_at'],
             'verified_purchase' => (bool) $review['is_verified_purchase'],
-            'is_admin' => (bool) $review['is_admin_review']
+            'is_admin' => (bool) $review['is_admin_review'],
+            'helpful_count' => (int) $review['helpful_count']
         ];
+        
+        if ($user_id > 0) {
+            $reviewData['user_voted'] = (bool) $review['user_voted'];
+        }
+        
+        $reviews[] = $reviewData;
     }
 
     echo json_encode([
