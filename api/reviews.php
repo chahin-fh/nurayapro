@@ -67,7 +67,7 @@ function addReview()
     $comment = mysqli_real_escape_string($cnx, $comment);
 
     // Vérifier si le produit existe
-    $product_query = "SELECT id FROM products WHERE product_id = $product_id AND is_active = 1";
+    $product_query = "SELECT product_id FROM products WHERE product_id = $product_id AND is_active = 1";
     $product_result = mysqli_query($cnx, $product_query);
 
     if (mysqli_num_rows($product_result) === 0) {
@@ -93,13 +93,13 @@ function addReview()
     $is_verified_purchase = mysqli_num_rows($purchase_result) > 0 ? 1 : 0;
 
     // Insérer l'avis
-    $insert_query = "INSERT INTO reviews (product_id, user_id, rating, title, comment, is_verified_purchase) 
-                    VALUES ($product_id, $user_id, $rating, " . ($title ? "'$title'" : 'NULL') . ", '$comment', $is_verified_purchase)";
+    $insert_query = "INSERT INTO reviews (product_id, user_id, rating, title, comment, is_verified_purchase, is_approved) 
+                    VALUES ($product_id, $user_id, $rating, " . ($title ? "'$title'" : 'NULL') . ", '$comment', $is_verified_purchase, 1)";
 
     if (mysqli_query($cnx, $insert_query)) {
         echo json_encode([
             'success' => true,
-            'message' => 'Avis envoyé avec succès. Il sera visible après validation.',
+            'message' => 'Avis envoyé avec succès.',
             'verified_purchase' => (bool) $is_verified_purchase
         ]);
     } else {

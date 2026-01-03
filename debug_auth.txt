@@ -1,0 +1,236 @@
+Session ID: i4p7fcrs51ns3eaj3cjfbej6jt
+Session Content: Array
+(
+    [cart_session_id] => i4p7fcrs51ns3eaj3cjfbej6jt
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => i4p7fcrs51ns3eaj3cjfbej6jt
+)
+
+Session ID: i4p7fcrs51ns3eaj3cjfbej6jt
+Session Content: Array
+(
+    [cart_session_id] => i4p7fcrs51ns3eaj3cjfbej6jt
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => i4p7fcrs51ns3eaj3cjfbej6jt
+)
+
+Session ID: i4p7fcrs51ns3eaj3cjfbej6jt
+Session Content: Array
+(
+    [cart_session_id] => i4p7fcrs51ns3eaj3cjfbej6jt
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => i4p7fcrs51ns3eaj3cjfbej6jt
+)
+
+Session ID: edffrlf5gfh6b5bc109l87kqq8
+Session Content: Array
+(
+    [cart_session_id] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Session ID: edffrlf5gfh6b5bc109l87kqq8
+Session Content: Array
+(
+    [cart_session_id] => edffrlf5gfh6b5bc109l87kqq8
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Session ID: edffrlf5gfh6b5bc109l87kqq8
+Session Content: Array
+(
+    [cart_session_id] => edffrlf5gfh6b5bc109l87kqq8
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Session ID: edffrlf5gfh6b5bc109l87kqq8
+Session Content: Array
+(
+    [cart_session_id] => edffrlf5gfh6b5bc109l87kqq8
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Session ID: edffrlf5gfh6b5bc109l87kqq8
+Session Content: Array
+(
+    [cart_session_id] => edffrlf5gfh6b5bc109l87kqq8
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Session ID: edffrlf5gfh6b5bc109l87kqq8
+Session Content: Array
+(
+    [cart_session_id] => edffrlf5gfh6b5bc109l87kqq8
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Session ID: edffrlf5gfh6b5bc109l87kqq8
+Session Content: Array
+(
+    [cart_session_id] => edffrlf5gfh6b5bc109l87kqq8
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Session ID: edffrlf5gfh6b5bc109l87kqq8
+Session Content: Array
+(
+    [cart_session_id] => edffrlf5gfh6b5bc109l87kqq8
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Session ID: edffrlf5gfh6b5bc109l87kqq8
+Session Content: Array
+(
+    [cart_session_id] => edffrlf5gfh6b5bc109l87kqq8
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => edffrlf5gfh6b5bc109l87kqq8
+)
+
+Session ID: s61pm2thstangup664e3ge3kcs
+Session Content: Array
+(
+    [cart_session_id] => s61pm2thstangup664e3ge3kcs
+    [user_id] => 2
+    [user_email] => chahinfhima@gmail.com
+    [user_name] => fhima chahin
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => s61pm2thstangup664e3ge3kcs
+)
+
+Session ID: s61pm2thstangup664e3ge3kcs
+Session Content: Array
+(
+    [cart_session_id] => s61pm2thstangup664e3ge3kcs
+    [user_id] => 2
+    [user_email] => chahinfhima@gmail.com
+    [user_name] => fhima chahin
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => s61pm2thstangup664e3ge3kcs
+)
+
+Session ID: s61pm2thstangup664e3ge3kcs
+Session Content: Array
+(
+    [cart_session_id] => s61pm2thstangup664e3ge3kcs
+    [user_id] => 2
+    [user_email] => chahinfhima@gmail.com
+    [user_name] => fhima chahin
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => s61pm2thstangup664e3ge3kcs
+)
+
+Session ID: s61pm2thstangup664e3ge3kcs
+Session Content: Array
+(
+    [cart_session_id] => s61pm2thstangup664e3ge3kcs
+    [user_id] => 2
+    [user_email] => chahinfhima@gmail.com
+    [user_name] => fhima chahin
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => s61pm2thstangup664e3ge3kcs
+)
+

@@ -66,6 +66,9 @@ switch ($action) {
     case 'check':
         checkAuth();
         break;
+    case 'checkAuth':
+        checkAuth();
+        break;
     default:
         echo json_encode(['success' => false, 'message' => 'Action non valide']);
         break;

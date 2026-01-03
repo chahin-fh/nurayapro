@@ -727,7 +727,7 @@ function setupEventListeners() {
 
 function handleQuickRating(rating) {
     // Check if user is logged in
-    fetch('api/auth.php?action=checkAuth', { credentials: 'include' })
+    fetch('api/auth.php?action=check', { credentials: 'include' })
         .then(response => response.json())
         .then(data => {
             if (!data.authenticated) {
@@ -775,7 +775,7 @@ function updateRatingDisplay(rating) {
 
 function openReviewModal() {
     // Check if user is logged in
-    fetch('api/auth.php?action=checkAuth', { credentials: 'include' })
+    fetch('api/auth.php?action=check', { credentials: 'include' })
         .then(response => response.json())
         .then(data => {
             if (!data.authenticated) {
@@ -979,6 +979,36 @@ function displayRatingSummary(stats) {
         .join('');
 
     document.getElementById('ratingDistribution').innerHTML = distributionHtml;
+
+    updateProductRating(stats);
+}
+
+function updateProductRating(stats) {
+    const productRating = document.querySelector('.product-rating');
+    if (!productRating || !stats) {
+        return;
+    }
+
+    const avg = typeof stats.avg_rating !== 'undefined' ? parseFloat(stats.avg_rating) : 0;
+    const total = typeof stats.total_reviews !== 'undefined' ? parseInt(stats.total_reviews, 10) : 0;
+
+    const starEls = productRating.querySelectorAll('.stars .star');
+    if (starEls && starEls.length) {
+        starEls.forEach((starEl, index) => {
+            const starNumber = index + 1;
+            if (starNumber <= avg) {
+                starEl.classList.add('filled');
+            } else {
+                starEl.classList.remove('filled');
+            }
+        });
+    }
+
+    const textEl = productRating.querySelector('.rating-text');
+    if (textEl) {
+        const displayAvg = isNaN(avg) ? '0.0' : avg.toFixed(1);
+        textEl.textContent = `${displayAvg}/5 (${isNaN(total) ? 0 : total} avis)`;
+    }
 }
 
 function updatePagination(pagination) {
