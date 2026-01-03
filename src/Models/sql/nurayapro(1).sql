@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 29, 2025 at 10:18 AM
+-- Generation Time: Jan 03, 2026 at 07:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,7 +43,8 @@ CREATE TABLE `cart` (
 
 INSERT INTO `cart` (`id`, `user_id`, `session_id`, `product_id`, `quantity`, `created_at`, `updated_at`) VALUES
 (3, NULL, 'qjgml7ev99jik3gajgopbhua50', 2, 2, '2025-12-29 06:41:23', '2025-12-29 06:41:42'),
-(4, NULL, 'stmh5mif5ku2kh4ticsvp0bu6c', 2, 1, '2025-12-29 09:17:15', '2025-12-29 09:17:15');
+(4, NULL, 'stmh5mif5ku2kh4ticsvp0bu6c', 2, 1, '2025-12-29 09:17:15', '2025-12-29 09:17:15'),
+(5, NULL, 'i4p7fcrs51ns3eaj3cjfbej6jt', 2, 1, '2026-01-03 14:03:58', '2026-01-03 14:03:58');
 
 -- --------------------------------------------------------
 
@@ -217,7 +218,8 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `name`, `slug`, `description`, `short_description`, `price`, `compare_price`, `cost_price`, `sku`, `stock_quantity`, `min_stock_level`, `category_id`, `image_url`, `additional_images`, `is_featured`, `is_active`, `weight`, `dimensions`, `tags`, `meta_title`, `meta_description`, `view_count`, `created_at`, `updated_at`) VALUES
-(2, 't-shirt', '', 'trikou abyadh cha3cha3i', 'abyadh', 20.00, 50.00, NULL, 'NR-CUPHBI', 49, 5, 7, 'uploads/prod_6951a0b80eec6.jpg', NULL, 0, 1, NULL, NULL, NULL, NULL, NULL, 9, '2025-12-28 21:27:20', '2025-12-29 06:54:21');
+(2, 't-shirt', '', 'trikou abyadh cha3cha3i', 'abyadh', 20.00, 50.00, NULL, 'NR-CUPHBI', 49, 5, 7, 'uploads/prod_6951a0b80eec6.jpg', NULL, 0, 1, NULL, NULL, NULL, NULL, NULL, 73, '2025-12-28 21:27:20', '2026-01-03 14:24:10'),
+(3, 'rouba', '', 'rose', 'mta3 bnet', 40.00, NULL, NULL, 'NR-C4I3IF', 50, 5, 7, 'uploads/prod_6958ed664332f.jpg', NULL, 0, 1, NULL, NULL, NULL, NULL, NULL, 25, '2026-01-03 10:20:22', '2026-01-03 18:33:50');
 
 -- --------------------------------------------------------
 
@@ -252,9 +254,60 @@ CREATE TABLE `reviews` (
   `comment` text DEFAULT NULL,
   `is_verified_purchase` tinyint(1) DEFAULT 0,
   `is_approved` tinyint(1) DEFAULT 0,
+  `helpful_count` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`id`, `product_id`, `user_id`, `rating`, `title`, `comment`, `is_verified_purchase`, `is_approved`, `helpful_count`, `created_at`, `updated_at`) VALUES
+(10, 3, 4, 5, 'oijeoijsfjdsfl', 'iojdljfjqsdnvkjndqsvkjnkjezf', 0, 1, 0, '2026-01-03 18:33:22', '2026-01-03 18:33:22');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `review_helpful`
+--
+
+CREATE TABLE `review_helpful` (
+  `id` int(11) NOT NULL,
+  `review_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Triggers `review_helpful`
+--
+DELIMITER $$
+CREATE TRIGGER `review_helpful_delete` AFTER DELETE ON `review_helpful` FOR EACH ROW UPDATE `reviews` 
+        SET `helpful_count` = `helpful_count` - 1 
+        WHERE `id` = OLD.review_id
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `review_helpful_insert` AFTER INSERT ON `review_helpful` FOR EACH ROW UPDATE `reviews` 
+        SET `helpful_count` = `helpful_count` + 1 
+        WHERE `id` = NEW.review_id
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `review_reports`
+--
+
+CREATE TABLE `review_reports` (
+  `id` int(11) NOT NULL,
+  `review_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `reason` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -319,8 +372,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password_hash`, `phone`, `birth_date`, `verification_code`, `is_verified`, `is_active`, `birthday_email_sent`, `role`, `created_at`, `updated_at`, `last_login`, `code_expires_at`, `verified_at`, `reset_token`, `reset_token_expires`) VALUES
-(1, 'Admin', 'Nuraya', 'admin@nuraya.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 1, 1, 0, 'admin', '2025-12-28 21:44:56', '2025-12-28 21:46:13', '2025-12-28 21:46:13', NULL, NULL, NULL, NULL),
-(2, 'fhima', 'chahin', 'chahinfhima@gmail.com', '$2y$10$osCDSJv6wNwBpbzxCPobqOoNT2ZMOs8RGGDEiiOOIRQPSVNRBYGZK', NULL, '2005-11-22', NULL, 1, 1, 0, 'user', '2025-12-29 07:31:35', '2025-12-29 07:31:51', '2025-12-29 07:31:51', NULL, '2025-12-29 07:31:35', NULL, NULL);
+(1, 'Admin', 'Nuraya', 'admin@nuraya.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 1, 1, 0, 'admin', '2025-12-28 21:44:56', '2026-01-03 11:18:00', '2026-01-03 11:18:00', NULL, NULL, NULL, NULL),
+(2, 'fhima', 'chahin', 'chahinfhima@gmail.com', '$2y$10$osCDSJv6wNwBpbzxCPobqOoNT2ZMOs8RGGDEiiOOIRQPSVNRBYGZK', NULL, '2005-11-22', NULL, 1, 1, 0, 'user', '2025-12-29 07:31:35', '2026-01-03 15:23:44', '2026-01-03 15:23:44', NULL, '2025-12-29 07:31:35', NULL, NULL),
+(4, 'malek', 'fhima', 'malali3b@gmail.com', '$2y$10$mhVLb2Y51U1ald7cEOp6POuT4rZbXHki4/cbdVQ.t106trASUKjy6', NULL, '2004-12-30', NULL, 1, 1, 1, 'user', '2025-12-30 21:58:39', '2026-01-03 19:31:52', '2026-01-03 19:31:52', NULL, '2025-12-30 21:58:39', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -357,6 +411,13 @@ CREATE TABLE `wishlist` (
   `product_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `wishlist`
+--
+
+INSERT INTO `wishlist` (`id`, `user_id`, `product_id`, `created_at`) VALUES
+(4, 4, 3, '2026-01-03 18:33:31');
 
 --
 -- Indexes for dumped tables
@@ -438,7 +499,26 @@ ALTER TABLE `reviews`
   ADD PRIMARY KEY (`id`),
   ADD KEY `product_id` (`product_id`),
   ADD KEY `user_id` (`user_id`),
-  ADD KEY `is_approved` (`is_approved`);
+  ADD KEY `is_approved` (`is_approved`),
+  ADD KEY `idx_product_approved` (`product_id`,`is_approved`),
+  ADD KEY `idx_rating` (`rating`);
+
+--
+-- Indexes for table `review_helpful`
+--
+ALTER TABLE `review_helpful`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_vote` (`review_id`,`user_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `idx_review` (`review_id`);
+
+--
+-- Indexes for table `review_reports`
+--
+ALTER TABLE `review_reports`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `review_id` (`review_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `settings`
@@ -479,7 +559,7 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -515,7 +595,7 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `product_variants`
@@ -527,6 +607,18 @@ ALTER TABLE `product_variants`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `review_helpful`
+--
+ALTER TABLE `review_helpful`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `review_reports`
+--
+ALTER TABLE `review_reports`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -539,7 +631,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user_addresses`
@@ -551,7 +643,7 @@ ALTER TABLE `user_addresses`
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -595,6 +687,20 @@ ALTER TABLE `product_variants`
 ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `review_helpful`
+--
+ALTER TABLE `review_helpful`
+  ADD CONSTRAINT `review_helpful_ibfk_1` FOREIGN KEY (`review_id`) REFERENCES `reviews` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `review_helpful_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `review_reports`
+--
+ALTER TABLE `review_reports`
+  ADD CONSTRAINT `review_reports_ibfk_1` FOREIGN KEY (`review_id`) REFERENCES `reviews` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `review_reports_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `user_addresses`

@@ -234,3 +234,74 @@ Cookies: Array
     [PHPSESSID] => s61pm2thstangup664e3ge3kcs
 )
 
+Session ID: 416ece8d180lm32a35c4c989mp
+Session Content: Array
+(
+    [cart_session_id] => 416ece8d180lm32a35c4c989mp
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => 416ece8d180lm32a35c4c989mp
+)
+
+Session ID: 416ece8d180lm32a35c4c989mp
+Session Content: Array
+(
+    [cart_session_id] => 416ece8d180lm32a35c4c989mp
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => 416ece8d180lm32a35c4c989mp
+)
+
+Session ID: 416ece8d180lm32a35c4c989mp
+Session Content: Array
+(
+    [cart_session_id] => 416ece8d180lm32a35c4c989mp
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => 416ece8d180lm32a35c4c989mp
+)
+
+Session ID: 416ece8d180lm32a35c4c989mp
+Session Content: Array
+(
+    [cart_session_id] => 416ece8d180lm32a35c4c989mp
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => 416ece8d180lm32a35c4c989mp
+)
+
+Session ID: 416ece8d180lm32a35c4c989mp
+Session Content: Array
+(
+    [cart_session_id] => 416ece8d180lm32a35c4c989mp
+    [user_id] => 4
+    [user_email] => malali3b@gmail.com
+    [user_name] => malek fhima
+    [user_role] => user
+)
+
+Cookies: Array
+(
+    [PHPSESSID] => 416ece8d180lm32a35c4c989mp
+)
+
