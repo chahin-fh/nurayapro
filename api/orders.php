@@ -95,8 +95,9 @@ function createOrder()
 
         // Insérer les articles de la commande
         foreach ($cart_items as $item) {
-            $insert_item = "INSERT INTO order_items (order_id, product_id, quantity, price, total) 
-                           VALUES ($order_id, {$item['product_id']}, {$item['quantity']}, {$item['price']}, 
+            $insert_size = empty($item['size']) ? 'NULL' : "'" . mysqli_real_escape_string($cnx, $item['size']) . "'";
+            $insert_item = "INSERT INTO order_items (order_id, product_id, size, quantity, price, total) 
+                           VALUES ($order_id, {$item['product_id']}, $insert_size, {$item['quantity']}, {$item['price']}, 
                            " . ($item['price'] * $item['quantity']) . ")";
 
             if (!mysqli_query($cnx, $insert_item)) {

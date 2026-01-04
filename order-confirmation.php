@@ -445,6 +445,9 @@ $items_result = mysqli_query($cnx, $items_query);
 
                         <div class="item-info">
                             <div class="item-name"><?php echo htmlspecialchars($item['name']); ?></div>
+                            <?php if (!empty($item['size'])): ?>
+                                <div class="item-quantity">Taille: <?php echo htmlspecialchars($item['size']); ?></div>
+                            <?php endif; ?>
                             <div class="item-quantity">Quantité: <?php echo $item['quantity']; ?></div>
                         </div>
 

@@ -22,6 +22,7 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
         'product_id' => $item['product_id'],
         'name' => $item['name'],
         'price' => (float) $item['price'],
+        'size' => $item['size'],
         'quantity' => $item['quantity'],
         'image_url' => get_image_url($item['image_url'], 'Produit'),
         'stock_quantity' => $item['stock_quantity'],
@@ -408,6 +409,9 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
 
                     <div class="item-details">
                         <h3 class="item-name"><?php echo htmlspecialchars($item['name']); ?></h3>
+                        <?php if (!empty($item['size'])): ?>
+                        <div style="color: var(--text-gray); font-size: 13px; margin-bottom: 6px;">Taille: <?php echo htmlspecialchars($item['size']); ?></div>
+                        <?php endif; ?>
                         <div class="item-price"><?php echo number_format($item['price'], 3); ?> DT</div>
 
                         <div class="item-actions">
@@ -500,7 +504,7 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `action=update&product_id=${itemId}&quantity=${quantity}`
+                body: `action=update&cart_item_id=${itemId}&quantity=${quantity}`
             })
             .then(response => response.json())
             .then(data => {
@@ -526,7 +530,7 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `action=remove&product_id=${itemId}`
+                body: `action=remove&cart_item_id=${itemId}`
             })
             .then(response => response.json())
             .then(data => {

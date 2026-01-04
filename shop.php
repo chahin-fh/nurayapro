@@ -531,6 +531,11 @@ $i = 0;
                     // Mettre à jour le compteur
                     updateCartCount();
                 } else {
+                    const msg = (data.message || '').toString();
+                    if (msg.toLowerCase().includes('taille')) {
+                        window.location.href = 'product.php?id=' + productId;
+                        return;
+                    }
                     console.error('Erreur:', data.message);
                     showAddToCartMessage('Erreur: ' + data.message, true);
                 }

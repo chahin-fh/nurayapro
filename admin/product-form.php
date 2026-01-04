@@ -3,11 +3,21 @@ require_once 'includes/auth_check.php';
 
 $product_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 $product = null;
+$sizes_value = '';
 
 if ($product_id > 0) {
     $query = "SELECT * FROM products WHERE product_id = $product_id";
     $result = mysqli_query($cnx, $query);
     $product = mysqli_fetch_assoc($result);
+
+    $sizes_result = mysqli_query($cnx, "SELECT size FROM product_sizes WHERE product_id = $product_id ORDER BY sort_order ASC, id ASC");
+    if ($sizes_result && mysqli_num_rows($sizes_result) > 0) {
+        $sizes = [];
+        while ($row = mysqli_fetch_assoc($sizes_result)) {
+            $sizes[] = $row['size'];
+        }
+        $sizes_value = implode(', ', $sizes);
+    }
 }
 
 // Récupérer les catégories pour le select
@@ -63,6 +73,11 @@ $categories = mysqli_query($cnx, $categories_query);
                             <label>Description complète</label>
                             <textarea name="description"
                                 rows="8"><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>Tailles (séparées par des virgules)</label>
+                            <input type="text" name="sizes" value="<?php echo htmlspecialchars($sizes_value); ?>" placeholder="S, M, L, XL">
                         </div>
                     </div>
 

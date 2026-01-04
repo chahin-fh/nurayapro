@@ -70,8 +70,8 @@ $items_result = mysqli_query($cnx, $items_query);
                                 <thead>
                                     <tr>
                                         <th>Produit</th>
-                                        <th>Prix</th>
                                         <th>Quantité</th>
+                                        <th>Prix</th>
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -79,18 +79,21 @@ $items_result = mysqli_query($cnx, $items_query);
                                     <?php while ($item = mysqli_fetch_assoc($items_result)): ?>
                                     <tr>
                                         <td>
-                                            <div style="display: flex; align-items: center; gap:15px;">
-                                                <img src="../<?php echo htmlspecialchars($item['image_url']); ?>" alt=""
-                                                    style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                                            <div style="display: flex; align-items: center; gap: 12px;">
+                                                <img src="../<?php echo get_image_url($item['image_url'], 'Produit'); ?>" alt=""
+                                                    style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"
+                                                    onerror="this.src='https://via.placeholder.com/50x50?text=P'">
                                                 <div>
-                                                    <strong><?php echo htmlspecialchars($item['product_name']); ?></strong>
+                                                    <div style="font-weight: 700;"><?php echo htmlspecialchars($item['product_name']); ?></div>
+                                                    <?php if (!empty($item['size'])): ?>
+                                                    <div style="font-size: 12px; color: var(--text-gray);">Taille: <?php echo htmlspecialchars($item['size']); ?></div>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td><?php echo number_format($item['price'], 2); ?> DT</td>
                                         <td><?php echo $item['quantity']; ?></td>
-                                        <td><strong><?php echo number_format($item['price'] * $item['quantity'], 2); ?>
-                                                DT</strong></td>
+                                        <td><?php echo number_format($item['price'], 2); ?> DT</td>
+                                        <td><strong><?php echo number_format($item['total'], 2); ?> DT</strong></td>
                                     </tr>
                                     <?php endwhile; ?>
                                 </tbody>

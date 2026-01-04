@@ -578,6 +578,12 @@ $assets_path = 'assets/';
                             <i class="fas fa-heart"></i>
                             Mes Favoris
                         </a>
+                        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                        <a href="<?php echo $base_path; ?>admin/index.php">
+                            <i class="fas fa-user-shield"></i>
+                            Admin Panel
+                        </a>
+                        <?php endif; ?>
                         <a href="<?php echo $base_path; ?>orders.php">
                             <i class="fas fa-shopping-bag"></i>
                             Mes Commandes

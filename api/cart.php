@@ -38,6 +38,8 @@ function addToCart()
 
     $product_id = (int) ($_POST['product_id'] ?? 0);
     $quantity = (int) ($_POST['quantity'] ?? 1);
+    $size = trim((string) ($_POST['size'] ?? ''));
+    $size = $size === '' ? null : $size;
 
     if ($product_id <= 0 || $quantity <= 0) {
         echo json_encode(['success' => false, 'message' => 'Paramètres invalides']);
@@ -55,6 +57,25 @@ function addToCart()
 
     $product = mysqli_fetch_assoc($product_result);
 
+    // Vérifier si le produit a des tailles définies
+    $size_rows_result = mysqli_query($cnx, "SELECT size FROM product_sizes WHERE product_id = $product_id ORDER BY sort_order ASC, id ASC");
+    if ($size_rows_result && mysqli_num_rows($size_rows_result) > 0) {
+        if ($size === null) {
+            echo json_encode(['success' => false, 'message' => 'Veuillez choisir une taille']);
+            return;
+        }
+
+        $escaped_size = mysqli_real_escape_string($cnx, $size);
+        $check_size = mysqli_query($cnx, "SELECT id FROM product_sizes WHERE product_id = $product_id AND size = '$escaped_size' LIMIT 1");
+        if (!$check_size || mysqli_num_rows($check_size) === 0) {
+            echo json_encode(['success' => false, 'message' => 'Taille invalide']);
+            return;
+        }
+    } else {
+        // Aucun système de tailles pour ce produit
+        $size = null;
+    }
+
     // Vérifier le stock
     if ($product['stock_quantity'] < $quantity) {
         echo json_encode(['success' => false, 'message' => 'Stock insuffisant']);
@@ -62,7 +83,10 @@ function addToCart()
     }
 
     // Vérifier si le produit est déjà dans le panier
-    $check_query = "SELECT id, quantity FROM cart WHERE session_id = '$session_id' AND product_id = $product_id";
+    $check_size_sql = $size === null
+        ? 'IS NULL'
+        : "= '" . mysqli_real_escape_string($cnx, $size) . "'";
+    $check_query = "SELECT id, quantity FROM cart WHERE session_id = '$session_id' AND product_id = $product_id AND size $check_size_sql";
     $check_result = mysqli_query($cnx, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {
@@ -79,7 +103,8 @@ function addToCart()
         mysqli_query($cnx, $update_query);
     } else {
         // Insérer un nouveau produit dans le panier
-        $insert_query = "INSERT INTO cart (session_id, product_id, quantity) VALUES ('$session_id', $product_id, $quantity)";
+        $insert_size = $size === null ? 'NULL' : "'" . mysqli_real_escape_string($cnx, $size) . "'";
+        $insert_query = "INSERT INTO cart (session_id, product_id, size, quantity) VALUES ('$session_id', $product_id, $insert_size, $quantity)";
         mysqli_query($cnx, $insert_query);
     }
 
@@ -90,14 +115,19 @@ function removeFromCart()
 {
     global $cnx, $session_id;
 
+    $cart_item_id = (int) ($_POST['cart_item_id'] ?? 0);
     $product_id = (int) ($_POST['product_id'] ?? 0);
 
-    if ($product_id <= 0) {
+    if ($cart_item_id <= 0 && $product_id <= 0) {
         echo json_encode(['success' => false, 'message' => 'Paramètres invalides']);
         return;
     }
 
-    $delete_query = "DELETE FROM cart WHERE session_id = '$session_id' AND product_id = $product_id";
+    if ($cart_item_id > 0) {
+        $delete_query = "DELETE FROM cart WHERE session_id = '$session_id' AND id = $cart_item_id";
+    } else {
+        $delete_query = "DELETE FROM cart WHERE session_id = '$session_id' AND product_id = $product_id";
+    }
 
     if (mysqli_query($cnx, $delete_query)) {
         echo json_encode(['success' => true, 'message' => 'Produit supprimé du panier']);
@@ -110,10 +140,11 @@ function updateCart()
 {
     global $cnx, $session_id;
 
+    $cart_item_id = (int) ($_POST['cart_item_id'] ?? 0);
     $product_id = (int) ($_POST['product_id'] ?? 0);
     $quantity = (int) ($_POST['quantity'] ?? 0);
 
-    if ($product_id <= 0) {
+    if ($cart_item_id <= 0 && $product_id <= 0) {
         echo json_encode(['success' => false, 'message' => 'Paramètres invalides']);
         return;
     }
@@ -122,6 +153,16 @@ function updateCart()
         // Supprimer si la quantité est 0 ou négative
         removeFromCart();
         return;
+    }
+
+    if ($cart_item_id > 0) {
+        $cart_row_result = mysqli_query($cnx, "SELECT product_id FROM cart WHERE session_id = '$session_id' AND id = $cart_item_id");
+        $cart_row = $cart_row_result ? mysqli_fetch_assoc($cart_row_result) : null;
+        if (!$cart_row) {
+            echo json_encode(['success' => false, 'message' => 'Article introuvable']);
+            return;
+        }
+        $product_id = (int) $cart_row['product_id'];
     }
 
     // Vérifier le stock
@@ -134,7 +175,11 @@ function updateCart()
         return;
     }
 
-    $update_query = "UPDATE cart SET quantity = $quantity WHERE session_id = '$session_id' AND product_id = $product_id";
+    if ($cart_item_id > 0) {
+        $update_query = "UPDATE cart SET quantity = $quantity WHERE session_id = '$session_id' AND id = $cart_item_id";
+    } else {
+        $update_query = "UPDATE cart SET quantity = $quantity WHERE session_id = '$session_id' AND product_id = $product_id";
+    }
 
     if (mysqli_query($cnx, $update_query)) {
         echo json_encode(['success' => true, 'message' => 'Panier mis à jour']);
@@ -176,6 +221,7 @@ function getCart()
         $cart_items[] = [
             'id' => $item['id'],
             'product_id' => $item['product_id'],
+            'size' => $item['size'],
             'name' => $item['name'],
             'price' => (float) $item['price'],
             'quantity' => $item['quantity'],

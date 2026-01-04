@@ -336,6 +336,11 @@ $wishlist_result = mysqli_query($cnx, $wishlist_query);
                             cartCount.textContent = currentCount + 1;
                         }
                     } else {
+                        const msg = (data.message || '').toString();
+                        if (msg.toLowerCase().includes('taille')) {
+                            window.location.href = 'product.php?id=' + productId;
+                            return;
+                        }
                         showToast(data.message, 'error');
                     }
                 })

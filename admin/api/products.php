@@ -101,6 +101,7 @@ function saveProduct()
     $description = mysqli_real_escape_string($cnx, $_POST['description'] ?? '');
     $is_active = (int)($_POST['is_active'] ?? 1);
     $is_featured = (int)($_POST['is_featured'] ?? 0);
+    $sizes_raw = (string)($_POST['sizes'] ?? '');
     
     // Gestion de l'image
     $image_url = mysqli_real_escape_string($cnx, $_POST['existing_image'] ?? '');
@@ -148,6 +149,26 @@ function saveProduct()
     }
     
     if (mysqli_query($cnx, $query)) {
+        $saved_product_id = $id > 0 ? $id : (int)mysqli_insert_id($cnx);
+
+        // Enregistrer les tailles
+        $sizes = array_values(array_filter(array_map('trim', explode(',', $sizes_raw)), fn($v) => $v !== ''));
+        $unique_sizes = [];
+        foreach ($sizes as $s) {
+            $key = mb_strtolower($s);
+            if (!isset($unique_sizes[$key])) {
+                $unique_sizes[$key] = $s;
+            }
+        }
+
+        mysqli_query($cnx, "DELETE FROM product_sizes WHERE product_id = $saved_product_id");
+        $sort = 0;
+        foreach (array_values($unique_sizes) as $s) {
+            $esc = mysqli_real_escape_string($cnx, $s);
+            mysqli_query($cnx, "INSERT INTO product_sizes (product_id, size, sort_order) VALUES ($saved_product_id, '$esc', $sort)");
+            $sort++;
+        }
+
         echo json_encode(['success' => true, 'message' => 'Produit enregistré', 'image_url' => $image_url]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'enregistrement: ' . mysqli_error($cnx)]);

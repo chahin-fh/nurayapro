@@ -28,6 +28,15 @@ if (mysqli_num_rows($result) === 0) {
 
 $product = mysqli_fetch_assoc($result);
 
+// Récupérer les tailles du produit
+$sizes_result = mysqli_query($cnx, "SELECT size FROM product_sizes WHERE product_id = $product_id ORDER BY sort_order ASC, id ASC");
+$available_sizes = [];
+if ($sizes_result && mysqli_num_rows($sizes_result) > 0) {
+    while ($row = mysqli_fetch_assoc($sizes_result)) {
+        $available_sizes[] = $row['size'];
+    }
+}
+
 // Incrémenter le compteur de vues
 $update_query = "UPDATE products SET view_count = view_count + 1 WHERE product_id = $product_id";
 mysqli_query($cnx, $update_query);
@@ -608,6 +617,44 @@ if (isset($_SESSION['user_id'])) {
                 grid-template-columns: 1fr;
             }
         }
+
+        .size-section {
+            margin-bottom: 24px
+        }
+
+        .size-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-dark)
+        }
+
+        .size-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px
+        }
+
+        .size-btn {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(200, 182, 166, 0.4);
+            background: var(--bg-white);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.2s ease
+        }
+
+        .size-btn:hover {
+            transform: translateY(-1px);
+            border-color: var(--beige-dark)
+        }
+
+        .size-btn.active {
+            background: var(--beige-dark);
+            color: var(--bg-white);
+            border-color: var(--beige-dark)
+        }
     </style>
 </head>
 
@@ -679,6 +726,19 @@ if (isset($_SESSION['user_id'])) {
                 <?php endif; ?>
             </div>
 
+            <?php if (!empty($available_sizes)): ?>
+                <div class="size-section">
+                    <div class="size-title">Taille</div>
+                    <div class="size-options" id="sizeOptions">
+                        <?php foreach ($available_sizes as $size): ?>
+                            <button type="button" class="size-btn" onclick="selectSize(this, '<?php echo htmlspecialchars($size, ENT_QUOTES); ?>')">
+                                <?php echo htmlspecialchars($size); ?>
+                            </button>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <div class="product-actions">
                 <div class="quantity-selector">
                     <button class="quantity-btn" onclick="updateQuantity(-1)">−</button>
@@ -741,6 +801,14 @@ if (isset($_SESSION['user_id'])) {
     <script src="assets/js/toast.js"></script>
     <script src="assets/js/cart-count.js"></script>
     <script>
+        let selectedSize = null;
+
+        function selectSize(btn, size) {
+            selectedSize = size;
+            document.querySelectorAll('.size-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
         function showTab(tabId) {
             // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -780,11 +848,18 @@ if (isset($_SESSION['user_id'])) {
         function addToCart() {
              const productId = <?php echo $product_id; ?>;
              const quantity = document.getElementById('quantity').value;
+
+             const hasSizes = <?php echo empty($available_sizes) ? 'false' : 'true'; ?>;
+             if (hasSizes && !selectedSize) {
+                 showToast('Veuillez choisir une taille', 'error');
+                 return;
+             }
              
              const formData = new FormData();
              formData.append('action', 'add');
              formData.append('product_id', productId);
              formData.append('quantity', quantity);
+             if (selectedSize) formData.append('size', selectedSize);
              
              fetch('api/cart.php', {
                  method: 'POST',
