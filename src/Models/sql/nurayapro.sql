@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 03, 2026 at 07:35 PM
--- Server version: 10.4.32-MariaDB
+-- Generation Time: Jan 06, 2026 at 05:50 PM
+-- Server version: 11.7.2-MariaDB
 -- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -32,6 +32,7 @@ CREATE TABLE `cart` (
   `user_id` int(11) DEFAULT NULL,
   `session_id` varchar(255) DEFAULT NULL,
   `product_id` int(11) NOT NULL,
+  `size` varchar(20) DEFAULT NULL,
   `quantity` int(11) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -41,10 +42,10 @@ CREATE TABLE `cart` (
 -- Dumping data for table `cart`
 --
 
-INSERT INTO `cart` (`id`, `user_id`, `session_id`, `product_id`, `quantity`, `created_at`, `updated_at`) VALUES
-(3, NULL, 'qjgml7ev99jik3gajgopbhua50', 2, 2, '2025-12-29 06:41:23', '2025-12-29 06:41:42'),
-(4, NULL, 'stmh5mif5ku2kh4ticsvp0bu6c', 2, 1, '2025-12-29 09:17:15', '2025-12-29 09:17:15'),
-(5, NULL, 'i4p7fcrs51ns3eaj3cjfbej6jt', 2, 1, '2026-01-03 14:03:58', '2026-01-03 14:03:58');
+INSERT INTO `cart` (`id`, `user_id`, `session_id`, `product_id`, `size`, `quantity`, `created_at`, `updated_at`) VALUES
+(3, NULL, 'qjgml7ev99jik3gajgopbhua50', 2, NULL, 2, '2025-12-29 06:41:23', '2025-12-29 06:41:42'),
+(4, NULL, 'stmh5mif5ku2kh4ticsvp0bu6c', 2, NULL, 1, '2025-12-29 09:17:15', '2025-12-29 09:17:15'),
+(5, NULL, 'i4p7fcrs51ns3eaj3cjfbej6jt', 2, NULL, 1, '2026-01-03 14:03:58', '2026-01-03 14:03:58');
 
 -- --------------------------------------------------------
 
@@ -153,7 +154,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `order_number`, `user_id`, `status`, `payment_status`, `payment_method`, `subtotal`, `tax_amount`, `shipping_amount`, `total_amount`, `currency`, `first_name`, `last_name`, `email`, `phone`, `address`, `city`, `postal_code`, `country`, `order_notes`, `tracking_number`, `shipped_at`, `delivered_at`, `order_date`, `updated_at`) VALUES
-(1, 'ORD20254437', 1, 'pending', 'pending', 'cash', 20.00, 3.80, 7.00, 30.80, 'TND', 'Admin', 'Nuraya', 'admin@nuraya.com', '56493702', 'kwait', 'msaken', '4070', NULL, NULL, NULL, NULL, NULL, '2025-12-28 21:45:31', '2025-12-28 21:45:31');
+(1, 'ORD20254437', 1, 'pending', 'pending', 'cash', 20.00, 3.80, 7.00, 30.80, 'TND', 'Admin', 'Nuraya', 'admin@nuraya.com', '56493702', 'kwait', 'msaken', '4070', NULL, NULL, NULL, NULL, NULL, '2025-12-28 21:45:31', '2025-12-28 21:45:31'),
+(2, 'ORD20266915', 1, 'pending', 'pending', 'cash', 40.00, 7.60, 7.00, 54.60, 'TND', 'Admin', 'Nuraya', 'admin@nuraya.com', '54122161', 'azeazeazeae', 'azeaeaze', '156', NULL, NULL, NULL, NULL, NULL, '2026-01-04 12:43:07', '2026-01-04 12:43:07');
 
 -- --------------------------------------------------------
 
@@ -165,6 +167,7 @@ CREATE TABLE `order_items` (
   `id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
+  `size` varchar(20) DEFAULT NULL,
   `quantity` int(11) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `total` decimal(10,2) NOT NULL,
@@ -177,8 +180,9 @@ CREATE TABLE `order_items` (
 -- Dumping data for table `order_items`
 --
 
-INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, `total`, `product_name`, `product_image`, `created_at`) VALUES
-(1, 1, 2, 1, 20.00, 20.00, '', NULL, '2025-12-28 21:45:31');
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `size`, `quantity`, `price`, `total`, `product_name`, `product_image`, `created_at`) VALUES
+(1, 1, 2, NULL, 1, 20.00, 20.00, '', NULL, '2025-12-28 21:45:31'),
+(2, 2, 3, 'L', 1, 40.00, 40.00, '', NULL, '2026-01-04 12:43:07');
 
 -- --------------------------------------------------------
 
@@ -219,7 +223,30 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`product_id`, `name`, `slug`, `description`, `short_description`, `price`, `compare_price`, `cost_price`, `sku`, `stock_quantity`, `min_stock_level`, `category_id`, `image_url`, `additional_images`, `is_featured`, `is_active`, `weight`, `dimensions`, `tags`, `meta_title`, `meta_description`, `view_count`, `created_at`, `updated_at`) VALUES
 (2, 't-shirt', '', 'trikou abyadh cha3cha3i', 'abyadh', 20.00, 50.00, NULL, 'NR-CUPHBI', 49, 5, 7, 'uploads/prod_6951a0b80eec6.jpg', NULL, 0, 1, NULL, NULL, NULL, NULL, NULL, 73, '2025-12-28 21:27:20', '2026-01-03 14:24:10'),
-(3, 'rouba', '', 'rose', 'mta3 bnet', 40.00, NULL, NULL, 'NR-C4I3IF', 50, 5, 7, 'uploads/prod_6958ed664332f.jpg', NULL, 0, 1, NULL, NULL, NULL, NULL, NULL, 25, '2026-01-03 10:20:22', '2026-01-03 18:33:50');
+(3, 'rouba', '', 'rose', 'mta3 bnet', 40.00, NULL, NULL, 'NR-C4I3IF', 49, 5, 7, 'uploads/prod_6958ed664332f.jpg', NULL, 0, 1, NULL, NULL, NULL, NULL, NULL, 31, '2026-01-03 10:20:22', '2026-01-04 12:43:07');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_sizes`
+--
+
+CREATE TABLE `product_sizes` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `size` varchar(20) NOT NULL,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `product_sizes`
+--
+
+INSERT INTO `product_sizes` (`id`, `product_id`, `size`, `sort_order`, `created_at`) VALUES
+(1, 3, 'S', 0, '2026-01-04 12:42:44'),
+(2, 3, 'M', 1, '2026-01-04 12:42:44'),
+(3, 3, 'L', 2, '2026-01-04 12:42:44');
 
 -- --------------------------------------------------------
 
@@ -372,7 +399,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password_hash`, `phone`, `birth_date`, `verification_code`, `is_verified`, `is_active`, `birthday_email_sent`, `role`, `created_at`, `updated_at`, `last_login`, `code_expires_at`, `verified_at`, `reset_token`, `reset_token_expires`) VALUES
-(1, 'Admin', 'Nuraya', 'admin@nuraya.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 1, 1, 0, 'admin', '2025-12-28 21:44:56', '2026-01-03 11:18:00', '2026-01-03 11:18:00', NULL, NULL, NULL, NULL),
+(1, 'Admin', 'Nuraya', 'admin@nuraya.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 1, 1, 0, 'admin', '2025-12-28 21:44:56', '2026-01-04 13:42:23', '2026-01-04 13:42:23', NULL, NULL, NULL, NULL),
 (2, 'fhima', 'chahin', 'chahinfhima@gmail.com', '$2y$10$osCDSJv6wNwBpbzxCPobqOoNT2ZMOs8RGGDEiiOOIRQPSVNRBYGZK', NULL, '2005-11-22', NULL, 1, 1, 0, 'user', '2025-12-29 07:31:35', '2026-01-03 15:23:44', '2026-01-03 15:23:44', NULL, '2025-12-29 07:31:35', NULL, NULL),
 (4, 'malek', 'fhima', 'malali3b@gmail.com', '$2y$10$mhVLb2Y51U1ald7cEOp6POuT4rZbXHki4/cbdVQ.t106trASUKjy6', NULL, '2004-12-30', NULL, 1, 1, 1, 'user', '2025-12-30 21:58:39', '2026-01-03 19:31:52', '2026-01-03 19:31:52', NULL, '2025-12-30 21:58:39', NULL, NULL);
 
@@ -486,6 +513,14 @@ ALTER TABLE `products`
   ADD KEY `created_at` (`created_at`);
 
 --
+-- Indexes for table `product_sizes`
+--
+ALTER TABLE `product_sizes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uniq_product_size` (`product_id`,`size`),
+  ADD KEY `product_id` (`product_id`);
+
+--
 -- Indexes for table `product_variants`
 --
 ALTER TABLE `product_variants`
@@ -559,7 +594,7 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -583,19 +618,25 @@ ALTER TABLE `newsletter_subscribers`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
   MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `product_sizes`
+--
+ALTER TABLE `product_sizes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `product_variants`
@@ -674,6 +715,12 @@ ALTER TABLE `order_items`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `product_sizes`
+--
+ALTER TABLE `product_sizes`
+  ADD CONSTRAINT `product_sizes_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `product_variants`
