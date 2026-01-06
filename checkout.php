@@ -26,9 +26,9 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
     $subtotal += $item['price'] * $item['quantity'];
 }
 
-$shipping = 7.000;
-$tax = $subtotal * 0.19;
-$total = $subtotal + $shipping + $tax;
+// Livraison gratuite si le sous-total dépasse 100 DT
+$shipping = ($subtotal >= 100) ? 0 : 7.000;
+$total = $subtotal + $shipping;
 
 // Récupérer les informations de l'utilisateur
 $user_query = "SELECT * FROM users WHERE id = " . $_SESSION['user_id'];
@@ -442,13 +442,30 @@ $user = mysqli_fetch_assoc($user_result);
 
                 <div class="summary-row">
                     <span class="summary-label">Livraison</span>
-                    <span class="summary-value"><?php echo number_format($shipping, 3); ?> DT</span>
+                    <span class="summary-value">
+                        <?php if ($subtotal >= 100): ?>
+                            <span style="color: #28a745; font-weight: 600;">GRATUITE</span>
+                        <?php else: ?>
+                            <?php echo number_format($shipping, 3); ?> DT
+                        <?php endif; ?>
+                    </span>
                 </div>
 
-                <div class="summary-row">
-                    <span class="summary-label">TVA (19%)</span>
-                    <span class="summary-value"><?php echo number_format($tax, 3); ?> DT</span>
+                <?php if ($subtotal < 100 && $subtotal > 0): ?>
+                <div class="summary-row" style="background: #f0f8ff; padding: 12px; border-radius: 8px; margin: 10px 0;">
+                    <span style="font-size: 13px; color: #0066cc;">
+                        <i class="fas fa-truck"></i> 
+                        Ajoutez <?php echo number_format(100 - $subtotal, 3); ?> DT pour bénéficier de la livraison gratuite !
+                    </span>
                 </div>
+                <?php elseif ($subtotal >= 100): ?>
+                <div class="summary-row" style="background: #d4edda; padding: 12px; border-radius: 8px; margin: 10px 0;">
+                    <span style="font-size: 13px; color: #155724; font-weight: 600;">
+                        <i class="fas fa-check-circle"></i> 
+                        Félicitations ! Vous bénéficiez de la livraison gratuite !
+                    </span>
+                </div>
+                <?php endif; ?>
 
                 <div class="summary-total">
                     <span class="summary-label">Total</span>
@@ -491,7 +508,6 @@ $user = mysqli_fetch_assoc($user_result);
         formData.append('payment_method', selectedPayment);
         formData.append('subtotal', <?php echo $subtotal; ?>);
         formData.append('shipping', <?php echo $shipping; ?>);
-        formData.append('tax', <?php echo $tax; ?>);
         formData.append('total', <?php echo $total; ?>);
 
         const btn = document.querySelector('.place-order-btn');

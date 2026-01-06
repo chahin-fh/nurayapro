@@ -446,6 +446,11 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
             <div class="order-summary">
                 <h2 class="summary-title">Récapitulatif</h2>
 
+<?php
+// Calculer le sous-total et la livraison
+$shipping_cost = ($total >= 100) ? 0 : 7.000;
+$final_total = $total + $shipping_cost;
+?>
                 <div class="summary-row">
                     <span class="summary-label">Sous-total</span>
                     <span class="summary-value"><?php echo number_format($total, 3); ?> DT</span>
@@ -453,17 +458,27 @@ while ($item = mysqli_fetch_assoc($cart_result)) {
 
                 <div class="summary-row">
                     <span class="summary-label">Livraison</span>
-                    <span class="summary-value">7.000 DT</span>
+                    <span class="summary-value">
+                        <?php if ($total >= 100): ?>
+                            <span style="color: #28a745; font-weight: 600;">GRATUITE</span>
+                        <?php else: ?>
+                            <?php echo number_format($shipping_cost, 3); ?> DT
+                        <?php endif; ?>
+                    </span>
                 </div>
 
-                <div class="summary-row">
-                    <span class="summary-label">TVA (19%)</span>
-                    <span class="summary-value"><?php echo number_format($total * 0.19, 3); ?> DT</span>
+                <?php if ($total < 100): ?>
+                <div class="summary-row" style="background: #f0f8ff; padding: 12px; border-radius: 8px; margin: 10px 0;">
+                    <span style="font-size: 13px; color: #0066cc;">
+                        <i class="fas fa-info-circle"></i> 
+                        Ajoutez <?php echo number_format(100 - $total, 3); ?> DT pour la livraison gratuite !
+                    </span>
                 </div>
+                <?php endif; ?>
 
                 <div class="summary-total">
                     <span class="summary-label">Total</span>
-                    <span class="summary-value"><?php echo number_format($total + 7 + ($total * 0.19), 3); ?> DT</span>
+                    <span class="summary-value"><?php echo number_format($final_total, 3); ?> DT</span>
                 </div>
 
                 <button class="checkout-btn" onclick="proceedToCheckout()">

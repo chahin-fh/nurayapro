@@ -6,7 +6,7 @@ return [
     'smtp_secure' => 'tls',
     'smtp_auth' => true,
     'username' => 'malekfhima1@gmail.com',
-    'password' => 'ormpvmdnkoyjaswa', // Spaces removed
+    'password' => 'jrytkpwxhgohpgvr', // Spaces removed
     'from_email' => 'noreply@nuraya.com',
     'from_name' => 'Nuraya',
     'reply_to' => 'support@nuraya.com',

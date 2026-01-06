@@ -28,6 +28,24 @@ if (mysqli_num_rows($result) === 0) {
 
 $product = mysqli_fetch_assoc($result);
 
+// Gérer les images supplémentaires
+$all_images = [];
+if (!empty($product['image_url'])) {
+    $all_images[] = $product['image_url'];
+}
+
+if (!empty($product['additional_images'])) {
+    $additional_images = json_decode($product['additional_images'], true);
+    if (is_array($additional_images)) {
+        $all_images = array_merge($all_images, $additional_images);
+    }
+}
+
+// S'assurer qu'il y a au moins une image
+if (empty($all_images)) {
+    $all_images[] = $product['image_url'];
+}
+
 // Récupérer les tailles du produit
 $sizes_result = mysqli_query($cnx, "SELECT size FROM product_sizes WHERE product_id = $product_id ORDER BY sort_order ASC, id ASC");
 $available_sizes = [];
@@ -142,6 +160,179 @@ if (isset($_SESSION['user_id'])) {
             border-radius: 16px;
             background: var(--bg-white);
             box-shadow: 0 8px 25px rgba(200, 182, 166, 0.15)
+        }
+
+        /* Carousel Styles */
+        .image-carousel {
+            position: relative;
+        }
+
+        .carousel-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .carousel-wrapper {
+            flex: 1;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(200, 182, 166, 0.15);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            flex-shrink: 0;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-slide.active {
+            display: block;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-btn:hover {
+            background: rgba(200, 182, 166, 0.9);
+            color: white;
+        }
+
+        .prev-btn {
+            left: 10px;
+        }
+
+        .next-btn {
+            right: 10px;
+        }
+
+        .carousel-thumbnails {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .thumbnail {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail:hover {
+            border-color: var(--beige-dark);
+            transform: scale(1.05);
+        }
+
+        .thumbnail.active {
+            border-color: var(--beige-dark);
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Zoom functionality */
+        .zoom-container {
+            position: relative;
+            display: inline-block;
+            cursor: zoom-in;
+            width: 100%;
+            height: 500px;
+        }
+
+        .zoom-container.zoomed {
+            cursor: zoom-out;
+        }
+
+        .zoom-image {
+            width: 100%;
+            height: 500px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .carousel-slide .zoom-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            height: 500px;
+        }
+
+        .carousel-slide .zoom-image {
+            width: 100%;
+            height: 500px;
+            object-fit: contain;
+        }
+
+        .zoom-lens {
+            display: none;
+            position: absolute;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            cursor: none;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .zoom-result {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            width: 400px;
+            height: 400px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            background: white;
+            overflow: hidden;
+            z-index: 1000;
+            margin-left: 10px;
+            pointer-events: none;
+        }
+
+        .zoom-result img {
+            max-width: none;
+            position: absolute;
+        }
+
+        .carousel-wrapper {
+            flex: 1;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(200, 182, 166, 0.15);
+            position: relative;
+            z-index: 1;
         }
 
         .product-info {
@@ -665,9 +856,37 @@ if (isset($_SESSION['user_id'])) {
 
     <div class="product-container">
         <div class="product-images">
-            <img src="<?php echo get_image_url($product['image_url'], 'Produit'); ?>"
-                alt="<?php echo htmlspecialchars($product['name']); ?>" class="main-image"
-                onerror="this.src='https://via.placeholder.com/600x500/F5EFE6/C8B6A6?text=Produit'">
+            <!-- Image Carousel -->
+            <div class="image-carousel">
+                <div class="carousel-container">
+                    <button class="carousel-btn prev-btn" onclick="changeImage(-1)">‹</button>
+                    <div class="carousel-wrapper">
+                        <div class="carousel-track" id="carouselTrack">
+                            <?php foreach ($all_images as $index => $image): ?>
+                            <div class="carousel-slide <?php echo $index === 0 ? 'active' : ''; ?>">
+                                <div class="zoom-container">
+                                    <img src="<?php echo get_image_url($image, 'Produit'); ?>"
+                                        alt="<?php echo htmlspecialchars($product['name']); ?> - Image <?php echo $index + 1; ?>" class="zoom-image"
+                                        onerror="this.src='https://via.placeholder.com/600x500/F5EFE6/C8B6A6?text=Produit'">
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <button class="carousel-btn next-btn" onclick="changeImage(1)">›</button>
+                </div>
+                
+                <!-- Thumbnails -->
+                <div class="carousel-thumbnails">
+                    <?php foreach ($all_images as $index => $image): ?>
+                    <div class="thumbnail <?php echo $index === 0 ? 'active' : ''; ?>" onclick="goToSlide(<?php echo $index; ?>)">
+                        <img src="<?php echo get_image_url($image, 'Produit'); ?>"
+                            alt="<?php echo htmlspecialchars($product['name']); ?> - Miniature <?php echo $index + 1; ?>"
+                            onerror="this.src='https://via.placeholder.com/100x100/F5EFE6/C8B6A6?text=Produit'">
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
 
         <div class="product-info">
@@ -878,6 +1097,182 @@ if (isset($_SESSION['user_id'])) {
                  console.error('Error:', error);
                  showToast('Erreur lors de l\'ajout au panier', 'error');
              });
+        }
+
+        // Carousel functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        
+        function showSlide(index) {
+            // Hide all slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            
+            // Show the selected slide
+            if (slides[index]) {
+                slides[index].classList.add('active');
+                thumbnails[index].classList.add('active');
+                currentSlide = index;
+            }
+        }
+
+        function changeImage(direction) {
+            let newIndex = currentSlide + direction;
+            if (newIndex < 0) {
+                newIndex = slides.length - 1;
+            } else if (newIndex >= slides.length) {
+                newIndex = 0;
+            }
+            showSlide(newIndex);
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+        }
+
+        // Initialize carousel
+        document.addEventListener('DOMContentLoaded', function() {
+            showSlide(0);
+            
+            // Initialize zoom functionality for all product images
+            initializeZoom();
+        });
+
+        // Zoom functionality
+        function initializeZoom() {
+            const zoomImages = document.querySelectorAll('.zoom-image');
+            
+            zoomImages.forEach(img => {
+                const container = img.parentElement;
+                
+                img.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleZoom(container);
+                });
+                
+                img.addEventListener('mouseenter', function() {
+                    setupMagnifier(container, img);
+                });
+                
+                img.addEventListener('mousemove', function(e) {
+                    moveMagnifier(e, container, img);
+                });
+                
+                img.addEventListener('mouseleave', function() {
+                    closeMagnifier(container);
+                });
+            });
+        }
+
+        function toggleZoom(container) {
+            if (container.classList.contains('zoomed')) {
+                // Exit zoom mode
+                container.classList.remove('zoomed');
+                closeMagnifier(container);
+            } else {
+                // Enter zoom mode
+                container.classList.add('zoomed');
+                setupMagnifier(container, container.querySelector('.zoom-image'));
+            }
+        }
+
+        function setupMagnifier(container, img) {
+            let zoomLens, zoomResult;
+            
+            // Create zoom lens if it doesn't exist
+            if (!container.querySelector('.zoom-lens')) {
+                zoomLens = document.createElement('div');
+                zoomLens.className = 'zoom-lens';
+                zoomLens.style.width = '100px';
+                zoomLens.style.height = '100px';
+                zoomLens.style.background = 'rgba(255, 255, 255, 0.3)';
+                zoomLens.style.display = 'block';
+                // Add to the parent of the container to avoid layout issues
+                container.appendChild(zoomLens);
+            }
+            
+            // Create zoom result if it doesn't exist
+            if (!container.querySelector('.zoom-result')) {
+                zoomResult = document.createElement('div');
+                zoomResult.className = 'zoom-result';
+                
+                const zoomImg = document.createElement('img');
+                zoomImg.src = img.src;
+                zoomImg.style.width = img.naturalWidth * 2 + 'px';
+                zoomImg.style.height = img.naturalHeight * 2 + 'px';
+                zoomResult.appendChild(zoomImg);
+                
+                // Add to the parent of the container to avoid layout issues
+                container.appendChild(zoomResult);
+            }
+        }
+
+        function moveMagnifier(e, container, img) {
+            let pos, x, y, zoomResult, zoomImg, w, h;
+            e.preventDefault();
+            pos = getCursorPos(e);
+            
+            zoomResult = container.querySelector('.zoom-result');
+            zoomImg = zoomResult.querySelector('img');
+            
+            w = img.offsetWidth;
+            h = img.offsetHeight;
+            
+            x = pos.x;
+            y = pos.y;
+            
+            // Prevent magnifier from going outside the image
+            if (x > w - (zoomResult.offsetWidth / 2) / 2) {
+                x = w - (zoomResult.offsetWidth / 2) / 2;
+            }
+            if (x < (zoomResult.offsetWidth / 2) / 2) {
+                x = (zoomResult.offsetWidth / 2) / 2;
+            }
+            if (y > h - (zoomResult.offsetHeight / 2) / 2) {
+                y = h - (zoomResult.offsetHeight / 2) / 2;
+            }
+            if (y < (zoomResult.offsetHeight / 2) / 2) {
+                y = (zoomResult.offsetHeight / 2) / 2;
+            }
+            
+            // Set position of the magnifier lens
+            const zoomLens = container.querySelector('.zoom-lens');
+            zoomLens.style.left = (x - zoomLens.offsetWidth / 2) + 'px';
+            zoomLens.style.top = (y - zoomLens.offsetHeight / 2) + 'px';
+            
+            // Calculate the ratio between result DIV and lens
+            const ratio = (zoomImg.width / img.width) / 2;
+            
+            // Set background position of the magnifier lens
+            zoomImg.style.left = -(x * ratio - (zoomResult.offsetWidth / 2)) + 'px';
+            zoomImg.style.top = -(y * ratio - (zoomResult.offsetHeight / 2)) + 'px';
+        }
+
+        function getCursorPos(e) {
+            let a, x = 0, y = 0;
+            e = e || window.event;
+            // Get cursor's x and y positions
+            x = e.clientX;
+            y = e.clientY;
+            
+            // Add the position of the image to the cursor's x and y positions
+            a = e.target.getBoundingClientRect();
+            x = x - a.left;
+            y = y - a.top;
+            return {x: x, y: y};
+        }
+
+        function closeMagnifier(container) {
+            const zoomLens = container.querySelector('.zoom-lens');
+            const zoomResult = container.querySelector('.zoom-result');
+            
+            if (zoomLens) {
+                zoomLens.style.display = 'none';
+            }
+            if (zoomResult) {
+                zoomResult.style.display = 'none';
+            }
         }
 
         function toggleWishlist() {

@@ -1,9 +1,19 @@
 <?php
+// Turn off error display to prevent HTML output in API responses
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
 session_start();
 header('Content-Type: application/json');
 
 // Connexion à la base de données
 require_once '../config/database.php';
+
+// Check if database connection was successful
+if (!$cnx || mysqli_connect_error()) {
+    echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données']);
+    exit;
+}
 
 // Récupérer l'action demandée
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
@@ -38,6 +48,12 @@ switch ($action) {
 function addReview()
 {
     global $cnx;
+
+    // Verify database connection
+    if (!$cnx || mysqli_connect_error()) {
+        echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données']);
+        return;
+    }
 
     // Vérifier si l'utilisateur est connecté
     if (!isset($_SESSION['user_id'])) {
@@ -110,6 +126,12 @@ function addReview()
 function getReviews()
 {
     global $cnx;
+
+    // Verify database connection
+    if (!$cnx || mysqli_connect_error()) {
+        echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données']);
+        return;
+    }
 
     $product_id = (int) ($_GET['product_id'] ?? 0);
     $page = (int) ($_GET['page'] ?? 1);
@@ -207,6 +229,12 @@ function updateReview()
 {
     global $cnx;
 
+    // Verify database connection
+    if (!$cnx || mysqli_connect_error()) {
+        echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données']);
+        return;
+    }
+
     if (!isset($_SESSION['user_id'])) {
         echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
         return;
@@ -249,6 +277,12 @@ function deleteReview()
 {
     global $cnx;
 
+    // Verify database connection
+    if (!$cnx || mysqli_connect_error()) {
+        echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données']);
+        return;
+    }
+
     if (!isset($_SESSION['user_id'])) {
         echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
         return;
@@ -287,6 +321,12 @@ function markHelpful()
 {
     global $cnx;
 
+    // Verify database connection
+    if (!$cnx || mysqli_connect_error()) {
+        echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données']);
+        return;
+    }
+
     if (!isset($_SESSION['user_id'])) {
         echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
         return;
@@ -320,6 +360,12 @@ function markHelpful()
 function reportReview()
 {
     global $cnx;
+
+    // Verify database connection
+    if (!$cnx || mysqli_connect_error()) {
+        echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données']);
+        return;
+    }
 
     if (!isset($_SESSION['user_id'])) {
         echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
@@ -359,6 +405,12 @@ function reportReview()
 function getUserReviews()
 {
     global $cnx;
+
+    // Verify database connection
+    if (!$cnx || mysqli_connect_error()) {
+        echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données']);
+        return;
+    }
 
     if (!isset($_SESSION['user_id'])) {
         echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);

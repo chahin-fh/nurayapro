@@ -58,7 +58,7 @@ define('CACHE_LIFETIME', 3600); // 1 heure
 
 // Configuration des réseaux sociaux
 $social_links = [
-    'facebook' => 'https://facebook.com/nuraya',
+    'facebook' => 'https://www.facebook.com/profile.php?id=61560894352497#',
     'instagram' => 'https://www.instagram.com/_nuraya__?igsh=MTNmOG4ybWRldm5xYw==',
     // 'twitter' => 'https://twitter.com/nuraya',
     // 'linkedin' => 'https://linkedin.com/company/nuraya'

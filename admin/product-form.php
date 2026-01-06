@@ -165,7 +165,7 @@ $categories = mysqli_query($cnx, $categories_query);
                             <h3>Image du produit</h3>
                         </div>
                         <div class="form-group" style="margin-bottom: 20px;">
-                            <label>Choisir une image</label>
+                            <label>Image principale</label>
                             <input type="file" name="product_image" id="product_image" accept="image/*"
                                 onchange="previewLocalImage(this)">
                             <input type="hidden" name="existing_image"
@@ -179,6 +179,39 @@ $categories = mysqli_query($cnx, $categories_query);
                             <?php else: ?>
                             <i class="fas fa-image" style="font-size: 40px; color: var(--beige-dark);"></i>
                             <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Images supplémentaires</h3>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label>Ajouter des images supplémentaires</label>
+                            <input type="file" name="additional_images[]" id="additional_images" accept="image/*" multiple>
+                            <small style="display: block; margin-top: 8px; color: var(--text-gray);">Sélectionnez plusieurs images en maintenant la touche Ctrl (ou Cmd sur Mac) enfoncée</small>
+                        </div>
+                        <div id="additionalImagePreview" class="image-preview-container"
+                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 15px;">
+                            <?php if (isset($product['additional_images']) && !empty($product['additional_images'])): 
+                                $additional_images = json_decode($product['additional_images'], true);
+                                if (is_array($additional_images)):
+                                    foreach ($additional_images as $img):
+                            ?>
+                            <div class="image-preview-item" style="position: relative;">
+                                <img src="..<?php echo get_image_url($img, 'Produit'); ?>"
+                                    style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--beige-dark);">
+                                <button type="button" class="remove-image" onclick="removeAdditionalImage(this, '<?php echo $img; ?>')"
+                                    style="position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; background: var(--beige-dark); color: white; border: none; cursor: pointer; font-size: 12px;">
+                                    ×
+                                </button>
+                                <input type="hidden" name="existing_additional_images[]" value="<?php echo htmlspecialchars($img); ?>">
+                            </div>
+                            <?php 
+                                    endforeach;
+                                endif;
+                            endif; 
+                            ?>
                         </div>
                     </div>
 
@@ -199,6 +232,14 @@ $categories = mysqli_query($cnx, $categories_query);
         if (productId == "0" && !skuInput.value) {
             generateSKU();
         }
+        
+        // Ajouter l'événement pour les images supplémentaires
+        const additionalImagesInput = document.getElementById('additional_images');
+        if (additionalImagesInput) {
+            additionalImagesInput.addEventListener('change', function() {
+                previewAdditionalImages(this);
+            });
+        }
     });
 
     function generateSKU() {
@@ -218,6 +259,57 @@ $categories = mysqli_query($cnx, $categories_query);
                     `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
             }
             reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewAdditionalImages(input) {
+        const previewContainer = document.getElementById('additionalImagePreview');
+        const files = input.files;
+        
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (!file.type.match('image.*')) continue;
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'image-preview-item';
+                imgContainer.style.position = 'relative';
+                
+                imgContainer.innerHTML = `
+                    <img src="${e.target.result}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--beige-dark);">
+                    <button type="button" class="remove-image" onclick="removeNewImage(this)" style="position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; background: var(--beige-dark); color: white; border: none; cursor: pointer; font-size: 12px;">
+                        ×
+                    </button>
+                    <input type="hidden" name="new_additional_images_temp[]" value="${e.target.result}" style="display:none;">
+                `;
+                
+                previewContainer.appendChild(imgContainer);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeAdditionalImage(button, imagePath) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette image ?')) {
+            const container = button.parentElement;
+            container.remove();
+            
+            // Ajouter l'image à supprimer à un champ caché
+            const form = document.getElementById('productForm');
+            const removeField = document.createElement('input');
+            removeField.type = 'hidden';
+            removeField.name = 'remove_additional_images[]';
+            removeField.value = imagePath;
+            form.appendChild(removeField);
+        }
+    }
+
+    function removeNewImage(button) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette image ?')) {
+            button.parentElement.remove();
         }
     }
 

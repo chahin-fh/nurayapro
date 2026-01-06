@@ -32,7 +32,6 @@ function createOrder()
 
     $user_id = $_SESSION['user_id'];
 
-    // Récupérer les données du formulaire
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -43,8 +42,16 @@ function createOrder()
     $payment_method = $_POST['payment_method'] ?? '';
     $subtotal = (float) ($_POST['subtotal'] ?? 0);
     $shipping = (float) ($_POST['shipping'] ?? 0);
-    $tax = (float) ($_POST['tax'] ?? 0);
     $total = (float) ($_POST['total'] ?? 0);
+    
+    // Calculer la livraison basée sur le subtotal (gratuite si >= 100)
+    $calculated_shipping = ($subtotal >= 100) ? 0 : 7.000;
+    
+    // Vérifier que la livraison envoyée correspond à la logique
+    if (abs($shipping - $calculated_shipping) > 0.01) {
+        $shipping = $calculated_shipping;
+        $total = $subtotal + $shipping;
+    }
 
     // Validation
     if (empty($first_name) || empty($last_name) || empty($email) || empty($address) || empty($city)) {
@@ -84,9 +91,9 @@ function createOrder()
     try {
         // Insérer la commande
         $insert_order = "INSERT INTO orders (user_id, order_number, first_name, last_name, email, phone, address, city, postal_code, 
-                        payment_method, subtotal, shipping, tax, total, status, order_date) 
+                        payment_method, subtotal, shipping, total, status, order_date) 
                         VALUES ($user_id, '$order_number', '$first_name', '$last_name', '$email', '$phone', '$address', 
-                        '$city', '$postal_code', '$payment_method', $subtotal, $shipping, $tax, $total, 
+                        '$city', '$postal_code', '$payment_method', $subtotal, $shipping, $total, 
                         'pending', NOW())";
 
         if (!mysqli_query($cnx, $insert_order)) {

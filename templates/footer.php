@@ -187,6 +187,20 @@ $assets_path = 'assets/';
 .footer-copyright {
     color: rgba(250, 247, 242, 0.6);
     font-size: 13px;
+    line-height: 1.8;
+}
+
+.footer-copyright a {
+    color: var(--beige-dark);
+    text-decoration: none;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.footer-copyright a:hover {
+    color: var(--accent-pink);
+    text-decoration: underline;
 }
 
 .footer-bottom-links {
@@ -325,13 +339,16 @@ $assets_path = 'assets/';
     <div class="footer-bottom">
         <div class="footer-bottom-content">
             <div class="footer-copyright">
-                &copy; <?php echo date('Y'); ?> NURAYA. Tous droits réservés. Crafted with &hearts; in Tunisia
+                &copy; <?php echo date('Y'); ?> NURAYA. Tous droits réservés. Crafted with ♥ in Tunisia by<br>
+                <a href="https://malekfhima.free.nf/" target="_blank" rel="noopener noreferrer">Malek Fhima</a> &
+                <a href="https://chahinportfolio.great-site.net/" target="_blank" rel="noopener noreferrer">Mohamed
+                    Chahin Fhima</a>
             </div>
             <div class="footer-bottom-links">
-                <a href="#">Mentions Légales</a>
-                <a href="#">Politique de Confidentialité</a>
-                <a href="#">CGV</a>
-                <a href="#">Politique de Cookies</a>
+                <a href="<?php echo $base_path; ?>legal.php">Mentions Légales</a>
+                <a href="<?php echo $base_path; ?>privacy.php">Politique de Confidentialité</a>
+                <a href="<?php echo $base_path; ?>terms.php">CGV</a>
+                <a href="<?php echo $base_path; ?>cookies.php">Politique de Cookies</a>
             </div>
         </div>
     </div>

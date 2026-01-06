@@ -129,7 +129,6 @@ CREATE TABLE `orders` (
   `payment_status` enum('pending','paid','failed','refunded') NOT NULL DEFAULT 'pending',
   `payment_method` varchar(50) DEFAULT NULL,
   `subtotal` decimal(10,2) NOT NULL,
-  `tax_amount` decimal(10,2) DEFAULT 0.00,
   `shipping_amount` decimal(10,2) DEFAULT 0.00,
   `total_amount` decimal(10,2) NOT NULL,
   `currency` varchar(3) NOT NULL DEFAULT 'TND',
@@ -153,9 +152,9 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `order_number`, `user_id`, `status`, `payment_status`, `payment_method`, `subtotal`, `tax_amount`, `shipping_amount`, `total_amount`, `currency`, `first_name`, `last_name`, `email`, `phone`, `address`, `city`, `postal_code`, `country`, `order_notes`, `tracking_number`, `shipped_at`, `delivered_at`, `order_date`, `updated_at`) VALUES
-(1, 'ORD20254437', 1, 'pending', 'pending', 'cash', 20.00, 3.80, 7.00, 30.80, 'TND', 'Admin', 'Nuraya', 'admin@nuraya.com', '56493702', 'kwait', 'msaken', '4070', NULL, NULL, NULL, NULL, NULL, '2025-12-28 21:45:31', '2025-12-28 21:45:31'),
-(2, 'ORD20266915', 1, 'pending', 'pending', 'cash', 40.00, 7.60, 7.00, 54.60, 'TND', 'Admin', 'Nuraya', 'admin@nuraya.com', '54122161', 'azeazeazeae', 'azeaeaze', '156', NULL, NULL, NULL, NULL, NULL, '2026-01-04 12:43:07', '2026-01-04 12:43:07');
+INSERT INTO `orders` (`id`, `order_number`, `user_id`, `status`, `payment_status`, `payment_method`, `subtotal`, `shipping_amount`, `total_amount`, `currency`, `first_name`, `last_name`, `email`, `phone`, `address`, `city`, `postal_code`, `country`, `order_notes`, `tracking_number`, `shipped_at`, `delivered_at`, `order_date`, `updated_at`) VALUES
+(1, 'ORD20254437', 1, 'pending', 'pending', 'cash', 20.00, 7.00, 27.00, 'TND', 'Admin', 'Nuraya', 'admin@nuraya.com', '56493702', 'kwait', 'msaken', '4070', NULL, NULL, NULL, NULL, NULL, '2025-12-28 21:45:31', '2025-12-28 21:45:31'),
+(2, 'ORD20266915', 1, 'pending', 'pending', 'cash', 40.00, 7.00, 47.00, 'TND', 'Admin', 'Nuraya', 'admin@nuraya.com', '54122161', 'azeazeazeae', 'azeaeaze', '156', NULL, NULL, NULL, NULL, NULL, '2026-01-04 12:43:07', '2026-01-04 12:43:07');
 
 -- --------------------------------------------------------
 
@@ -361,7 +360,6 @@ INSERT INTO `settings` (`id`, `setting_key`, `setting_value`, `description`, `ty
 (2, 'site_description', 'Mode élégante et accessible pour tous', 'Description du site', 'text', '2025-12-28 20:44:35', '2025-12-28 20:44:35'),
 (3, 'contact_email', 'contact@nuraya.com', 'Email de contact', 'text', '2025-12-28 20:44:35', '2025-12-28 20:44:35'),
 (4, 'shipping_cost', '7.00', 'Frais de livraison par défaut', 'number', '2025-12-28 20:44:35', '2025-12-28 20:44:35'),
-(5, 'tax_rate', '19.0', 'Taux de TVA par défaut', 'number', '2025-12-28 20:44:35', '2025-12-28 20:44:35'),
 (6, 'currency', 'TND', 'Devise par défaut', 'text', '2025-12-28 20:44:35', '2025-12-28 20:44:35'),
 (7, 'social_media', '{\"facebook\":\"\",\"instagram\":\"\",\"twitter\":\"\",\"pinterest\":\"\"}', 'Réseaux sociaux', 'json', '2025-12-28 20:44:35', '2025-12-28 20:44:35'),
 (8, 'maintenance_mode', '0', 'Mode maintenance', 'boolean', '2025-12-28 20:44:35', '2025-12-28 20:44:35');

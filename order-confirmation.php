@@ -29,9 +29,8 @@ if (mysqli_num_rows($order_result) === 0) {
 
 $order = mysqli_fetch_assoc($order_result);
 
-// Ensure shipping, tax, and total are set (with defaults if missing)
+// Ensure shipping and total are set (with defaults if missing)
 $order['shipping'] = isset($order['shipping']) ? (float)$order['shipping'] : 0;
-$order['tax'] = isset($order['tax']) ? (float)$order['tax'] : 0;
 $order['total'] = isset($order['total']) ? (float)$order['total'] : 0;
 $order['subtotal'] = isset($order['subtotal']) ? (float)$order['subtotal'] : 0;
 
@@ -462,11 +461,13 @@ $items_result = mysqli_query($cnx, $items_query);
                     </div>
                     <div class="summary-row">
                         <span>Livraison</span>
-                        <span><?php echo number_format($order['shipping'], 3); ?> DT</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>TVA (19%)</span>
-                        <span><?php echo number_format($order['tax'], 3); ?> DT</span>
+                        <span>
+                            <?php if ($order['subtotal'] >= 100): ?>
+                                <span style="color: #28a745; font-weight: 600;">GRATUITE</span>
+                            <?php else: ?>
+                                <?php echo number_format($order['shipping'], 3); ?> DT
+                            <?php endif; ?>
+                        </span>
                     </div>
                     <div class="summary-row">
                         <span>Total</span>

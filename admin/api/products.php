@@ -126,6 +126,57 @@ function saveProduct()
         }
     }
 
+    // Gestion des images supplémentaires
+    $existing_additional_images = [];
+    if (isset($_POST['existing_additional_images'])) {
+        $existing_additional_images = $_POST['existing_additional_images'];
+    }
+    
+    // Traitement des images supplémentaires à supprimer
+    $images_to_remove = [];
+    if (isset($_POST['remove_additional_images'])) {
+        $images_to_remove = $_POST['remove_additional_images'];
+    }
+    
+    // Filtrer les images existantes en supprimant celles marquées pour suppression
+    $filtered_existing_images = [];
+    foreach ($existing_additional_images as $img) {
+        if (!in_array($img, $images_to_remove)) {
+            $filtered_existing_images[] = $img;
+        }
+    }
+    
+    // Traitement des nouvelles images supplémentaires
+    if (isset($_FILES['additional_images']) && $_FILES['additional_images']['error'][0] !== UPLOAD_ERR_NO_FILE) {
+        $files = $_FILES['additional_images'];
+        $file_count = count($files['name']);
+        
+        for ($i = 0; $i < $file_count; $i++) {
+            if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                $file_tmp = $files['tmp_name'][$i];
+                $file_name = $files['name'][$i];
+                $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                
+                $allowed_ext = ['jpg', 'jpeg', 'png', 'webp'];
+                if (in_array($file_ext, $allowed_ext)) {
+                    $new_file_name = uniqid('prod_') . '.' . $file_ext;
+                    $upload_dir = __DIR__ . '/../../uploads/';
+                    
+                    if (!is_dir($upload_dir)) {
+                        mkdir($upload_dir, 0777, true);
+                    }
+                    
+                    if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
+                        $filtered_existing_images[] = 'uploads/' . $new_file_name;
+                    }
+                }
+            }
+        }
+    }
+    
+    // Convertir le tableau d'images en JSON
+    $additional_images_json = json_encode($filtered_existing_images);
+
     if (empty($name) || $category_id <= 0) {
         echo json_encode(['success' => false, 'message' => 'Nom et catégorie sont requis']);
         return;
@@ -137,15 +188,16 @@ function saveProduct()
                   price = $price, compare_price = $compare_price, 
                   stock_quantity = $stock_quantity, min_stock_level = $min_stock_level, 
                   image_url = '$image_url', short_description = '$short_description', 
-                  description = '$description', is_active = $is_active, is_featured = $is_featured 
+                  description = '$description', is_active = $is_active, is_featured = $is_featured,
+                  additional_images = '$additional_images_json'
                   WHERE product_id = $id";
     } else {
         $query = "INSERT INTO products (name, category_id, sku, price, compare_price, 
                   stock_quantity, min_stock_level, image_url, short_description, 
-                  description, is_active, is_featured) 
+                  description, is_active, is_featured, additional_images) 
                   VALUES ('$name', $category_id, '$sku', $price, $compare_price, 
                   $stock_quantity, $min_stock_level, '$image_url', '$short_description', 
-                  '$description', $is_active, $is_featured)";
+                  '$description', $is_active, $is_featured, '$additional_images_json')";
     }
     
     if (mysqli_query($cnx, $query)) {
